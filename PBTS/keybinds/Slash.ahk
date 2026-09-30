@@ -1,0 +1,3 @@
+class Slash {
+    static target => "/"
+}

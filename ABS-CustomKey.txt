@@ -1,0 +1,12 @@
+INIT
+
+; constant requirement
+static target => String
+; OR
+static targets => Array<String>
+
+; methods
+    ; methods are expected to be referenced by name via strings
+
+; method requirement
+    ; CustomKey is can inherit init to run a setup function

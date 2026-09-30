@@ -1,0 +1,3 @@
+class Equals {
+    static target => "="
+}

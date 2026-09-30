@@ -1,0 +1,14 @@
+{
+    "target": "t",
+    "default": {
+        "default": "t"
+    },
+    "profile_1": {
+        "uses": "r",
+        "inherits_from": "default"
+    },
+    "profile_2": {
+        "uses": "r",
+        "uses_profile": "profile_1"
+    }
+}

@@ -1,0 +1,10 @@
+ⓘ profiles defines all profiles that are used in the samples. remember, the default profile always exists even without a definition.
+
+profiles 1 〜 3 are example profiles used for key-profile examples.
+    - profile 1 will show as red
+    - profile 2 will show as blue
+    - profile 3 will show as green
+profile 3.1 demonstrates profile level inheritance. check keybind ⸢o⸥ & ⸢i⸥ to see it in action. 
+    - profile 3.1 will show as teal
+profile exceptions demonstrates profile exceptions. check keybind ⸢p⸥ to see it in action.
+    - profile exceptions will show as the default (black) color

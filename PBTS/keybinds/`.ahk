@@ -1,0 +1,3 @@
+class Backtick {
+    static target => "``"
+}

@@ -1,0 +1,7 @@
+{
+    "target": "F7",
+    "default": {
+        "default": "ⓝreload",
+        "shift": "ⓝkill"
+    }
+}

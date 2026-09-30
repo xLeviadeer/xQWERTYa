@@ -1,0 +1,3 @@
+class Hyphen {
+    static target => "-"
+}

@@ -1,0 +1,9 @@
+{
+    "target": "p",
+    "default": {
+        "default": "p"
+    },
+    "profile_exceptions": {
+        "default": "un-typable"
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "target": "i",
+    "default": {
+        "default": "i"
+    },
+    "profile_3": {
+        "default": "i-am-cool"
+    }
+}

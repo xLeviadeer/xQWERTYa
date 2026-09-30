@@ -1,0 +1,3 @@
+class SquareBracketOpen {
+    static target => "["
+}

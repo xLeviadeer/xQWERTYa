@@ -1,0 +1,3 @@
+class SquareBracketClose {
+    static target => "]"
+}

@@ -1,0 +1,12 @@
+ⓘ t shows how uses_profile works ⧼& how inherits_from doesn't⧽
+
+in default ⌄
+    types t
+
+in profile_1 ⌄
+    types ⸉r from profile_1⸉
+        - according to the ⟨execution order⟩ `uses` takes place before inheritance. as such: inheritance is ignored and `uses` shifts this key to behave like profile_1 in r.
+
+in profile_2 ⌄
+    types ⸉r from profile_1⸉
+        - both `uses` and `uses_profile` occur simultaneously. as such: `uses` shifts this key to behave like r and `uses_profile` shifts to profile_1.

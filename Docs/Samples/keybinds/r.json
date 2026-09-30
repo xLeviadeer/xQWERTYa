@@ -1,0 +1,9 @@
+{
+    "target": "r",
+    "default": {
+        "default": "r"
+    },
+    "profile_1": {
+        "default": "r from profile_1"
+    }
+}

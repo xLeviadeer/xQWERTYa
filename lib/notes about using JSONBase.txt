@@ -1,0 +1,4 @@
+JSONBase.ahk will attempt to serialize static properties
+JSONBase.ahk will not serialize functions (it will hang)
+
+use the wrapped version of JSON.ahk to handle these issues

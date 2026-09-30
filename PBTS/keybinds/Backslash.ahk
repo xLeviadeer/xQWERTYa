@@ -1,0 +1,3 @@
+class Backslash {
+    static target => "\"
+}

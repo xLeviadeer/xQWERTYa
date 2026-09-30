@@ -1,0 +1,12 @@
+.gitattributes
+.vscode
+
+keybinds/*
+!keybinds/Curl.ahk
+!keybinds/Windows.ahk
+
+*.bat
+*.ps1
+*.exe
+*.spec
+*.code-workspace

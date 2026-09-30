@@ -1,0 +1,16 @@
+in default ⌄
+    types o
+
+in profile_3 ⌄
+    when no modifier
+        - types ⸉o-base⸉
+    when shift
+        - types ⸉o-shift-base⸉
+
+in profile_3.1
+    when no modifier
+        - types ⸉o-derived⸉
+        - profile_3.1 inherits from profile_3 ⧼at the profile level⧽╌but, profile_3.1 explicitly sets a definition for `default`, overriding the base (profile_3) definition.
+    when shift
+        - types ⸉o-shift-base⸉
+        - because `shift` is not set in profile_3.1 and ⧼at the profile level⧽ profile_3.1 inherits from profile_3: it uses profile_3's `shift` binding

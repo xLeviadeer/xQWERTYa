@@ -1,0 +1,3 @@
+class Period {
+    static target => "."
+}

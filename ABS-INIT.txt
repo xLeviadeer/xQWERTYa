@@ -1,0 +1,6 @@
+INIT
+
+; method requirement
+static void init() {
+    ; initialization code
+}

@@ -1,0 +1,13 @@
+{
+    "target": "y",
+    "default": {
+        "default": "y"
+    },
+    "profile_1": {
+        "uses": "r",
+        "shift": "y-shift"
+    },
+    "profile_2": {
+        "uses": "r"
+    }
+}

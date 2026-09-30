@@ -1,0 +1,16 @@
+SERIALIZABLE
+
+; method requirement
+static Map toJSON(class) {
+    ; convert the object to a map and return
+}
+
+; method requirement
+instance Map toJSON(class) {
+    ; run static toJSON on this object
+}
+
+; method requirement
+static class fromJSON(map) {
+    ; convert the map to a class object and return
+}

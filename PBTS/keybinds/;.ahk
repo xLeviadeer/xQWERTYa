@@ -1,0 +1,3 @@
+class Semicolon {
+    static target => ";"
+}

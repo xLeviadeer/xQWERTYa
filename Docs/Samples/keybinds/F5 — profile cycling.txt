@@ -1,0 +1,1 @@
+cycles through all non-hidden profiles. in this case default, profile_1, profile_2, and profile_3 will be cycled because they are not hidden.

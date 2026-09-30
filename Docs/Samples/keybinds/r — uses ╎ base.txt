@@ -1,0 +1,7 @@
+ⓘ r is used as a base for the ⸉uses⸉ demo in keys t and y
+
+in default ⌄
+    types r
+
+in profile 1 ⌄
+    types r from profile_1

@@ -1,0 +1,3 @@
+class Apostrophe {
+    static target => "'"
+}
