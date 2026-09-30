@@ -1,8 +1,3 @@
-; needed to be added to PATH, I found it here: C:\Users\Night\AppData\Local\Programs\AutoHotkey\v2 
-; runs with `autohotkey64 "F:\Coding\xqertya\Autohotkey\VK Connections\SendVK.ahk" <num>`
-; compiled build runs with `SendVK.exe <num>`
-; if keys need to be cut from the bound (they shouldn't, there's other unassigned blocks available) then cut from the top as it has the least chance of causing issues
-
 ; technically any VK can be used that wouldn't normally be pressed because the input will be eaten by my rebind anyway
 
 #Requires AutoHotkey v2.0 
