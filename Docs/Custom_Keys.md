@@ -16,7 +16,7 @@ You can now make method calls.
 1. Create a key target file
     1. in whatever directory you'd like within the project (typically in `keybinds/`) create an `.ahk` code file (typically named the same as the key you will be targeting).
     2. create a collection class at top-level which contains a static variable `target` that has a value equal to a string with the [AHK V2 key name](https://www.autohotkey.com/docs/v2/KeyList.htm) of the key which you are mapping a method to. 
-        - the value of `target` may also be a list of key names to target that map to this file. 
+        - you may instead make a list of targets by naming the variable `targets` (as opposed to `target`) and setting the value to be a list of key names to target that map to this file. 
         - this file represents a collection of methods that can be called from the targetȿ.
 2. Include your collection class 
     1. open `Key/CustomKeys.ahk`

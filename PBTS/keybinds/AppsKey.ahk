@@ -1,3 +1,3 @@
 class AppsKey {
-    static targets => "AppsKey"
+    static target => "AppsKey"
 }
