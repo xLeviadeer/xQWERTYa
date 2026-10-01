@@ -700,15 +700,15 @@ class KeyAction {
             based_true_on_profile := this.curr_profile.based
         }
 
-        based_false_on_modifier := (this.curr_profile_ref.%KeyProfile.BASED_NAME% == false)
+        based_false_on_profile_ref := (this.curr_profile_ref.%KeyProfile.BASED_NAME% == false)
 
         failure_condition := ( ; profile false & modifier false | does the profile and the key have based off? 
             (!based_true_on_profile) 
-            && based_false_on_modifier 
+            && based_false_on_profile_ref 
         ) || ( ; profile true & modifier false (explicit) | are the profile and the profile ref both false and explicitly set as false?
             based_true_on_profile 
             && this.curr_profile_ref.based_explicit
-            && based_false_on_modifier
+            && based_false_on_profile_ref
         )
 
         if (
