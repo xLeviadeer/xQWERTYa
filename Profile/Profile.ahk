@@ -31,6 +31,7 @@ class Profile {
     static DEFAULT_EXCEPTIONS => false
     static DEFAULT_COMPATIBILITY => true
     static DEFAULT_BASED => true
+    static DEFAULT_COLLAPSE => true
     static DEFAULT_BLIND => false 
     static DEFAULT_QUICK_SWITCH => false
     static Curr := Profile.DEFAULT_NAME
@@ -53,6 +54,7 @@ class Profile {
     ;constructed hidden?;
     ;constructed compatibility?;
     ;constructed based?;
+    ;constructed collapse?;
     ;constructed blind?;
     ;constructed color?;
     ;constructed showBadge?;
@@ -71,6 +73,7 @@ class Profile {
         hidden := false,
         compatibility := false,
         based := false,
+        collapse := false,
         blind := true,
         color := Badge.COLOR_FOREGROUND,
         showBadge := true,
@@ -87,6 +90,7 @@ class Profile {
             hidden, 
             compatibility, 
             based,
+            collapse,
             blind,
             color, 
             showBadge, 
@@ -108,6 +112,7 @@ class Profile {
         hidden := false,
         compatibility := false,
         based := false,
+        collapse := false,
         blind := true,
         color := Badge.COLOR_FOREGROUND,
         showBadge := true,
@@ -199,6 +204,15 @@ class Profile {
             throw TypeError("based must be a boolean")
         }
         this.based := based
+
+        ; check collapsed
+        if (
+            (collapse != true)
+            && (collapse != false)
+        ) {
+            throw TypeError("collapsed must be a boolean")
+        }
+        this.collapse := collapse
 
         ; check blind
         if (
@@ -296,6 +310,7 @@ class Profile {
         "hidden", profile.hidden,
         "compatibility", profile.compatibility,
         KeyProfile.BASED_NAME, profile.based,
+        KeyProfile.COLLAPSE_NAME, profile.collapse,
         "blind", profile.blind,
         "color", profile.color,
         "showBadge", profile.showBadge,
@@ -314,6 +329,7 @@ class Profile {
             map.Has("hidden") ? map["hidden"] : false,
             map.Has("compatibility") ? map["compatibility"] : false,
             map.Has(KeyProfile.BASED_NAME) ? map[KeyProfile.BASED_NAME] : false,
+            map.Has(KeyProfile.COLLAPSE_NAME) ? map[KeyProfile.COLLAPSE_NAME] : false,
             map.Has("blind") ? map["blind"] : true,
             map.Has("color") ? map["color"] : Badge.COLOR_FOREGROUND,
             map.Has("showBadge") ? map["showBadge"] : true,

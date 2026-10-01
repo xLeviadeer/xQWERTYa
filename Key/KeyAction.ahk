@@ -733,32 +733,28 @@ class KeyAction {
     ;       Continue — when collapse is present
     ;       Normal — when collapse is not present
     _CollapseCheck() {
-        ; somehow having comments is a syntax error, so I have to do it like this
-        ; if (
-        ;   (this.modifier_name_down != KeyProfile.DEFAULT_NAME) ; not default already
-        ;   && (
-        ;       (
-        ;           this.curr_profile_is_default ; true if default
-        ;           && (!( ; was not explicitly set to false
-        ;               this.curr_profile_ref.collapse_explicit ; collapse was explicitly set
-        ;              && (this.curr_profile_ref.%KeyProfile.COLLAPSE_NAME% == false) ; collapse is false
-        ;          ))
-        ;      )
-        ;      || this._ModifierExists(KeyProfile.COLLAPSE_NAME, false) ; collapse exists and is true
-        ;   )
-        ; )
-        if (
-            (this.modifier_name_down != KeyProfile.DEFAULT_NAME) 
-            && (
-                (
-                    this.curr_profile_is_default 
-                    && (!( 
-                        this.curr_profile_ref.collapse_explicit 
-                        && (this.curr_profile_ref.%KeyProfile.COLLAPSE_NAME% == false) 
-                    ))
-                )
-                || this._ModifierExists(KeyProfile.COLLAPSE_NAME, false)
+        if (this.curr_profile_is_default) {
+            collapse_true_on_profile := Profile.DEFAULT_COLLAPSE
+        } else {
+            collapse_true_on_profile := this.curr_profile.collapse
+        }
+
+        collapse_false_on_profile_ref := (this.curr_profile_ref.%KeyProfile.COLLAPSE_NAME% == false)
+
+        failure_condition := (
+            ( ; false on both profile and profile ref
+                (!collapse_true_on_profile)
+                && collapse_false_on_profile_ref
+            ) || ( ; true on profile but explicitly set to false on profile
+                collapse_true_on_profile
+                && this.curr_profile_ref.collapse_explicit
+                && collapse_false_on_profile_ref
             )
+        )
+
+        if (
+            (this.modifier_name_down != KeyProfile.DEFAULT_NAME) ; is not default modifier already
+            && (!failure_condition) ; no fail conditions
         ) {
             this.modifier.Clear() ; sets to default
             return KeyActionProcessing.Continue
