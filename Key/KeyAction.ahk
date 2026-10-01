@@ -694,9 +694,9 @@ class KeyAction {
     ;       Continue — when unset triple bind with existing base
     ;       Normal — when else
     _BasedCheck() {
-        if (this.curr_profile_is_default)
+        if (this.curr_profile_is_default) {
             based_true_on_profile := Profile.DEFAULT_BASED
-        else {
+        } else {
             based_true_on_profile := this.curr_profile.based
         }
 
