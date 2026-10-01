@@ -34,12 +34,6 @@ class Profile {
     static DEFAULT_BLIND => false 
     static DEFAULT_QUICK_SWITCH => false
     static Curr := Profile.DEFAULT_NAME
-    static CurrProfile() {
-        if (Profile.Curr == Profile.DEFAULT_NAME) {
-            throw ValueError("cannot return a profile object for the default profile")
-        } 
-        return Profile.List[Profile.Curr]
-    }
 
     ; returns a profile object or false if the default profile
     static GetCurr() {
