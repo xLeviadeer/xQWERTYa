@@ -798,27 +798,24 @@ class KeyAction {
     ;       Normal — when else is not present
     ;   cancels — when else exists
     _ElseCheck() {
-        ; somehow having comments is a syntax error, so I have to do it like this
-        ; if (
-        ;     (
-        ;         this.curr_profile_is_default ; true if default
-        ;         && (!( ; was not explicitly set to false
-        ;             this.curr_profile_ref.else_explicit ; else was explicitly set
-        ;             && (this.curr_profile_ref.%KeyProfile.ELSE_NAME% == false) ; else is false
-        ;         ))
-        ;     )
-        ;     || this._ModifierExists(KeyProfile.ELSE_NAME, false) ; else exists
-        ; )
-        if (
-            (
-                this.curr_profile_is_default 
-                && (!( 
-                    this.curr_profile_ref.else_explicit 
-                    && (this.curr_profile_ref.%KeyProfile.ELSE_NAME% == false) 
-                ))
-            )
-            || this._ModifierExists(KeyProfile.ELSE_NAME, false) 
-        ) {
+        if (this.curr_profile_is_default) {
+            else_true_on_profile := Profile.DEFAULT_ELSE
+        } else {
+            else_true_on_profile := this.curr_profile.else
+        }
+
+        else_false_on_profile_ref := (this.curr_profile_ref.%KeyProfile.ELSE_NAME% == false)
+
+        failure_condition := ( ; false on both profile and profile ref
+            (!else_true_on_profile)
+            && else_false_on_profile_ref
+        ) || ( ; true on profile but explicitly set to false on profile
+            else_true_on_profile
+            && this.curr_profile_ref.else_explicit
+            && else_false_on_profile_ref
+        )
+
+        if (!failure_condition) { ; no fail conditions
             ; run the else action
             this._RunElse()
 
