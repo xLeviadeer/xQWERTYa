@@ -713,7 +713,7 @@ class KeyAction {
 
         if (
             this.modifier.IsTripleBind ; only for triple binds
-            && (!failure_condition) ; no fail conditions ╎ true
+            && (!failure_condition) ; no fail conditions
             && this._ModifierExists(this.modifier.Significant) ; has base
         ) {
             this.modifier := ModifierComposition(this.modifier.Significant)
