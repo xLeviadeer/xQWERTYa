@@ -16,7 +16,7 @@ In addition to these principles xQWERTYa has many benefits over a typical QWERTY
     - Keys can mime other keys and use their inheritance tree
     - Keys can call your custom AHK code functions
     - and more
-- xQWERTYa allows for ⸉Profiles⸉ which are separate layers for the keyboard which change how it acts when pressing keys
+- xQWERTYa uses a unified ⸉Profiles⸉ system for context switching which change the keyboards how it acts when pressing keys
     - Profiles can inherit from other profiles, creating an inheritance tree
     - Profiles can be quickly switched into while holding a button down to change actions on the fly
     - and more
