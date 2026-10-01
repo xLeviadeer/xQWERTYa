@@ -81,15 +81,13 @@ Lock bindings will base to non-lock bindings if a lock binding is not present. B
 - syntax — `"ⓝcycle"`
 - description — cycle through non-hidden profiles (see [hidden profiles](./Profiles.md#hidden)) in the order they appear in `profiles.json`.
 
-#### Else (binding level)
-- syntax — `"ⓝelse"`
-- description — pass this binding through to Windows.
-    - Ex. Making a keybind targeting ⸢a⸥ and setting `"shift": "ⓝelse"` in the `default` profile will rebind pressing shift & ⸢a⸥ to shift & ⸢a⸥. Notice there is no change between what is being rebound and the result.
-
 #### Base (binding level)
 - syntax — `"ⓝbase"`
-- description — use ⸉based⸉ behavior for this binding only (see [Profiles](./Profiles.md#based)).
-    - only works if the specified binding is a triple ⧼or more⧽ binding.
+- description — use ⸉based⸉ behavior for this binding only. collapses this triple-or-more-binding to a double-bindings.
+    - information about triple bindings can be found under [Binding Sets](#binding-sets).
+    - when `ⓝbase` is used on a triple-or-more-binding then activating the binding will base down to the nearest priority double bind (ex. pressing ⟨shift⟩ & ⟨control⟩ & ⸢a⸥ when ⸢a⸥ does not set `shift_control` will do whatever `shift` does on ⸢a⸥).
+    - can be thought of like collapse but instead of collapsing to default it collapses to a single modifier. 
+    - only works if the specified binding is a triple-or-more-binding.
 - basing priority — basing uses a priority system to determine the ⸉strongest⸉(|highest priority) base
     - priority ⌄
         - shift ⧙strongest⧘
@@ -105,6 +103,11 @@ Lock bindings will base to non-lock bindings if a lock binding is not present. B
 #### Collapse (binding level)
 - syntax — `"ⓝcollapse"`
 - description — use ⸉collapse⸉ behavior for this binding only. set the binding to act like the `default` binding in this key-profile.
+
+#### Else (binding level)
+- syntax — `"ⓝelse"`
+- description — pass this binding through to Windows.
+    - Ex. Making a keybind targeting ⸢a⸥ and setting `"shift": "ⓝelse"` in the `default` profile will rebind pressing shift & ⸢a⸥ to shift & ⸢a⸥. Notice there is no change between what is being rebound and the result.
 
 #### Reload
 - syntax — `"ⓝreload"`
@@ -175,11 +178,6 @@ In addition to modifier bindings a key-profile may include several behavior flag
         - Ex. `"uses": "a"` & `"inherits_from": "other_profile"` would ignore `other_profile` becuase `uses` occurs before `inherits_from`
         - Ex. `"uses": "a"` & `"uses_profile": "other_profile"` would both change target (to ⸢a⸥) and the profile (to `uses_profile`).
 
-### Else (profile level)
-- syntax — `"else": ⓘbool`
-- default — `false`
-- description — sets whether this key-profile's passthrough bindings use else behavior (see [Else (binding level)](#else-binding-level)).
-
 ### Based (profile level)
 - syntax — `"based": ⓘbool`
 - default — `false`
@@ -204,6 +202,11 @@ In addition to modifier bindings a key-profile may include several behavior flag
     }
     ```
     - pressing shift & ⸢a⸥ while in `other_profile` will type ⸢c⸥ because╌instead of inheriting `shift` behavior from `default`╌`shift` is collapsed to the `default` binding in `other_profile`, which is ⸢c⸥.
+
+### Else (profile level)
+- syntax — `"else": ⓘbool`
+- default — `false`
+- description — sets whether this key-profile's passthrough bindings use else behavior (see [Else (binding level)](#else-binding-level)).
 
 ## Execution Order
 Execution order is a technical concept. Sometimes understanding the execution order is important for understanding how your keypresses will route in behaviorally complex circumstances. 

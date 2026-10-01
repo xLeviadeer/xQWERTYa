@@ -87,12 +87,25 @@ A list of possible attributes that may exist on a profile are detailed as follow
 ### Based
 - required — no
     - defaults to `false` if unspecified
+    - default profile value — `true`
 - keyword — `based`
 - value type — boolean
-- description — whether to collapse unset triple-bindings in this profile to double-bindings
-    - information about triple bindings can be found under [Keybinds](./Keybinds.md).
-    - if a triple-binding is unset for a key, when it's pressed by the user it will normally do nothing (ex. pressing ⟨shift⟩ & ⟨control⟩ & ⸢a⸥ when ⸢a⸥ does not set `shift_control` will do nothing)
-    - if `based` is `true` then pressing a triple bind will base down to the nearest priority double bind (ex. pressing ⟨shift⟩ & ⟨control⟩ & ⸢a⸥ when ⸢a⸥ does not set `shift_control` will do whatever `shift` does on ⸢a⸥)
+- description — whether this profile's passthrough bindings use `base` behavior (see [Base (binding level)](./keybinds.md#base-binding-level)).
+
+### Collapse
+- required — no
+    - defaults to `false` if unspecified
+    - default profile value — `true`
+- keyword — `collapse`
+- value type — boolean
+- description — whether this profile's passthrough bindings use `collapse` behavior (see [Collapse (binding level)](./keybinds.md#collapse-binding-level)).
+
+### Else
+- required — no
+    - defaults to `false` if unspecified
+- keyword — `else`
+- value type — boolean
+- description — whether this profile's passthrough bindings use `else` behavior (see [Else (binding level)](./keybinds.md#else-binding-level)).
 
 ### Blind
 - required — no 
