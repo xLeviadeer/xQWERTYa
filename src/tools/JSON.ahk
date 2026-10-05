@@ -1,4 +1,4 @@
-#Include lib\JSONBase.ahk
+#Include ..\..\lib\JSONBase.ahk
 
 class JSON {
 

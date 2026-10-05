@@ -2,15 +2,15 @@
 #Include KeyList.ahk
 #Include KeyProfile.ahk
 #Include CustomKeys.ahk
-#Include ../Profile/Profile.ahk
-#Include ../JSON.ahk
+#Include ../profile/Profile.ahk
+#Include ../tools/JSON.ahk
 #Include ../Locks.ahk
 #Include Modifier.ahk
 #Include ../key/KeyAction.ahk
 
 ; testing based include
 doDump := false
-#Include ../lib/JSONBase.ahk
+#Include ../../lib/JSONBase.ahk
 
 ; code for binding keys and holding their data
 class Key {

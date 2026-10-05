@@ -1,7 +1,7 @@
 #Requires AutoHotkey v2.0 
 #SingleInstance Force
 
-#Include Launch.ahk
+#Include src/launch/Launch.ahk
 
 ; copied and updated for v2 from: https://www.autohotkey.com/docs/v1/lib/Run.htm#RunAs
 full_command_line := DllCall("GetCommandLine", "str")

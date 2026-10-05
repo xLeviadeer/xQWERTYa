@@ -1,8 +1,8 @@
 #Requires AutoHotkey v2.0 
-#Include ./ProfileList.ahk
+#Include ProfileList.ahk
 #Include ../Key/Key.ahk
-#Include ../JSON.ahk
-#Include ../Badge.ahk
+#Include ../tools/JSON.ahk
+#Include ../tools/Badge.ahk
 #Include ../Key/Modifier.ahk
 
 class Profile {

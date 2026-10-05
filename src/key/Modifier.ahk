@@ -1,8 +1,8 @@
 #include ../Key/Key.ahk
 #Include KeyProfile.ahk
 #Include ../Profile/Profile.ahk
-#Include ../keybinds/Curl.ahk
-#Include ../keybinds/Windows.ahk
+#Include ../../keybinds/Curl.ahk
+#Include ../../keybinds/Windows.ahk
 
 ; tracks and manages the state of virtual modifiers
 class ModifierTracker {

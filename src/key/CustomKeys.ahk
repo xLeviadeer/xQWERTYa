@@ -1,7 +1,6 @@
 #Requires AutoHotkey v2.0
 #Include Key.ahk
 
-
 ; initializes all custom keys
 ;   needs to be updated with initializations as keys are added
 class CustomKeys {

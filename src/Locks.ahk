@@ -1,4 +1,5 @@
-#Include ./Key/Key.ahk
+#Include tools/Badge.ahk
+#Include key/Key.ahk
 
 ; holds data about locks like caps lock and arrow lock
 class Locks {
