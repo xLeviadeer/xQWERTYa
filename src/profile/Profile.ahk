@@ -154,7 +154,7 @@ class Profile {
                 ; check key
                 if (
                     !(key_ is String)
-                    && !(ModifierTracker.List.Has(key_))
+                    && !(Modifier.List.Has(key_))
                 ) {
                     throw ValueError("'" key_ "' is not a valid modifier name")
                 }
@@ -397,7 +397,7 @@ class Profile {
 
         ; for all passthrough values
         for (pass_modifier_name, pass_do_passthrough in pass_list) {
-            ModifierTracker.UpdatePassthrough(pass_modifier_name, pass_do_passthrough)
+            Modifier.UpdatePassthrough(pass_modifier_name, pass_do_passthrough)
         }
     }
 

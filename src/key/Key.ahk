@@ -243,7 +243,7 @@ class Key {
         ; extend list with up keys
         key_names_list_extension := []
         for (key_name in key_names_list) {
-            key_name_up := key_name ModifierTracker.UP_KEYNAME
+            key_name_up := key_name Modifier.UP_KEYNAME
             if (Key.UsedCombinations.Has(key_name_up)) {
                 key_names_list_extension.Push(key_name_up)
             }
@@ -295,18 +295,18 @@ class Key {
         for key_target, key_ in Key.List {
             ; create binding name
             bindingName := (
-                (key_.strict ? "" : ModifierTracker.ALL_PREFIX)
-                (key_.unsafe ? "" : ModifierTracker.SAFTEY_PREFIX)
+                (key_.strict ? "" : Modifier.ALL_PREFIX)
+                (key_.unsafe ? "" : Modifier.SAFTEY_PREFIX)
                 key_target
             )
-            bindingNameUp := bindingName ModifierTracker.UP_KEYSYMBOL_LONG
+            bindingNameUp := bindingName Modifier.UP_KEYSYMBOL_LONG
 
             ; bind down and up
             Key._BindWithName(bindingName)
             Key.UsedCombinations[key_target] := bindingName
             if !(key_.strict) { ; no up bind on strict keys
                 Key._BindWithName(bindingNameUp)
-                Key.UsedCombinations[key_target ModifierTracker.UP_KEYNAME] := bindingNameUp
+                Key.UsedCombinations[key_target Modifier.UP_KEYNAME] := bindingNameUp
             }
         }
 

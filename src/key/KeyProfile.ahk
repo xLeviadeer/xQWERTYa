@@ -12,53 +12,53 @@ class KeyProfile {
     static BASED_NAME => "based"
     static DEFAULT_NAME => "default"
 
-    static DEFAULT_UP_NAME => KeyProfile.DEFAULT_NAME ModifierTracker.UP_KEYNAME
-    static SHIFT_UP_NAME => ModifierTracker.SHIFT_NAME ModifierTracker.UP_KEYNAME
-    static CURL_UP_NAME => ModifierTracker.CURL_NAME ModifierTracker.UP_KEYNAME
-    static ALT_UP_NAME => ModifierTracker.ALT_NAME ModifierTracker.UP_KEYNAME
-    static CONTROL_UP_NAME => ModifierTracker.CONTROL_NAME ModifierTracker.UP_KEYNAME
-    static SHELVE_UP_NAME => ModifierTracker.SHELVE_NAME ModifierTracker.UP_KEYNAME
-    static ELEVATE_UP_NAME => ModifierTracker.ELEVATE_NAME ModifierTracker.UP_KEYNAME
-    static STEP_UP_NAME => ModifierTracker.STEP_NAME ModifierTracker.UP_KEYNAME
-    static WINDOWS_UP_NAME => ModifierTracker.WINDOWS_NAME ModifierTracker.UP_KEYNAME
+    static DEFAULT_UP_NAME => KeyProfile.DEFAULT_NAME Modifier.UP_KEYNAME
+    static SHIFT_UP_NAME => Modifier.SHIFT_NAME Modifier.UP_KEYNAME
+    static CURL_UP_NAME => Modifier.CURL_NAME Modifier.UP_KEYNAME
+    static ALT_UP_NAME => Modifier.ALT_NAME Modifier.UP_KEYNAME
+    static CONTROL_UP_NAME => Modifier.CONTROL_NAME Modifier.UP_KEYNAME
+    static SHELVE_UP_NAME => Modifier.SHELVE_NAME Modifier.UP_KEYNAME
+    static ELEVATE_UP_NAME => Modifier.ELEVATE_NAME Modifier.UP_KEYNAME
+    static STEP_UP_NAME => Modifier.STEP_NAME Modifier.UP_KEYNAME
+    static WINDOWS_UP_NAME => Modifier.WINDOWS_NAME Modifier.UP_KEYNAME
 
     static ARROWLOCK_NAME => "arrowlock"
-    static ARROWLOCK_UP_NAME => KeyProfile.ARROWLOCK_NAME ModifierTracker.UP_KEYNAME
-    static ARROWLOCK_SHIFT_NAME => KeyProfile.ARROWLOCK_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.SHIFT_NAME
-    static ARROWLOCK_SHIFT_UP_NAME => KeyProfile.ARROWLOCK_SHIFT_NAME ModifierTracker.UP_KEYNAME
-    static ARROWLOCK_SHIFT_CONTROL_NAME => KeyProfile.ARROWLOCK_SHIFT_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.CONTROL_NAME
-    static ARROWLOCK_SHIFT_CONTROL_UP_NAME => KeyProfile.ARROWLOCK_SHIFT_CONTROL_NAME ModifierTracker.UP_KEYNAME
-    static ARROWLOCK_ELEVATE_NAME => KeyProfile.ARROWLOCK_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.ELEVATE_NAME
-    static ARROWLOCK_ELEVATE_UP_NAME => KeyProfile.ARROWLOCK_ELEVATE_NAME ModifierTracker.UP_KEYNAME
-    static ARROWLOCK_CONTROL_NAME => KeyProfile.ARROWLOCK_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.CONTROL_NAME
-    static ARROWLOCK_CONTROL_UP_NAME => KeyProfile.ARROWLOCK_CONTROL_NAME ModifierTracker.UP_KEYNAME
-    static ARROWLOCK_WINDOWS_NAME => KeyProfile.ARROWLOCK_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.WINDOWS_NAME
-    static ARROWLOCK_WINDOWS_UP_NAME => KeyProfile.ARROWLOCK_WINDOWS_NAME ModifierTracker.UP_KEYNAME
+    static ARROWLOCK_UP_NAME => KeyProfile.ARROWLOCK_NAME Modifier.UP_KEYNAME
+    static ARROWLOCK_SHIFT_NAME => KeyProfile.ARROWLOCK_NAME Modifier.MODIFIER_JOIN Modifier.SHIFT_NAME
+    static ARROWLOCK_SHIFT_UP_NAME => KeyProfile.ARROWLOCK_SHIFT_NAME Modifier.UP_KEYNAME
+    static ARROWLOCK_SHIFT_CONTROL_NAME => KeyProfile.ARROWLOCK_SHIFT_NAME Modifier.MODIFIER_JOIN Modifier.CONTROL_NAME
+    static ARROWLOCK_SHIFT_CONTROL_UP_NAME => KeyProfile.ARROWLOCK_SHIFT_CONTROL_NAME Modifier.UP_KEYNAME
+    static ARROWLOCK_ELEVATE_NAME => KeyProfile.ARROWLOCK_NAME Modifier.MODIFIER_JOIN Modifier.ELEVATE_NAME
+    static ARROWLOCK_ELEVATE_UP_NAME => KeyProfile.ARROWLOCK_ELEVATE_NAME Modifier.UP_KEYNAME
+    static ARROWLOCK_CONTROL_NAME => KeyProfile.ARROWLOCK_NAME Modifier.MODIFIER_JOIN Modifier.CONTROL_NAME
+    static ARROWLOCK_CONTROL_UP_NAME => KeyProfile.ARROWLOCK_CONTROL_NAME Modifier.UP_KEYNAME
+    static ARROWLOCK_WINDOWS_NAME => KeyProfile.ARROWLOCK_NAME Modifier.MODIFIER_JOIN Modifier.WINDOWS_NAME
+    static ARROWLOCK_WINDOWS_UP_NAME => KeyProfile.ARROWLOCK_WINDOWS_NAME Modifier.UP_KEYNAME
 
     static CAPSLOCK_NAME => "capslock"
-    static CAPSLOCK_UP_NAME => KeyProfile.CAPSLOCK_NAME ModifierTracker.UP_KEYNAME
+    static CAPSLOCK_UP_NAME => KeyProfile.CAPSLOCK_NAME Modifier.UP_KEYNAME
     static NUMLOCK_NAME => "numlock"
-    static NUMLOCK_UP_NAME => KeyProfile.NUMLOCK_NAME ModifierTracker.UP_KEYNAME
+    static NUMLOCK_UP_NAME => KeyProfile.NUMLOCK_NAME Modifier.UP_KEYNAME
     static MOUSE_NAME => "mouselock"
-    static MOUSE_UP_NAME => KeyProfile.MOUSE_NAME ModifierTracker.UP_KEYNAME
+    static MOUSE_UP_NAME => KeyProfile.MOUSE_NAME Modifier.UP_KEYNAME
 
-    static SHIFT_CONTROL_NAME => ModifierTracker.SHIFT_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.CONTROL_NAME
-    static SHIFT_CONTROL_NAME_UP => KeyProfile.SHIFT_CONTROL_NAME ModifierTracker.UP_KEYNAME
-    static SHIFT_CURL_NAME => ModifierTracker.SHIFT_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.CURL_NAME
-    static SHIFT_CURL_NAME_UP => KeyProfile.SHIFT_CURL_NAME ModifierTracker.UP_KEYNAME
-    static SHIFT_ALT_NAME => ModifierTracker.SHIFT_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.ALT_NAME
-    static SHIFT_ALT_NAME_UP => KeyProfile.SHIFT_ALT_NAME ModifierTracker.UP_KEYNAME
-    static SHIFT_ELEVATE_NAME => ModifierTracker.SHIFT_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.ELEVATE_NAME
-    static SHIFT_ELEVATE_NAME_UP => KeyProfile.SHIFT_ELEVATE_NAME ModifierTracker.UP_KEYNAME
-    static SHIFT_SHELVE_NAME => ModifierTracker.SHIFT_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.SHELVE_NAME
-    static SHIFT_SHELVE_NAME_UP => KeyProfile.SHIFT_SHELVE_NAME ModifierTracker.UP_KEYNAME
-    static SHIFT_STEP_NAME => ModifierTracker.SHIFT_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.STEP_NAME
-    static SHIFT_STEP_NAME_UP => KeyProfile.SHIFT_STEP_NAME ModifierTracker.UP_KEYNAME
+    static SHIFT_CONTROL_NAME => Modifier.SHIFT_NAME Modifier.MODIFIER_JOIN Modifier.CONTROL_NAME
+    static SHIFT_CONTROL_NAME_UP => KeyProfile.SHIFT_CONTROL_NAME Modifier.UP_KEYNAME
+    static SHIFT_CURL_NAME => Modifier.SHIFT_NAME Modifier.MODIFIER_JOIN Modifier.CURL_NAME
+    static SHIFT_CURL_NAME_UP => KeyProfile.SHIFT_CURL_NAME Modifier.UP_KEYNAME
+    static SHIFT_ALT_NAME => Modifier.SHIFT_NAME Modifier.MODIFIER_JOIN Modifier.ALT_NAME
+    static SHIFT_ALT_NAME_UP => KeyProfile.SHIFT_ALT_NAME Modifier.UP_KEYNAME
+    static SHIFT_ELEVATE_NAME => Modifier.SHIFT_NAME Modifier.MODIFIER_JOIN Modifier.ELEVATE_NAME
+    static SHIFT_ELEVATE_NAME_UP => KeyProfile.SHIFT_ELEVATE_NAME Modifier.UP_KEYNAME
+    static SHIFT_SHELVE_NAME => Modifier.SHIFT_NAME Modifier.MODIFIER_JOIN Modifier.SHELVE_NAME
+    static SHIFT_SHELVE_NAME_UP => KeyProfile.SHIFT_SHELVE_NAME Modifier.UP_KEYNAME
+    static SHIFT_STEP_NAME => Modifier.SHIFT_NAME Modifier.MODIFIER_JOIN Modifier.STEP_NAME
+    static SHIFT_STEP_NAME_UP => KeyProfile.SHIFT_STEP_NAME Modifier.UP_KEYNAME
 
-    static ALT_ELEVATE_NAME => ModifierTracker.ALT_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.ELEVATE_NAME
-    static ALT_ELEVATE_NAME_UP => KeyProfile.ALT_ELEVATE_NAME ModifierTracker.UP_KEYNAME
-    static SHIFT_ALT_ELEVATE_NAME => ModifierTracker.SHIFT_NAME ModifierTracker.MODIFIER_JOIN KeyProfile.ALT_ELEVATE_NAME
-    static SHIFT_ALT_ELEVATE_NAME_UP => KeyProfile.SHIFT_ALT_ELEVATE_NAME ModifierTracker.UP_KEYNAME
+    static ALT_ELEVATE_NAME => Modifier.ALT_NAME Modifier.MODIFIER_JOIN Modifier.ELEVATE_NAME
+    static ALT_ELEVATE_NAME_UP => KeyProfile.ALT_ELEVATE_NAME Modifier.UP_KEYNAME
+    static SHIFT_ALT_ELEVATE_NAME => Modifier.SHIFT_NAME Modifier.MODIFIER_JOIN KeyProfile.ALT_ELEVATE_NAME
+    static SHIFT_ALT_ELEVATE_NAME_UP => KeyProfile.SHIFT_ALT_ELEVATE_NAME Modifier.UP_KEYNAME
 
     ; -- Instance --
 
@@ -454,28 +454,28 @@ class KeyProfile {
         KeyProfile.DEFAULT_NAME, obj.default,
         KeyProfile.DEFAULT_UP_NAME, obj.default_up,
 
-        ModifierTracker.SHIFT_NAME, obj.shift,
+        Modifier.SHIFT_NAME, obj.shift,
         KeyProfile.SHIFT_UP_NAME, obj.shift_up,
 
-        ModifierTracker.CURL_NAME, obj.curl,
+        Modifier.CURL_NAME, obj.curl,
         KeyProfile.CURL_UP_NAME, obj.curl_up,
 
-        ModifierTracker.ALT_NAME, obj.alt,
+        Modifier.ALT_NAME, obj.alt,
         KeyProfile.ALT_UP_NAME, obj.alt_up,
 
-        ModifierTracker.CONTROL_NAME, obj.control,
+        Modifier.CONTROL_NAME, obj.control,
         KeyProfile.CONTROL_UP_NAME, obj.control_up,
 
-        ModifierTracker.SHELVE_NAME, obj.shelve,
+        Modifier.SHELVE_NAME, obj.shelve,
         KeyProfile.SHELVE_UP_NAME, obj.shelve_up,
 
-        ModifierTracker.ELEVATE_NAME, obj.elevate,
+        Modifier.ELEVATE_NAME, obj.elevate,
         KeyProfile.ELEVATE_UP_NAME, obj.elevate_up,
 
-        ModifierTracker.STEP_NAME, obj.step,
+        Modifier.STEP_NAME, obj.step,
         KeyProfile.STEP_UP_NAME, obj.step_up,
 
-        ModifierTracker.WINDOWS_NAME, obj.windows,
+        Modifier.WINDOWS_NAME, obj.windows,
         KeyProfile.WINDOWS_UP_NAME, obj.windows_up,
 
         KeyProfile.ARROWLOCK_NAME, obj.arrowlock,
@@ -547,8 +547,8 @@ class KeyProfile {
 
         ; shift
         shift := true
-        if (map_.Has(ModifierTracker.SHIFT_NAME)) {
-            shift := map_[ModifierTracker.SHIFT_NAME]
+        if (map_.Has(Modifier.SHIFT_NAME)) {
+            shift := map_[Modifier.SHIFT_NAME]
             foundCount += 1
         }
         ; shift up
@@ -560,8 +560,8 @@ class KeyProfile {
 
         ; curl
         curl := true
-        if (map_.Has(ModifierTracker.CURL_NAME)) {
-            curl := map_[ModifierTracker.CURL_NAME]
+        if (map_.Has(Modifier.CURL_NAME)) {
+            curl := map_[Modifier.CURL_NAME]
             foundCount += 1
         }
         ; curl up
@@ -573,8 +573,8 @@ class KeyProfile {
 
         ; alt
         alt := true
-        if (map_.Has(ModifierTracker.ALT_NAME)) {
-            alt := map_[ModifierTracker.ALT_NAME]
+        if (map_.Has(Modifier.ALT_NAME)) {
+            alt := map_[Modifier.ALT_NAME]
             foundCount += 1
         }
         ; alt_up
@@ -586,8 +586,8 @@ class KeyProfile {
 
         ; control
         control := true
-        if (map_.Has(ModifierTracker.CONTROL_NAME)) {
-            control := map_[ModifierTracker.CONTROL_NAME]
+        if (map_.Has(Modifier.CONTROL_NAME)) {
+            control := map_[Modifier.CONTROL_NAME]
             foundCount += 1
         }
         ; control_up
@@ -599,8 +599,8 @@ class KeyProfile {
 
         ; shelve
         shelve := true
-        if (map_.Has(ModifierTracker.SHELVE_NAME)) {
-            shelve := map_[ModifierTracker.SHELVE_NAME]
+        if (map_.Has(Modifier.SHELVE_NAME)) {
+            shelve := map_[Modifier.SHELVE_NAME]
             foundCount += 1
         }
         ; shelve_up
@@ -612,8 +612,8 @@ class KeyProfile {
 
         ; step
         step := true
-        if (map_.Has(ModifierTracker.STEP_NAME)) {
-            step := map_[ModifierTracker.STEP_NAME]
+        if (map_.Has(Modifier.STEP_NAME)) {
+            step := map_[Modifier.STEP_NAME]
             foundCount += 1
         }
         ; step_up
@@ -625,8 +625,8 @@ class KeyProfile {
 
         ; elevate
         elevate := true
-        if (map_.Has(ModifierTracker.ELEVATE_NAME)) {
-            elevate := map_[ModifierTracker.ELEVATE_NAME]
+        if (map_.Has(Modifier.ELEVATE_NAME)) {
+            elevate := map_[Modifier.ELEVATE_NAME]
             foundCount += 1
         }
         ; elevate_up
@@ -638,8 +638,8 @@ class KeyProfile {
 
         ; windows
         windows := true
-        if (map_.Has(ModifierTracker.WINDOWS_NAME)) {
-            windows := map_[ModifierTracker.WINDOWS_NAME]
+        if (map_.Has(Modifier.WINDOWS_NAME)) {
+            windows := map_[Modifier.WINDOWS_NAME]
             foundCount += 1
         }
         ; windows_up

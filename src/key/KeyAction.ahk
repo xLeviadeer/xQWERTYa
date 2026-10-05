@@ -34,7 +34,7 @@ class KeyEvent {
 
         ; check if it's an up action
         hotkeyStringLen := StrLen(HotkeyString)
-        upKeysymbolLen := StrLen(ModifierTracker.UP_KEYSYMBOL_LONG)
+        upKeysymbolLen := StrLen(Modifier.UP_KEYSYMBOL_LONG)
         cutLength := 0
         is_up := false
         if (
@@ -43,7 +43,7 @@ class KeyEvent {
                 HotkeyString, 
                 hotkeyStringLen - (upKeysymbolLen - 1),
                 hotkeyStringLen
-            ) == ModifierTracker.UP_KEYSYMBOL_LONG)
+            ) == Modifier.UP_KEYSYMBOL_LONG)
         ) {
             cutLength := upKeysymbolLen
             is_up := true
@@ -197,7 +197,7 @@ class KeyAction {
             )
             if is_valid_container { ; insert up
                 stub := SubStr(down_value, 1, StrLen(down_value) - 1) ; string without } 🜚 {a
-                return stub ModifierTracker.UP_KEYSYMBOL_LONG "}" 
+                return stub Modifier.UP_KEYSYMBOL_LONG "}" 
             }
 
             ; check for valid
@@ -209,7 +209,7 @@ class KeyAction {
                 )
             )
             if is_valid { ; wrap up
-                return "{" down_value ModifierTracker.UP_KEYSYMBOL_LONG "}" 
+                return "{" down_value Modifier.UP_KEYSYMBOL_LONG "}" 
             }
             throw ValueError("cannot convert a complex down action to an automatically generated up action: " down_value " on " this.curr_key_name)
         }
@@ -265,7 +265,7 @@ class KeyAction {
         key_action := KeyAction(
             key_event.key_target, ; currently pressed key
             Profile.Curr, ; current profile
-            ModifierTracker.CreateCompositionSnapshot(), ; snapshot of currently held keys
+            Modifier.CreateCompositionSnapshot(), ; snapshot of currently held keys
             key_event.is_up
         )
 
@@ -539,28 +539,28 @@ class KeyAction {
             }
 
             ; for pressed modifiers
-            for (modifier_name, modifier in ModifierTracker.List) {
+            for (modifier_name, mod in Modifier.List) {
                 ; try to get reg state
                 try {
-                    physical_state := GetKeyState(modifier.symbol, "P")
+                    physical_state := GetKeyState(mod.symbol, "P")
                 } catch {
                     return
                 }
 
                 ; try to get alt state
                 try {
-                    physical_state_alt := GetKeyState(modifier.symbol_alt, "P")
+                    physical_state_alt := GetKeyState(mod.symbol_alt, "P")
                 } catch {
                     return
                 }
                 
                 ; check if states match
-                virtual_state := modifier.isDown
+                virtual_state := mod.isDown
                 if (
                     (physical_state != virtual_state)
                     && (physical_state_alt != virtual_state)
                 ) {
-                    modifier.panic()
+                    mod.panic()
                 }
             }
         }

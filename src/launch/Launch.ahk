@@ -31,7 +31,7 @@ launch() {
         BADGE_BUILD_BG,
         BADGE_BUILD_FG
     )
-    ModifierTracker.init()
+    Modifier.init()
 
     ; init profiles
     Badge.ShowBadge(
@@ -67,7 +67,7 @@ launch() {
         BADGE_BUILD_BG,
         BADGE_BUILD_FG
     )
-    ModifierTracker.BindAll()
+    Modifier.BindAll()
 
     ; bind keys
     Badge.ShowBadge(

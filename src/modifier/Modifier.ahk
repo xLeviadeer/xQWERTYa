@@ -5,7 +5,7 @@
 #Include ../../config/modifiers/Actions.ahk
 
 ; tracks and manages the state of virtual modifiers
-class ModifierTracker {
+class Modifier {
 
     ; --- VARIABLES ---
 
@@ -24,7 +24,7 @@ class ModifierTracker {
     
     static UP_KEYNAME => "_up"
     static UP_KEYSYMBOL => "Up"
-    static UP_KEYSYMBOL_LONG => " " ModifierTracker.UP_KEYSYMBOL
+    static UP_KEYSYMBOL_LONG => " " Modifier.UP_KEYSYMBOL
 
     ; - down -
 
@@ -63,78 +63,76 @@ class ModifierTracker {
 	; - priority order - 
 
 	static PRIORITY => [
-        ModifierTracker.SHIFT_NAME,
-        ModifierTracker.CONTROL_NAME,
-        ModifierTracker.CURL_NAME,
-        ModifierTracker.ALT_NAME,
-        ModifierTracker.ELEVATE_NAME,
-        ModifierTracker.SHELVE_NAME,
-        ModifierTracker.STEP_NAME,
-		ModifierTracker.WINDOWS_NAME
+        Modifier.SHIFT_NAME,
+        Modifier.CONTROL_NAME,
+        Modifier.CURL_NAME,
+        Modifier.ALT_NAME,
+        Modifier.ELEVATE_NAME,
+        Modifier.SHELVE_NAME,
+        Modifier.STEP_NAME,
+		Modifier.WINDOWS_NAME
 	]
-
-    static SYMBOLS => [
-        ModifierTracker.WINDOWS_SYMBOL,
-        ModifierTracker.STEP_SYMBOL,
-        ModifierTracker.SHELVE_SYMBOL,
-        ModifierTracker.ELEVATE_SYMBOL,
-        ModifierTracker.ALT_SYMBOL,
-        ModifierTracker.CURL_SYMBOL,
-        ModifierTracker.CONTROL_SYMBOL,
-        ModifierTracker.SHIFT_SYMBOL
-    ]
 
     static NAME_TO_SYMBOL => Map(
         KeyProfile.DEFAULT_NAME, "",
-        ModifierTracker.WINDOWS_NAME, ModifierTracker.WINDOWS_SYMBOL,
-        ModifierTracker.STEP_NAME, ModifierTracker.STEP_SYMBOL,
-		ModifierTracker.SHELVE_NAME, ModifierTracker.SHELVE_SYMBOL, 
-		ModifierTracker.ELEVATE_NAME, ModifierTracker.ELEVATE_SYMBOL, 
-		ModifierTracker.ALT_NAME, ModifierTracker.ALT_SYMBOL, 
-		ModifierTracker.CURL_NAME, ModifierTracker.CURL_SYMBOL, 
-		ModifierTracker.CONTROL_NAME, ModifierTracker.CONTROL_SYMBOL, 
-		ModifierTracker.SHIFT_NAME, ModifierTracker.SHIFT_SYMBOL 
+        Modifier.WINDOWS_NAME, Modifier.WINDOWS_SYMBOL,
+        Modifier.STEP_NAME, Modifier.STEP_SYMBOL,
+		Modifier.SHELVE_NAME, Modifier.SHELVE_SYMBOL, 
+		Modifier.ELEVATE_NAME, Modifier.ELEVATE_SYMBOL, 
+		Modifier.ALT_NAME, Modifier.ALT_SYMBOL, 
+		Modifier.CURL_NAME, Modifier.CURL_SYMBOL, 
+		Modifier.CONTROL_NAME, Modifier.CONTROL_SYMBOL, 
+		Modifier.SHIFT_NAME, Modifier.SHIFT_SYMBOL 
     )
 
     static SYMBOL_TO_NAME => Map(
         "", KeyProfile.DEFAULT_NAME,
-        ModifierTracker.WINDOWS_SYMBOL, ModifierTracker.WINDOWS_NAME,
-        ModifierTracker.STEP_SYMBOL, ModifierTracker.STEP_NAME,
-        ModifierTracker.SHELVE_SYMBOL, ModifierTracker.SHELVE_NAME,
-        ModifierTracker.ELEVATE_SYMBOL, ModifierTracker.ELEVATE_NAME,
-        ModifierTracker.ALT_SYMBOL, ModifierTracker.ALT_NAME,
-        ModifierTracker.CURL_SYMBOL, ModifierTracker.CURL_NAME,
-        ModifierTracker.CONTROL_SYMBOL, ModifierTracker.CONTROL_NAME,
-        ModifierTracker.SHIFT_SYMBOL, ModifierTracker.SHIFT_NAME
+        Modifier.WINDOWS_SYMBOL, Modifier.WINDOWS_NAME,
+        Modifier.STEP_SYMBOL, Modifier.STEP_NAME,
+        Modifier.SHELVE_SYMBOL, Modifier.SHELVE_NAME,
+        Modifier.ELEVATE_SYMBOL, Modifier.ELEVATE_NAME,
+        Modifier.ALT_SYMBOL, Modifier.ALT_NAME,
+        Modifier.CURL_SYMBOL, Modifier.CURL_NAME,
+        Modifier.CONTROL_SYMBOL, Modifier.CONTROL_NAME,
+        Modifier.SHIFT_SYMBOL, Modifier.SHIFT_NAME
     )
 
     static STANDARD_NAME_TO_SYTACTICAL => Map( ; PROBLEMATIC
-        ModifierTracker.WINDOWS_NAME, "#",
-        ModifierTracker.ALT_NAME, "!",
-        ModifierTracker.CONTROL_NAME, "^",
-        ModifierTracker.SHIFT_NAME, "+"
+        Modifier.WINDOWS_NAME, "#",
+        Modifier.ALT_NAME, "!",
+        Modifier.CONTROL_NAME, "^",
+        Modifier.SHIFT_NAME, "+"
     )
 
-    ; - list —
+    ; - mappings -
 
     static List := List()
-    static init() => ModifierTracker.List := List(
+    static Symbols() {
+        targets := []
+        for (name, value in Modifier.List) {
+            targets.Push(value.symbol)
+        }
+        return targets
+    }
+    ; --- INIT ---
+
+    static init() => Modifier.List := List(
         ; shift
-        ModifierTracker.SHIFT_NAME, ModifierTracker(
-            ModifierTracker.SHIFT_NAME,
-            ModifierTracker.SHIFT_SYMBOL
+        Modifier.SHIFT_NAME, Modifier(
+            Modifier.SHIFT_NAME,
+            Modifier.SHIFT_SYMBOL
         ),
 
         ; control
-        ModifierTracker.CONTROL_NAME, ModifierTracker(
-            ModifierTracker.CONTROL_NAME,
-            ModifierTracker.CONTROL_SYMBOL
+        Modifier.CONTROL_NAME, Modifier(
+            Modifier.CONTROL_NAME,
+            Modifier.CONTROL_SYMBOL
         ),
 
         ; curl
-        ModifierTracker.CURL_NAME, ModifierTracker(
-            ModifierTracker.CURL_NAME,
-            ModifierTracker.CURL_SYMBOL,
+        Modifier.CURL_NAME, Modifier(
+            Modifier.CURL_NAME,
+            Modifier.CURL_SYMBOL,
             ,
             ,
             () => Actions.CapsLockOff(),
@@ -142,34 +140,34 @@ class ModifierTracker {
         ),
 
         ; alt
-        ModifierTracker.ALT_NAME, ModifierTracker(
-            ModifierTracker.ALT_NAME,
-            ModifierTracker.ALT_SYMBOL,
+        Modifier.ALT_NAME, Modifier(
+            Modifier.ALT_NAME,
+            Modifier.ALT_SYMBOL,
         ),
 
         ; elevate
-        ModifierTracker.ELEVATE_NAME, ModifierTracker(
-            ModifierTracker.ELEVATE_NAME,
-            ModifierTracker.ELEVATE_SYMBOL,
+        Modifier.ELEVATE_NAME, Modifier(
+            Modifier.ELEVATE_NAME,
+            Modifier.ELEVATE_SYMBOL,
         ),
 
         ; shelve
-        ModifierTracker.SHELVE_NAME, ModifierTracker(
-            ModifierTracker.SHELVE_NAME,
-            ModifierTracker.SHELVE_SYMBOL,
-            ModifierTracker.SHELVE_SYMBOL_ALT
+        Modifier.SHELVE_NAME, Modifier(
+            Modifier.SHELVE_NAME,
+            Modifier.SHELVE_SYMBOL,
+            Modifier.SHELVE_SYMBOL_ALT
         ),
 
         ; step
-        ModifierTracker.STEP_NAME, ModifierTracker(
-            ModifierTracker.STEP_NAME,
-            ModifierTracker.STEP_SYMBOL
+        Modifier.STEP_NAME, Modifier(
+            Modifier.STEP_NAME,
+            Modifier.STEP_SYMBOL
         ),
 
         ; windows
-        ModifierTracker.WINDOWS_NAME, ModifierTracker(
-            ModifierTracker.WINDOWS_NAME,
-            ModifierTracker.WINDOWS_SYMBOL,
+        Modifier.WINDOWS_NAME, Modifier(
+            Modifier.WINDOWS_NAME,
+            Modifier.WINDOWS_SYMBOL,
             ,
             () => Actions.Windows()
         )
@@ -178,28 +176,28 @@ class ModifierTracker {
     ; --- Bind ---
 
     static BindAll() {
-        for (modifier_name, modifier_value in ModifierTracker.List) {
+        for (modifier_name, modifier_value in Modifier.List) {
             ; bind down
-            combination := ModifierTracker.ConstructCombination(modifier_name, modifier_value.symbol)
-            Hotkey(combination, ObjBindMethod(ModifierTracker, "_TrackKey", modifier_name, false))
+            combination := Modifier.ConstructCombination(modifier_name, modifier_value.symbol)
+            Hotkey(combination, ObjBindMethod(Modifier, "_TrackKey", modifier_name, false))
             Key.UsedCombinations[modifier_name] := combination
             
             ; bind up 
-            combination_up := combination ModifierTracker.UP_KEYSYMBOL_LONG
-            Hotkey(combination_up, ObjBindMethod(ModifierTracker, "_TrackKey", modifier_name, true))
-            Key.UsedCombinations[modifier_name ModifierTracker.UP_KEYNAME] := combination_up   
+            combination_up := combination Modifier.UP_KEYSYMBOL_LONG
+            Hotkey(combination_up, ObjBindMethod(Modifier, "_TrackKey", modifier_name, true))
+            Key.UsedCombinations[modifier_name Modifier.UP_KEYNAME] := combination_up   
 
             ; if has alts
             if (modifier_value.hasAlt) {
                 ; bind down
-                combination := ModifierTracker.ConstructCombination(modifier_name, modifier_value.symbol_alt)
-                Hotkey(combination, ObjBindMethod(ModifierTracker, "_TrackKey", modifier_name, false))
+                combination := Modifier.ConstructCombination(modifier_name, modifier_value.symbol_alt)
+                Hotkey(combination, ObjBindMethod(Modifier, "_TrackKey", modifier_name, false))
                 Key.UsedCombinations[modifier_name] := combination
                 
                 ; bind up 
-                combination_up := combination ModifierTracker.UP_KEYSYMBOL_LONG
-                Hotkey(combination_up, ObjBindMethod(ModifierTracker, "_TrackKey", modifier_name, true))
-                Key.UsedCombinations[modifier_name ModifierTracker.UP_KEYNAME] := combination_up   
+                combination_up := combination Modifier.UP_KEYSYMBOL_LONG
+                Hotkey(combination_up, ObjBindMethod(Modifier, "_TrackKey", modifier_name, true))
+                Key.UsedCombinations[modifier_name Modifier.UP_KEYNAME] := combination_up   
             }
         }
     }
@@ -288,7 +286,7 @@ class ModifierTracker {
 
     static _TrackKey(name, is_up_action, tk) {
         ; get tracked key
-        tracked_key := ModifierTracker.List[name]
+        tracked_key := Modifier.List[name]
 
         ; if it's an up action
         if (is_up_action) {
@@ -325,40 +323,40 @@ class ModifierTracker {
     Panic() {
         this.isDown := false
         this.completed := true
-        SendInput("{Blind}{" this.symbol ModifierTracker.DOWN_KEYSYMBOL_LONG "}")
-        SendInput("{Blind}{" this.symbol ModifierTracker.UP_KEYSYMBOL_LONG "}")
+        SendInput("{Blind}{" this.symbol Modifier.DOWN_KEYSYMBOL_LONG "}")
+        SendInput("{Blind}{" this.symbol Modifier.UP_KEYSYMBOL_LONG "}")
     }
 
     ; --- PASSTHROUGH ---
 
-    static ConstructSymbol(symbol) => ModifierTracker.ALL_PREFIX ModifierTracker.SAFTEY_PREFIX symbol
+    static ConstructSymbol(symbol) => Modifier.ALL_PREFIX Modifier.SAFTEY_PREFIX symbol
 
     static ConstructPassthrough(name) {
         if (Profile.Curr == Profile.DEFAULT_NAME) {
-            return (Profile.DEFAULT_MODIFIER_PASSTHROUGH[name] ? ModifierTracker.PASSTHROUGH_SYMBOL : "")
+            return (Profile.DEFAULT_MODIFIER_PASSTHROUGH[name] ? Modifier.PASSTHROUGH_SYMBOL : "")
         } else {
-            return (Profile.GetPassthrough(Profile.Curr)[name] ? ModifierTracker.PASSTHROUGH_SYMBOL : "")
+            return (Profile.GetPassthrough(Profile.Curr)[name] ? Modifier.PASSTHROUGH_SYMBOL : "")
         }
     }
 
     static ConstructCombination(
         name, 
-        symbol := ModifierTracker.List[name].symbol
+        symbol := Modifier.List[name].symbol
     ) => (
-        ModifierTracker.ConstructPassthrough(name) 
-        ModifierTracker.ConstructSymbol(symbol)
+        Modifier.ConstructPassthrough(name) 
+        Modifier.ConstructSymbol(symbol)
     )
 
     static UpdatePassthrough(name, bool) {
         ; check it's a real modifer
-        if !(ModifierTracker.List.Has(name)) {
+        if !(Modifier.List.Has(name)) {
             throw ValueError("'" name "' is not a valid modifier name")
         }
-        symbol := ModifierTracker.List[name].symbol
+        symbol := Modifier.List[name].symbol
 
         Hotkey(
-            (bool ? ModifierTracker.PASSTHROUGH_SYMBOL : "")
-            ModifierTracker.ConstructSymbol(symbol)
+            (bool ? Modifier.PASSTHROUGH_SYMBOL : "")
+            Modifier.ConstructSymbol(symbol)
         )
     }
 
@@ -366,7 +364,7 @@ class ModifierTracker {
 
     static CreateCompositionSnapshot() {
         comp := ModifierComposition()
-        for (modifier_name, modifier_value in ModifierTracker.List) {
+        for (modifier_name, modifier_value in Modifier.List) {
             ; check if the modifier is on
             if (modifier_value.isDown) {
                 comp.Add(modifier_name)
@@ -381,7 +379,7 @@ class ModifierTracker {
     static CheckValidModifier(str) {
 		if !(
 			(str is String)
-			&& (ModifierTracker.List.Has(str))
+			&& (Modifier.List.Has(str))
 		) {
 			throw ValueError("'" str "' is not a valid modifier name")
 		}
@@ -441,18 +439,18 @@ class ModifierComposition {
 
 	; --- FUNCTIONS ---
 
-	Add(modifier) {
-		ModifierTracker.CheckValidModifier(modifier)
+	Add(mod) {
+		Modifier.CheckValidModifier(mod)
         if (this.List.Count == 1) { 
-            this.Significant := modifier 
+            this.Significant := mod 
         }
-		this.List[modifier] := false
+		this.List[mod] := false
 		this.changed := true
 	}
 
-	Remove(modifier) {
-        ModifierTracker.CheckValidModifier(modifier)
-		this.List.Remove(modifier)
+	Remove(mod) {
+        Modifier.CheckValidModifier(mod)
+		this.List.Remove(mod)
 		this.changed := true
 	}
 
@@ -462,7 +460,7 @@ class ModifierComposition {
     }
 
     ; does NOT validate the modifier name
-    static ModifierOf(modifier_name) => ModifierTracker.List[modifier_name]
+    static ModifierOf(modifier_name) => Modifier.List[modifier_name]
 
     ; --- SIMULATE ---
 
@@ -535,12 +533,12 @@ class ModifierComposition {
             ; if values
             if (this.List.Count > 0) {
                 isFirstModifier := true
-                for (modifier in ModifierTracker.PRIORITY) {
-                    if (this.List.Has(modifier)) {
+                for (mod in Modifier.PRIORITY) {
+                    if (this.List.Has(mod)) {
                         composition_str := (
                             composition_str 
-                            (isFirstModifier ? "" : ModifierTracker.MODIFIER_JOIN)
-                            modifier
+                            (isFirstModifier ? "" : Modifier.MODIFIER_JOIN)
+                            mod
                         )
                         isFirstModifier := false
                     }
@@ -557,15 +555,15 @@ class ModifierComposition {
         ; add up if needed
         return (
             composition_str
-            (is_up ? ModifierTracker.UP_KEYNAME : "")
+            (is_up ? Modifier.UP_KEYNAME : "")
         )
 	}
 
     GetSyntacticalString() { ; PROBLEMATIC
         syntactical_modifiers := ""
         for (modifier_name in this.List) {
-            if (ModifierTracker.STANDARD_NAME_TO_SYTACTICAL.Has(modifier_name)) {
-                syntactical_modifiers := syntactical_modifiers ModifierTracker.STANDARD_NAME_TO_SYTACTICAL[modifier_name]
+            if (Modifier.STANDARD_NAME_TO_SYTACTICAL.Has(modifier_name)) {
+                syntactical_modifiers := syntactical_modifiers Modifier.STANDARD_NAME_TO_SYTACTICAL[modifier_name]
             }
         }
         return syntactical_modifiers
@@ -579,7 +577,7 @@ class ModifierComposition {
             send_string := (
                 send_string 
                 "{" 
-                ModifierTracker.NAME_TO_SYMBOL[modifier_name] 
+                Modifier.NAME_TO_SYMBOL[modifier_name] 
                 " "
                 mode
                 "}"
