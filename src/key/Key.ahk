@@ -7,6 +7,7 @@
 #Include ../Locks.ahk
 #Include ../modifier/Modifier.ahk
 #Include ../key/KeyAction.ahk
+#Include ../tools/Utils.ahk
 
 ; testing based include
 doDump := false
@@ -35,14 +36,7 @@ class Key {
     static LOCK_PREFIX => "<"
 
     ; letter keys
-    static _SetOf(values*) {
-        set := Map()
-        for (val in values) {
-            set[val] := true
-        }
-        return set
-    }
-    static LetterKeys := Key._SetOf(
+    static LetterKeys := Utils.SetOf(
         "a","b","c","d","e","f","g","h","i","j","k","l","m",
         "n","o","p","q","r","s","t","u","v","w","x","y","z",
         " ","1","2","3","4","5","6","7","8","9","0"
