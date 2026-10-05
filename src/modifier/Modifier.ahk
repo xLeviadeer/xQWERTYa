@@ -87,6 +87,7 @@ class Modifier {
         return targets
     }
     static SymbolToName := unset
+    static UsedSymbols := unset
 
     ; --- INIT ---
 
@@ -97,9 +98,10 @@ class Modifier {
             Modifier.List := JSON.LoadFile(ModifierList, relative_path, "UTF-8")
         }
 
-        ; priority & symbol to name & name to syntax 
+        ; priority & symbol to name & used symbols
         Modifier.Priority := Array()
         Modifier.SymbolToName := Map("", KeyProfile.DEFAULT_NAME)
+        Modifier.UsedSymbols := Map()
         for name, value in Modifier.List {
             ; priority
             if (Modifier.Priority.Length == 0) {
@@ -128,6 +130,20 @@ class Modifier {
 
             ; symbol to name
             Modifier.SymbolToName[value.symbol] := name
+
+            ; duplicates
+            if Modifier.UsedSymbols.Has(value.symbol) {
+                throw ValueError("cannot use target " value.symbol " because it has already been used")
+            }
+            Modifier.UsedSymbols[value.symbol] := false
+            if (value.hasAlt) {
+                for alt in value.symbol_alts {
+                    if Modifier.UsedSymbols.Has(alt) {
+                        throw ValueError("cannot use alternate " alt " because it has already been used")
+                    }
+                    Modifier.UsedSymbols[alt] := false
+                }
+            }
         }
     }
 

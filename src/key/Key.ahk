@@ -287,6 +287,11 @@ class Key {
     static BindAll() {
         ; for every key in the keylist
         for key_target, key_ in Key.List {
+            ; don't allow binding of modifiers
+            if Modifier.UsedSymbols.Has(key_target) {
+                throw ValueError("cannot bind a key to " key_target " because it is already bound as a modifier")
+            }
+
             ; create binding name
             bindingName := (
                 (key_.strict ? "" : Modifier.ALL_PREFIX)
