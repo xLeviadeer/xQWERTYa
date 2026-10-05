@@ -1,5 +1,5 @@
 #Requires AutoHotkey v2.0 
-#Include KeyList.ahk
+#Include ../tools/List.ahk
 #Include KeyProfile.ahk
 #Include CustomKeys.ahk
 #Include ../profile/Profile.ahk
@@ -56,7 +56,7 @@ class Key {
     static IsLetterKey(key_name) => Key.LetterKeys.Has(key_name)
 
     ; key registry
-    static List := KeyList()
+    static List := List()
 
     ; used combinations map
     static UsedCombinations := Map()

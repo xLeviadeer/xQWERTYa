@@ -1,7 +1,6 @@
-#Requires AutoHotkey v2.0 
-#Include Key.ahk
+#Requires AutoHotkey v2.0
 
-class KeyList {
+class List {
 
     ; --- VARIABLES ---
 
@@ -61,8 +60,14 @@ class KeyList {
             this.data := v[1]
         } else { ; key, value values
             this.data := Map()
+            key := false
             for value in v {
-                this.data[value.target] := value
+                if (key == false) {
+                    key := value
+                } else {
+                    this.data[key] := value
+                    key := false
+                }
             }
         }
     }
