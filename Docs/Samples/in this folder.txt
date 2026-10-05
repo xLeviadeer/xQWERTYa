@@ -1,2 +1,4 @@
 this folder contains a set of samples all inside of the `keybinds/` folder. 
 if you choose to, you can paste the entire samples keybinds in your `keybinds/` folder and test all samples
+
+this folder also contains a `modifiers.json` which roughly mimics the default Windows modifiers. 
