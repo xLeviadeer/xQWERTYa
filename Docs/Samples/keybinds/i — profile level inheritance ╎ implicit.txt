@@ -1,9 +1,0 @@
-in default ⌄
-    types i
-
-in profile_3 ⌄
-    types ⸉i-am-cool⸉
-
-in profile_3.1 ⌄
-    types ⸉i-am-cool⸉ 
-        - because profile_3.1 inherits from profile_3 ⧼at the profile level⧽: profile_3.1 will act like profile_3 since this keybind does not define a key-profile for profile_3.1.

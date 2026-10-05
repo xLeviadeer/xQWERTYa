@@ -1,1 +1,0 @@
-toggles caps lock on/off when pressed.

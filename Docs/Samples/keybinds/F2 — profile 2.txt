@@ -1,3 +1,0 @@
-switches the profile to profile_2
-    - uses collapse to ensure that no matter what modifier is being held the profile is switched
-    - does not include any other profile definitions. since all profiles inherit from `default` that means profile switching will occur in all profiles.

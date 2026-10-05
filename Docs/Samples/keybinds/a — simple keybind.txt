@@ -1,4 +1,0 @@
-ⓘa is a simple keybind that binds the key ⸢a⸥ to the message ⸉foo-a⸉ when pressed
-
-in default ⌄
-    types ⸉foo-a⸉

@@ -1,6 +1,0 @@
-{
-    "target": "b",
-    "default": "foo-b-default",
-    "profile_1": "foo-b-1",
-    "profile_2": "foo-b-2"
-}

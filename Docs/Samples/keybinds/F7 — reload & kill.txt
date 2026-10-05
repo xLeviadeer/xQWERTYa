@@ -1,5 +1,0 @@
-in default ⌄
-    when no modifier
-        - reloads the program
-    when shift
-        - kills the program

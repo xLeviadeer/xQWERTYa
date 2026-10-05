@@ -1,8 +1,0 @@
-{
-    "target": "F3",
-    "default": {
-        "collapse": true,
-        "default": ">profile_3",
-        "shift": ">profile_3.1"
-    }
-}
