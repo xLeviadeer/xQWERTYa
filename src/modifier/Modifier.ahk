@@ -32,17 +32,27 @@ class Modifier {
 
     static DOWN_KEYSYMBOL_LONG => " Down"
 
-    ; - symbol to syntactical -
+    ; - syntactical -
 
+    static SHIFT_SYNTAX => "+"
+    static CONTROL_SYNTAX => "^"
+    static ALT_SYNTAX => "!"
+    static WINDOWS_SYNTAX => "#"
+    static SYNTAXES => Utils.SetOf(
+        Modifier.SHIFT_NAME,
+        Modifier.CONTROL_SYNTAX,
+        Modifier.ALT_SYNTAX,
+        Modifier.WINDOWS_SYNTAX
+    )
     static SYMBOL_SYNTAX_MAP => Map(
-        "LShift", "+",
-        "RShift", "+",
-        "LCtrl", "^",
-        "RCtrl", "^",
-        "LAlt", "!",
-        "RAlt", "!",
-        "LWin", "#",
-        "RWin", "#"
+        "LShift", Modifier.SHIFT_SYNTAX,
+        "RShift", Modifier.SHIFT_SYNTAX,
+        "LCtrl", Modifier.CONTROL_SYNTAX,
+        "RCtrl", Modifier.CONTROL_SYNTAX,
+        "LAlt", Modifier.ALT_SYNTAX,
+        "RAlt", Modifier.ALT_SYNTAX,
+        "LWin", Modifier.WINDOWS_SYNTAX,
+        "RWin", Modifier.WINDOWS_SYNTAX
     )
 
     ; - names/symbols -
@@ -185,6 +195,8 @@ class Modifier {
     ;constructed symbol;
     ;constructed symbol_alts;
     hasAlt => this.symbol_alts != false
+    ;constructed else;
+
     isDown := false
     completed := false
 
@@ -232,6 +244,7 @@ class Modifier {
         priority,
         symbol, 
         symbol_alts := false,
+        else_ := false,
         lone_action_name := false,
         down_action_name := false,
         up_action_name  := false
@@ -263,6 +276,18 @@ class Modifier {
             }
         }
         this.symbol_alts := symbol_alts
+
+        ; check else
+        if (
+            (else_ != false)
+            && (
+                !(else_ is String)
+                || !(Modifier.SYNTAXES.Has(else_))
+            )
+        ) {
+            throw TypeError("else must be a valid syntax symbol: ⸉" else_ "⸉ when it must be ⸢" Modifier.SHIFT_SYNTAX "⸥, ⸢" Modifier.CONTROL_SYNTAX "⸥, ⸢" Modifier.ALT_SYNTAX "⸥ or ⸢" Modifier.WINDOWS_SYNTAX "⸥")
+        }
+        this.else := else_
 
         ; check name
         if !(name is String) {
@@ -408,6 +433,7 @@ class Modifier {
         "priority", mod.priority,
         "symbol", mod.symbol,
         "alternates", mod.symbol_alts,
+        "else", mod.else_,
         "lone_action", mod.lone_action_name,
         "down_action", mod.down_action_name,
         "up_action", mod.up_action_name
@@ -420,6 +446,7 @@ class Modifier {
             map["priority"],
             map["target"],
             map.Has("alternates") ? map["alternates"] : false,
+            map.Has("else") ? map["else"] : false,
             map.Has("lone_action") ? map["lone_action"] : false,
             map.Has("down_action") ? map["down_action"] : false,
             map.Has("up_action") ? map["up_action"] : false
@@ -604,8 +631,20 @@ class ModifierComposition {
         syntactical_modifiers := ""
         for (modifier_name in this.List) {
             mod := ModifierComposition.ModifierOf(modifier_name)
-            if (Modifier.SYMBOL_SYNTAX_MAP.Has(mod.symbol)) {
-                syntactical_modifiers := syntactical_modifiers Modifier.SYMBOL_SYNTAX_MAP[mod.symbol]
+
+            ; search for symbol from modifier
+            symbol := false
+            if (mod.else != false) {
+                symbol := mod.else
+            } else {
+                if (Modifier.SYMBOL_SYNTAX_MAP.Has(mod.symbol)) {
+                    symbol := Modifier.SYMBOL_SYNTAX_MAP[mod.symbol]
+                }
+            }
+            
+            ; add symbol to modifiers if it was found
+            if (symbol != false) {
+                syntactical_modifiers := syntactical_modifiers symbol
             }
         }
         return syntactical_modifiers

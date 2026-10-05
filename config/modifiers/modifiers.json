@@ -19,7 +19,8 @@
     {
         "priority": 40,
         "name": "alt",
-        "target": "RAlt"
+        "target": "RAlt",
+        "else": "!"
     },
     {
         "priority": 50,
@@ -36,6 +37,7 @@
         "priority": 70,
         "name": "windows",
         "target": "RCtrl",
+        "else": "#",
         "lone_action": "Windows"
     }
 ]
