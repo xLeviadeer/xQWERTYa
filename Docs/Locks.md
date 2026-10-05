@@ -24,6 +24,7 @@ Locks can be triggered via a code function that calls `Locks.Set⌯()` or `Locks
 Locks behavior is determined per-key via ⌄ keywords
 - `arrowlock`
     - `arrowlock_shift`
+        - `arrowlock_shift_control`
     - `arrowlock_elevate`
     - `arrowlock_control`
     - `arrowlock_windows`

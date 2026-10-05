@@ -24,13 +24,15 @@ class KeyProfile {
 
     static ARROWLOCK_NAME => "arrowlock"
     static ARROWLOCK_UP_NAME => KeyProfile.ARROWLOCK_NAME ModifierTracker.UP_KEYNAME
-    static ARROWLOCK_SHIFT_NAME => "arrowlock_shift"
+    static ARROWLOCK_SHIFT_NAME => KeyProfile.ARROWLOCK_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.SHIFT_NAME
     static ARROWLOCK_SHIFT_UP_NAME => KeyProfile.ARROWLOCK_SHIFT_NAME ModifierTracker.UP_KEYNAME
-    static ARROWLOCK_ELEVATE_NAME => "arrowlock_elevate"
+    static ARROWLOCK_SHIFT_CONTROL_NAME => KeyProfile.ARROWLOCK_SHIFT_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.CONTROL_NAME
+    static ARROWLOCK_SHIFT_CONTROL_UP_NAME => KeyProfile.ARROWLOCK_SHIFT_CONTROL_NAME ModifierTracker.UP_KEYNAME
+    static ARROWLOCK_ELEVATE_NAME => KeyProfile.ARROWLOCK_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.ELEVATE_NAME
     static ARROWLOCK_ELEVATE_UP_NAME => KeyProfile.ARROWLOCK_ELEVATE_NAME ModifierTracker.UP_KEYNAME
-    static ARROWLOCK_CONTROL_NAME => "arrowlock_control"
+    static ARROWLOCK_CONTROL_NAME => KeyProfile.ARROWLOCK_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.CONTROL_NAME
     static ARROWLOCK_CONTROL_UP_NAME => KeyProfile.ARROWLOCK_CONTROL_NAME ModifierTracker.UP_KEYNAME
-    static ARROWLOCK_WINDOWS_NAME => "arrowlock_windows"
+    static ARROWLOCK_WINDOWS_NAME => KeyProfile.ARROWLOCK_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.WINDOWS_NAME
     static ARROWLOCK_WINDOWS_UP_NAME => KeyProfile.ARROWLOCK_WINDOWS_NAME ModifierTracker.UP_KEYNAME
 
     static CAPSLOCK_NAME => "capslock"
@@ -40,7 +42,6 @@ class KeyProfile {
     static MOUSE_NAME => "mouselock"
     static MOUSE_UP_NAME => KeyProfile.MOUSE_NAME ModifierTracker.UP_KEYNAME
 
-    ; triple binds should be named in order of ModifierTracker.PRIORITY
     static SHIFT_CONTROL_NAME => ModifierTracker.SHIFT_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.CONTROL_NAME
     static SHIFT_CONTROL_NAME_UP => KeyProfile.SHIFT_CONTROL_NAME ModifierTracker.UP_KEYNAME
     static SHIFT_CURL_NAME => ModifierTracker.SHIFT_NAME ModifierTracker.MODIFIER_JOIN ModifierTracker.CURL_NAME
@@ -94,6 +95,8 @@ class KeyProfile {
         ;constructed arrowlock_up;
     ;constructed arrowlock_shift;
         ;constructed arrowlock_shift_up;
+    ;constructed arrowlock_shift_control;
+        ;constructed arrowlock_shift_control_up;
     ;constructed arrowow_elevate;
         ;constructed arrowow_elevate_up;
     ;constructed arrowlock_control;
@@ -206,6 +209,8 @@ class KeyProfile {
         arrowlock_up := true,
         arrowlock_shift := true,
         arrowlock_shift_up := true,
+        arrowlock_shift_control := true,
+        arrowlock_shift_control_up := true,
         arrowlock_elevate := true,
         arrowlock_elevate_up := true,
         arrowlock_control := true,
@@ -341,6 +346,12 @@ class KeyProfile {
         ; arrowlock_shift_up
         KeyProfile.CheckStrBoolFunc(arrowlock_shift_up)
         this.arrowlock_shift_up := arrowlock_shift_up
+        ; arrowlock_shift_control
+        KeyProfile.CheckStrBoolFunc(arrowlock_shift_control)
+        this.arrowlock_shift_control := arrowlock_shift_control
+        ; arrowlock_shift_control_up
+        KeyProfile.CheckStrBoolFunc(arrowlock_shift_control_up)
+        this.arrowlock_shift_control_up := arrowlock_shift_control_up
         ; arrowlock_elevate
         KeyProfile.CheckStrBoolFunc(arrowlock_elevate)
         this.arrowlock_elevate := arrowlock_elevate
@@ -471,6 +482,8 @@ class KeyProfile {
         KeyProfile.ARROWLOCK_UP_NAME, obj.arrowlock_up,
         KeyProfile.ARROWLOCK_SHIFT_NAME, obj.arrowlock_shift,
         KeyProfile.ARROWLOCK_SHIFT_UP_NAME, obj.arrowlock_shift_up,
+        KeyProfile.ARROWLOCK_SHIFT_CONTROL_NAME, obj.arrowlock_shift_control,
+        KeyProfile.ARROWLOCK_SHIFT_CONTROL_UP_NAME, obj.arrowlock_shift_control_up,
         KeyProfile.ARROWLOCK_ELEVATE_NAME, obj.arrowlock_elevate,
         KeyProfile.ARROWLOCK_ELEVATE_UP_NAME, obj.arrowlock_elevate_up,
         KeyProfile.ARROWLOCK_CONTROL_NAME, obj.arrowlock_control,
@@ -658,6 +671,18 @@ class KeyProfile {
         arrowlock_shift_up := true
         if (map_.Has(KeyProfile.ARROWLOCK_SHIFT_UP_NAME)) {
             arrowlock_shift_up := map_[KeyProfile.ARROWLOCK_SHIFT_UP_NAME]
+            foundCount += 1
+        }
+        ; arrow lock shift control
+        arrowlock_shift_control := true
+        if (map_.Has(KeyProfile.ARROWLOCK_SHIFT_CONTROL_NAME)) {
+            arrowlock_shift_control := map_[KeyProfile.ARROWLOCK_SHIFT_CONTROL_NAME]
+            foundCount += 1
+        }
+        ; arrow lock shift control up
+        arrowlock_shift_control_up := true
+        if (map_.Has(KeyProfile.ARROWLOCK_SHIFT_CONTROL_UP_NAME)) {
+            arrowlock_shift_control_up := map_[KeyProfile.ARROWLOCK_SHIFT_CONTROL_UP_NAME]
             foundCount += 1
         }
         ; arrow lock elevate
@@ -924,6 +949,8 @@ class KeyProfile {
             arrowlock_up,
             arrowlock_shift,
             arrowlock_shift_up,
+            arrowlock_shift_control,
+            arrowlock_shift_control_up,
             arrowlock_elevate,
             arrowlock_elevate_up,
             arrowlock_control,

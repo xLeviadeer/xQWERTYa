@@ -19,6 +19,7 @@ class Locks {
     static AccessMap => Map(
         KeyProfile.ARROWLOCK_NAME, {locked: Locks.isArrowLockedRef, modifier: KeyProfile.DEFAULT_NAME},
         KeyProfile.ARROWLOCK_SHIFT_NAME, {locked: Locks.isArrowLockedRef, modifier: ModifierTracker.SHIFT_NAME},
+        KeyProfile.ARROWLOCK_SHIFT_CONTROL_NAME, {locked: Locks.isArrowLockedRef, modifier: KeyProfile.SHIFT_CONTROL_NAME},
         KeyProfile.ARROWLOCK_ELEVATE_NAME, {locked: Locks.isArrowLockedRef, modifier: ModifierTracker.ELEVATE_NAME},
         KeyProfile.ARROWLOCK_CONTROL_NAME, {locked: Locks.isArrowLockedRef, modifier: ModifierTracker.CONTROL_NAME},
         KeyProfile.CAPSLOCK_NAME, {locked: Locks.isCapsLockedRef, modifier: KeyProfile.DEFAULT_NAME},
