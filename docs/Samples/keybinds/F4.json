@@ -1,0 +1,7 @@
+{
+    "target": "F4",
+    "default": {
+        "collapse": true,
+        "default": ">profile_exceptions"
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "target": "w",
+    "default": {
+        "default": "w"
+    },
+    "profile_1": {
+        "default": false,
+        "shift": "w-shift"
+    },
+    "profile_2": {
+        "based": true,
+        "default": false,
+        "shift": "w-shift"
+    },
+    "profile_3": {
+        "default": false,
+        "shift": "w-shift",
+        "shift_shelve": "ⓝbase"
+    }
+}

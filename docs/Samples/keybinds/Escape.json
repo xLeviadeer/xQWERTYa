@@ -1,0 +1,7 @@
+{
+    "target": "Escape",
+    "default": {
+        "collapse": true,
+        "default": ">default"
+    }
+}

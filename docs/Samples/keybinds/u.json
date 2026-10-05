@@ -1,0 +1,12 @@
+{
+    "target": "u",
+    "default": {
+        "default": "u"
+    },
+    "profile_1": {
+        "default": "u from profile 1"
+    },
+    "profile_2": {
+        "inherits_from": "profile_1"
+    }
+}

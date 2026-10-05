@@ -1,0 +1,26 @@
+[
+    {
+        "priority": 1,
+        "name": "shift",
+        "target": "LShift",
+        "alternates": ["RShift"]
+    },
+    {
+        "priority": 2,
+        "name": "control",
+        "target": "LCtrl",
+        "alternates": ["RCtrl"]
+    },
+    {
+        "priority": 3,
+        "name": "alt",
+        "target": "LAlt",
+        "alternates": ["RAlt"]
+    },
+    {
+        "priority": 4,
+        "name": "windows",
+        "target": "LWin",
+        "alternates": ["RWin"]
+    }
+]

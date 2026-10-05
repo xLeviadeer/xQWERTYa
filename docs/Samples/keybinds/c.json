@@ -1,0 +1,10 @@
+{
+    "target": "c",
+    "default": {
+        "default": "foo-c-default"
+    },
+    "profile_1": {
+        "default": "foo-c-1"
+    },
+    "profile_2": "foo-c-2"
+}

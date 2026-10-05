@@ -1,0 +1,12 @@
+{
+    "target": "p",
+    "default": {
+        "default": "p"
+    },
+    "profile_exceptions": {
+        "default": "un-typable"
+    },
+    "profile_1": {
+        "inherits_from": "profile_exceptions"
+    }
+}

@@ -1,0 +1,12 @@
+in default ⌄
+    types p
+
+in profile_exceptions ⌄
+    types p
+        - this happens because in `profiles.json` p is defined as an exception key in `profile_exceptions`. this means that p is excluded from having any bindings and the set `default` ⸉un-typable⸉ is never bound.
+
+in profile_1 ⌄
+    types ⸉un-typable⸉
+        - profile settings are ¡not¡ inherited.
+        - profile_1 inherits from profile_exceptions
+        - profile_1 does not refer to the profile settings of profile_exceptions & hence types ⸉un-typable⸉

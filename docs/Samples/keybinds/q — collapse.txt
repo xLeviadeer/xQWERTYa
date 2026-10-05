@@ -1,0 +1,27 @@
+in default ⌄
+    types q
+
+in profile_1 ⌄
+    when no modifiers
+        - types ⸉no modifiers⸉
+    when any modifiers
+        - types q
+        - profile_1 inherits from default
+        - default's collapse is set to true & hence the modifier collapses to default and types q
+            - tip: if you dont't want default to collapse you can set `"collapse": false` in the default key-profile
+
+in profile_2 ⌄
+    when no modifiers or any modifiers
+        - types ⸉collapsed⸉
+        - since collapse is set to true then any modifier will be collapsed to default
+
+in profile_2 ⌄
+    when no modifiers
+        - types ⸉collapsed⸉
+    when shift 
+        - types ⸉collapsed⸉
+        - shift is set to collapse to default
+    when any other modifier
+        - types q
+        - profile_1 inherits from default
+        - default's collapse is set to true & hence the modifier collapses to default and types q

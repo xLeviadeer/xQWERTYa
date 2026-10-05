@@ -1,0 +1,38 @@
+in default ⌄
+    types w
+
+in profile_1 ⌄
+    when no modifier
+        - does nothing
+    when shift
+        - types ⸉w-shift⸉
+    when any other modifier
+        - types w
+        - profile_1 inherits from default
+        - default collapses to default & hence types w
+in profile_2 ⌄
+    when no modifier
+        - does nothing
+    when shift 
+        - types ⸉w-shift⸉
+    when any shift-based modifier
+        - types ⸉w-shift⸉
+        - for example shelve & ⸢w⸥ will type ⸉w-shift⸉
+        - remember that ⧼by default⧽ shift &ꭉ control are passthrough modifiers so in addition to typing ⸉w-shift⸉ any underlying bound actions in your context will also execute for those modifiers. 
+    when any other modifier
+        - types w
+        - profile_1 inherits from default
+        - default collapses to default & hence types w
+
+in profile_2 ⌄
+    when no modifier
+        - does nothing
+    when shift
+        - types ⸉w-shift⸉
+    when shift_shelve
+        - types ⸉w-shift⸉
+        - shift_shelve is set to base & hence types it's base (shift: ⸉w-shift⸉)
+    when any other modifier
+        - types w
+        - profile_1 inherits from default
+        - default collapses to default & hence types w

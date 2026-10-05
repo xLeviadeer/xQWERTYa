@@ -1,0 +1,7 @@
+{
+    "target": "F1",
+    "default": {
+        "collapse": true,
+        "default": ">profile_1"
+    }
+}
