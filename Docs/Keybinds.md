@@ -1,5 +1,5 @@
 # Keybinds
-xQWERTYa uses ⸉keybinds⸉ to bind specific keys. Each keybind has an expected structure. Each keybind is a single `.json` file in the `./keybinds` folder including ⌄
+xQWERTYa uses ⸉keybinds⸉ to bind specific keys. Each keybind has an expected structure. Each keybind is a single `.json` file in the `config/keybinds/` folder including ⌄
 1. a ⸉target⸉ key to remap.
 2. a key-profile; a dictionary of profiles which the key and profile has associated ⸉bindings⸉ for. Key-profiles must be profiles that exist in `profiles.json` (see [Profiles](./Profiles.md)).
 

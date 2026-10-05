@@ -1,7 +1,7 @@
 # Profiles
 xQWERTYa uses ⸉profiles⸉ to allow the creation of separate modes of operation for the keyboard. For example: one profile may bind ⸢a⸥ to ⸢b⸥ but another may rebind ⸢a⸥ to ⸢c⸥. And the button ⸢g⸥ swaps from one profile to the other. Depending on the active profile, ⸢a⸥ will either result in ⸢b⸥ or ⸢c⸥. 
 
-Profiles are simple but may become complex as they are customized. All profiles must be defined in `keybinds/profiles.json`. Except for the `default` profile which always exists, cannot be re-defined in `profiles.json` and has a set of default characteristics. An example `profiles.json` with two simple profiles ⌄
+Profiles are simple but may become complex as they are customized. All profiles must be defined in `config/profiles.json`. Except for the `default` profile which always exists, cannot be re-defined in `profiles.json` and has a set of default characteristics. An example `profiles.json` with two simple profiles ⌄
 ```json
 {
     "profile_one": {
