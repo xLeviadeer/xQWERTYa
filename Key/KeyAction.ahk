@@ -826,7 +826,7 @@ class KeyAction {
         return KeyActionProcessing.Normal
     }
 
-    ; - modifier still doesn't exist, but profile cannot be default anymore -
+    ; - modifier still doesn't exist, profile still could be default -
 
     ; checks if uses is set
     ;   key — if uses is set,
@@ -886,7 +886,7 @@ class KeyAction {
         return KeyActionProcessing.Normal
     }
 
-    ; - modifier still doesn't exist and profile cannot be default -
+    ; - modifier still doesn't exist, profile still could be default -
 
     ; check if inherits_from is set
     ;   key — unchanged
@@ -909,6 +909,12 @@ class KeyAction {
             }
             this.curr_profile_id := prosp_profile_name
             return KeyActionProcessing.Continue
+        }
+
+        ; if default profile (cannot inherit, must have explicitly not collapsed or based) do nothing and quit
+        if (this.curr_profile_is_default) {
+            this.cancelled := true
+            return KeyActionProcessing.Break
         }
 
         ; run profile based inheritance
