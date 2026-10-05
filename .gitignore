@@ -1,9 +1,11 @@
 .gitattributes
 .vscode
 
-keybinds/*
-!keybinds/Curl.ahk
-!keybinds/Windows.ahk
+config/*/**
+!config/modifiers/Curl.ahk
+!config/modifiers/Windows.ahk
+
+profiles.json
 
 *.bat
 *.ps1

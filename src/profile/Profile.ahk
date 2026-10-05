@@ -14,7 +14,7 @@ class Profile {
     ; will store a profile by an id
     static List := ProfileList()
     static ListVisible := ProfileList()
-    static PROFILES_PATH => "profiles.json"
+    static PROFILES_PATH => "config/profiles.json"
 
     ; current profile tracker
     static DEFAULT_NAME => "default"
@@ -295,7 +295,7 @@ class Profile {
 
     static init() {
         ; check if profiles.json exists
-        relative_path := (Key.KEYBINDS_PATH "/" Profile.PROFILES_PATH)
+        relative_path := Profile.PROFILES_PATH
         if (FileExist(relative_path)) {
             ; set list
             Profile.List := JSON.LoadFile(ProfileList, relative_path, "UTF-8")

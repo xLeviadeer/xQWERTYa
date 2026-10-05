@@ -25,7 +25,7 @@ class Key {
     ; -- Static --
 
     ; path
-    static KEYBINDS_PATH => "./keybinds"
+    static KEYBINDS_PATH => "config/keybinds"
 
     ; special characters
     static MOUSE_PREFIX => "="
@@ -138,12 +138,7 @@ class Key {
 
     static init() {
         ; loop through all files in the keybinds directory
-        loop files Key.KEYBINDS_PATH "/*.json" {
-            ; skip profiles.json
-            if (A_LoopFileName == Profile.PROFILES_PATH) {
-                continue
-            }
-            
+        loop files Key.KEYBINDS_PATH "/*.json" {          
             ; read file contents
             keyObj := JSON.LoadFile(Key, (Key.KEYBINDS_PATH "/" A_LoopFileName), "UTF-8")
             Key.List[keyObj.target] := keyObj
