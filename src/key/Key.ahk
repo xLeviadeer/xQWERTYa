@@ -280,45 +280,6 @@ class Key {
         }
     }
 
-    ; --- TRACKING NAME ---
-
-    ; deprecated with modifier included ⌄
-
-    ; helper to create a tracking name from a target id and modifier name
-    ; static _trackingNameCache := Map()
-    ; static CreateTrackingName(key_id, modifier_name) {
-    ;     ; check if name is cached
-    ;     cacheKey := key_id " " modifier_name
-    ;     if (Key._trackingNameCache.Has(cacheKey)) {
-    ;         return Key._trackingNameCache[cacheKey]
-    ;     }
-
-    ;     ; get indexes for removing up suffix
-    ;     targetLen := StrLen(modifier_name)
-    ;     upKeynameLen := StrLen(ModifierTracker.UP_KEYNAME)
-    ;     cutLength := 0
-    ;     if (
-    ;         (targetLen > upKeynameLen)
-    ;         && (SubStr(
-    ;             modifier_name, 
-    ;             targetLen - (upKeynameLen - 1),
-    ;             targetLen
-    ;         ) == ModifierTracker.UP_KEYNAME) 
-    ;     ) {
-    ;         cutLength := upKeynameLen
-    ;     } 
-
-    ;     ; get tracking name
-    ;     modifier_name_no_up := SubStr(
-    ;         modifier_name, 
-    ;         1, 
-    ;         (targetLen - cutLength)
-    ;     )
-    ;     trackingName := key_id " " modifier_name_no_up
-    ;     Key._trackingNameCache[cacheKey] := trackingName
-    ;     return trackingName
-    ; }
-
     ; --- BIND ---
 
     static _BindWithName(name) {

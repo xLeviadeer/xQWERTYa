@@ -337,11 +337,6 @@ class KeyAction {
                 ; if it's an up bind
                 if (this.is_up) { ; set to no longer down
                     Key.DownTracking[this.curr_key_name] := false
-                    ; deprecated alongside NAMES_DOWN
-                    ; for (mod_name in ModifierTracker.NAMES_DOWN) {
-                    ;     Key.DownTracking[this.curr_key_name] := false
-                    ; }
-                    ; continue
 
                 ; track down status
                 } else {

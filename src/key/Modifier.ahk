@@ -71,19 +71,6 @@ class ModifierTracker {
 		ModifierTracker.WINDOWS_NAME
 	]
 
-    ; deprecated alongside deprecation of tracking name creation
-    ; static NAMES_DOWN => [
-    ;   KeyProfile.DEFAULT_NAME,
-    ;   ModifierTracker.WINDOWS_NAME,
-    ;   ModifierTracker.STEP_NAME,
-	; 	ModifierTracker.SHELVE_NAME,
-	; 	ModifierTracker.ELEVATE_NAME,
-	; 	ModifierTracker.ALT_NAME,
-	; 	ModifierTracker.CURL_NAME,
-	; 	ModifierTracker.CONTROL_NAME,
-	; 	ModifierTracker.SHIFT_NAME
-    ; ]
-
     static SYMBOLS => [
         ModifierTracker.WINDOWS_SYMBOL,
         ModifierTracker.STEP_SYMBOL,
