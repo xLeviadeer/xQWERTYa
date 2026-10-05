@@ -2,6 +2,7 @@
 #Include ../key/KeyProfile.ahk
 #Include ../Profile/Profile.ahk
 #Include ../tools/List.ahk
+#Include ../tools/JSON.ahk
 #Include ../../config/modifiers/Actions.ahk
 
 ; tracks and manages the state of virtual modifiers
@@ -135,8 +136,8 @@ class Modifier {
             Modifier.CURL_SYMBOL,
             ,
             ,
-            () => Actions.CapsLockOff(),
-            () => Actions.CapsLockOff()
+            "CapsLockOff",
+            "CapsLockOff"
         ),
 
         ; alt
@@ -155,7 +156,7 @@ class Modifier {
         Modifier.SHELVE_NAME, Modifier(
             Modifier.SHELVE_NAME,
             Modifier.SHELVE_SYMBOL,
-            Modifier.SHELVE_SYMBOL_ALT
+            [Modifier.SHELVE_SYMBOL_ALT]
         ),
 
         ; step
@@ -169,7 +170,7 @@ class Modifier {
             Modifier.WINDOWS_NAME,
             Modifier.WINDOWS_SYMBOL,
             ,
-            () => Actions.Windows()
+            "Windows"
         )
     )
 
@@ -189,15 +190,17 @@ class Modifier {
 
             ; if has alts
             if (modifier_value.hasAlt) {
-                ; bind down
-                combination := Modifier.ConstructCombination(modifier_name, modifier_value.symbol_alt)
-                Hotkey(combination, ObjBindMethod(Modifier, "_TrackKey", modifier_name, false))
-                Key.UsedCombinations[modifier_name] := combination
-                
-                ; bind up 
-                combination_up := combination Modifier.UP_KEYSYMBOL_LONG
-                Hotkey(combination_up, ObjBindMethod(Modifier, "_TrackKey", modifier_name, true))
-                Key.UsedCombinations[modifier_name Modifier.UP_KEYNAME] := combination_up   
+                for alt in modifier_value.symbol_alts {
+                    ; bind down
+                    combination := Modifier.ConstructCombination(modifier_name, alt)
+                    Hotkey(combination, ObjBindMethod(Modifier, "_TrackKey", modifier_name, false))
+                    Key.UsedCombinations[modifier_name] := combination
+                    
+                    ; bind up 
+                    combination_up := combination Modifier.UP_KEYSYMBOL_LONG
+                    Hotkey(combination_up, ObjBindMethod(Modifier, "_TrackKey", modifier_name, true))
+                    Key.UsedCombinations[modifier_name Modifier.UP_KEYNAME] := combination_up   
+                }
             }
         }
     }
@@ -206,23 +209,57 @@ class Modifier {
 
     ;constructed name;
     ;constructed symbol;
-    ;constructed symbol_alt;
-    hasAlt => this.symbol_alt != false
-    ;constructed lone_action;
-    ;constructed down_action;
-    ;constructed up_action;
+    ;constructed symbol_alts;
+    hasAlt => this.symbol_alts != false
     isDown := false
     completed := false
+
+    ;constructed lone_action_name;
+    ;constructed down_action_name;
+    ;constructed up_action_name;
+    lone_action {
+        get {
+            if (this.lone_action_name == false) {
+                return false
+            }
+            if !Actions.HasProp(this.lone_action_name) {
+                throw ValueError("Actions does not contain a method named ⸉" this.lone_action_name "⸉")
+            }
+            return () => Actions.%this.lone_action_name%()
+        }
+    }
+    down_action {
+        get {
+            if (this.down_action_name == false) {
+                return false
+            }
+            if !Actions.HasProp(this.down_action_name) {
+                throw ValueError("Actions does not contain a method named ⸉" this.down_action_name "⸉")
+            }
+            return () => Actions.%this.down_action_name%()
+        }
+    }
+    up_action {
+        get {
+            if (this.up_action_name == false) {
+                return false
+            }
+            if !Actions.HasProp(this.up_action_name) {
+                throw ValueError("Actions does not contain a method named ⸉" this.up_action_name "⸉")
+            }
+            return () => Actions.%this.up_action_name%()
+        }
+    }
 
     ; --- CONSTRUCTOR ---
 
     __New(
         name, 
         symbol, 
-        symbol_alt := false,
-        lone_action := false,
-        down_action := false,
-        up_action := false
+        symbol_alts := false,
+        lone_action_name := false,
+        down_action_name := false,
+        up_action_name  := false
     ) {
         ; check that symbol is a real key
         if (
@@ -234,16 +271,17 @@ class Modifier {
         this.symbol := symbol
 
         ; check that symbol alt is a real key
-        if (
-            (symbol_alt != false)
-            && (
-                !(symbol_alt is String)
-                || (GetKeySC(symbol_alt) == 0) ; not a real key
-            )
-        ) {
-            throw TypeError("symbol_alt must be a valid key")
+        if (symbol_alts != false) {
+            if !(symbol_alts is Array) {
+                throw TypeError("symbol_alts (of " name ") must be a an array of keys")
+            }
+            for str in symbol_alts {
+                if (GetKeySC(str) == 0) { ; not a real key
+                    throw TypeError("at least one value in symbol_alts (of " name ") was not a valid key")
+                }
+            }
         }
-        this.symbol_alt := symbol_alt
+        this.symbol_alts := symbol_alts
 
         ; check name
         if !(name is String) {
@@ -251,35 +289,32 @@ class Modifier {
         }
         this.name := name
 
-        ; check lone_action
+        ; check lone_action_name
         if (
-            (lone_action != false)
-            && !(lone_action is Func)
-            && !(lone_action is BoundFunc)
+            (lone_action_name != false)
+            && !(lone_action_name is String)
         ) {
-            throw TypeError("lone_action must be a Func or BoundFunc: " this.name)
+            throw TypeError("lone_action_name (of " name ") must be a String")
         }
-        this.lone_action := lone_action
+        this.lone_action_name := lone_action_name
 
-        ; check down_action
+        ; check down_action_name
         if (
-            (down_action != false)
-            && !(down_action is Func)
-            && !(down_action is BoundFunc)
+            (down_action_name != false)
+            && !(down_action_name is String)
         ) {
-            throw TypeError("down_action must be a Func or BoundFunc")
+            throw TypeError("down_action_name (of " name ") must be a String")
         }
-        this.down_action := down_action
+        this.down_action_name := down_action_name
 
-        ; check up_action
+        ; check up_action_name
         if (
-            (up_action != false)
-            && !(up_action is Func)
-            && !(up_action is BoundFunc)
+            (up_action_name != false)
+            && !(up_action_name is String)
         ) {
-            throw TypeError("up_action must be a Func or BoundFunc")
+            throw TypeError("up_action_name (of " name ") must be a String")
         }
-        this.up_action := up_action
+        this.up_action_name := up_action_name
     }
 
     ; --- DETERMINE ACTION ---
@@ -384,6 +419,29 @@ class Modifier {
 			throw ValueError("'" str "' is not a valid modifier name")
 		}
 	} 
+
+    ; --- SERIALIZABLE ---
+
+    static toJSON(mod) => Map(
+        "name", mod.name,
+        "symbol", mod.symbol,
+        "alternates", mod.symbol_alts,
+        "lone_action", mod.lone_action_name,
+        "down_action", mod.down_action_name,
+        "up_action", mod.up_action_name
+    )
+    toJSON() => Modifier.toJSON(this)
+
+    static fromJSON(map) {
+        return Modifier(
+            map["name"],
+            map["symbol"],
+            map.Has("alternates") ? map["alternates"] : false,
+            map.Has("lone_action") ? map["lone_action"] : false,
+            map.Has("down_action") ? map["down_action"] : false,
+            map.Has("up_action") ? map["up_action"] : false
+        )
+    }
 }
 
 ; holds a composition of virtual modifiers
