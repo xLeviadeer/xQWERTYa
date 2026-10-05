@@ -3,6 +3,7 @@
 #Include ../Profile/Profile.ahk
 #Include ../tools/List.ahk
 #Include ../tools/JSON.ahk
+#Include ModifierList.ahk
 #Include ../../config/modifiers/Actions.ahk
 
 ; tracks and manages the state of virtual modifiers
@@ -30,6 +31,19 @@ class Modifier {
     ; - down -
 
     static DOWN_KEYSYMBOL_LONG => " Down"
+
+    ; - symbol to syntactical -
+
+    static SYMBOL_SYNTAX_MAP => Map(
+        "LShift", "+",
+        "RShift", "+",
+        "LCtrl", "^",
+        "RCtrl", "^",
+        "LAlt", "!",
+        "RAlt", "!",
+        "LWin", "#",
+        "RWin", "#"
+    )
 
     ; - names/symbols -
     
@@ -61,118 +75,61 @@ class Modifier {
     static WINDOWS_NAME => "windows"
     static WINDOWS_SYMBOL => "RCtrl"
 
-	; - priority order - 
-
-	static PRIORITY => [
-        Modifier.SHIFT_NAME,
-        Modifier.CONTROL_NAME,
-        Modifier.CURL_NAME,
-        Modifier.ALT_NAME,
-        Modifier.ELEVATE_NAME,
-        Modifier.SHELVE_NAME,
-        Modifier.STEP_NAME,
-		Modifier.WINDOWS_NAME
-	]
-
-    static NAME_TO_SYMBOL => Map(
-        KeyProfile.DEFAULT_NAME, "",
-        Modifier.WINDOWS_NAME, Modifier.WINDOWS_SYMBOL,
-        Modifier.STEP_NAME, Modifier.STEP_SYMBOL,
-		Modifier.SHELVE_NAME, Modifier.SHELVE_SYMBOL, 
-		Modifier.ELEVATE_NAME, Modifier.ELEVATE_SYMBOL, 
-		Modifier.ALT_NAME, Modifier.ALT_SYMBOL, 
-		Modifier.CURL_NAME, Modifier.CURL_SYMBOL, 
-		Modifier.CONTROL_NAME, Modifier.CONTROL_SYMBOL, 
-		Modifier.SHIFT_NAME, Modifier.SHIFT_SYMBOL 
-    )
-
-    static SYMBOL_TO_NAME => Map(
-        "", KeyProfile.DEFAULT_NAME,
-        Modifier.WINDOWS_SYMBOL, Modifier.WINDOWS_NAME,
-        Modifier.STEP_SYMBOL, Modifier.STEP_NAME,
-        Modifier.SHELVE_SYMBOL, Modifier.SHELVE_NAME,
-        Modifier.ELEVATE_SYMBOL, Modifier.ELEVATE_NAME,
-        Modifier.ALT_SYMBOL, Modifier.ALT_NAME,
-        Modifier.CURL_SYMBOL, Modifier.CURL_NAME,
-        Modifier.CONTROL_SYMBOL, Modifier.CONTROL_NAME,
-        Modifier.SHIFT_SYMBOL, Modifier.SHIFT_NAME
-    )
-
-    static STANDARD_NAME_TO_SYTACTICAL => Map( ; PROBLEMATIC
-        Modifier.WINDOWS_NAME, "#",
-        Modifier.ALT_NAME, "!",
-        Modifier.CONTROL_NAME, "^",
-        Modifier.SHIFT_NAME, "+"
-    )
-
     ; - mappings -
 
-    static List := List()
-    static Symbols() {
+    static List := ModifierList()
+    static Priority := unset
+    static Symbols(include_alts := false) {
         targets := []
         for (name, value in Modifier.List) {
             targets.Push(value.symbol)
         }
         return targets
     }
+    static SymbolToName := unset
+
     ; --- INIT ---
 
-    static init() => Modifier.List := List(
-        ; shift
-        Modifier.SHIFT_NAME, Modifier(
-            Modifier.SHIFT_NAME,
-            Modifier.SHIFT_SYMBOL
-        ),
+    static init() {
+        ; check if modifiers.json exists
+        relative_path := Modifier.MODIFIERS_PATH
+        if (FileExist(relative_path)) {
+            Modifier.List := JSON.LoadFile(ModifierList, relative_path, "UTF-8")
+        }
 
-        ; control
-        Modifier.CONTROL_NAME, Modifier(
-            Modifier.CONTROL_NAME,
-            Modifier.CONTROL_SYMBOL
-        ),
+        ; priority & symbol to name & name to syntax 
+        Modifier.Priority := Array()
+        Modifier.SymbolToName := Map("", KeyProfile.DEFAULT_NAME)
+        for name, value in Modifier.List {
+            ; priority
+            if (Modifier.Priority.Length == 0) {
+                Modifier.Priority.Push(name)
+            } else {
+                ; adds in increasing priority order not allowing duplicates
+                i := 1
+                added := false
+                for search_name in Modifier.Priority {
+                    search_priority := Modifier.List[search_name].priority
+                    if (value.priority == search_priority) {
+                        throw ValueError("in modifiers.json: two priorities cannot have the same value")
+                    }
+                    if (search_priority > value.priority) {
+                        Modifier.Priority.InsertAt(i, name)
+                        added := true
+                        break
+                    }
+                    ; incr
+                    i += 1
+                }
+                if (added == false) {
+                    Modifier.Priority.Push(name)
+                }
+            }
 
-        ; curl
-        Modifier.CURL_NAME, Modifier(
-            Modifier.CURL_NAME,
-            Modifier.CURL_SYMBOL,
-            ,
-            ,
-            "CapsLockOff",
-            "CapsLockOff"
-        ),
-
-        ; alt
-        Modifier.ALT_NAME, Modifier(
-            Modifier.ALT_NAME,
-            Modifier.ALT_SYMBOL,
-        ),
-
-        ; elevate
-        Modifier.ELEVATE_NAME, Modifier(
-            Modifier.ELEVATE_NAME,
-            Modifier.ELEVATE_SYMBOL,
-        ),
-
-        ; shelve
-        Modifier.SHELVE_NAME, Modifier(
-            Modifier.SHELVE_NAME,
-            Modifier.SHELVE_SYMBOL,
-            [Modifier.SHELVE_SYMBOL_ALT]
-        ),
-
-        ; step
-        Modifier.STEP_NAME, Modifier(
-            Modifier.STEP_NAME,
-            Modifier.STEP_SYMBOL
-        ),
-
-        ; windows
-        Modifier.WINDOWS_NAME, Modifier(
-            Modifier.WINDOWS_NAME,
-            Modifier.WINDOWS_SYMBOL,
-            ,
-            "Windows"
-        )
-    )
+            ; symbol to name
+            Modifier.SymbolToName[value.symbol] := name
+        }
+    }
 
     ; --- Bind ---
 
@@ -208,6 +165,7 @@ class Modifier {
     ; -- Instance --
 
     ;constructed name;
+    ;constructed priority;
     ;constructed symbol;
     ;constructed symbol_alts;
     hasAlt => this.symbol_alts != false
@@ -254,13 +212,20 @@ class Modifier {
     ; --- CONSTRUCTOR ---
 
     __New(
-        name, 
+        name,
+        priority,
         symbol, 
         symbol_alts := false,
         lone_action_name := false,
         down_action_name := false,
         up_action_name  := false
     ) {
+        ; check priority is a number
+        if !(priority is Integer) {
+            throw TypeError("priority must be an integer")
+        }
+        this.priority := priority
+
         ; check that symbol is a real key
         if (
             !(symbol is String)
@@ -424,6 +389,7 @@ class Modifier {
 
     static toJSON(mod) => Map(
         "name", mod.name,
+        "priority", mod.priority,
         "symbol", mod.symbol,
         "alternates", mod.symbol_alts,
         "lone_action", mod.lone_action_name,
@@ -435,7 +401,8 @@ class Modifier {
     static fromJSON(map) {
         return Modifier(
             map["name"],
-            map["symbol"],
+            map["priority"],
+            map["target"],
             map.Has("alternates") ? map["alternates"] : false,
             map.Has("lone_action") ? map["lone_action"] : false,
             map.Has("down_action") ? map["down_action"] : false,
@@ -617,11 +584,12 @@ class ModifierComposition {
         )
 	}
 
-    GetSyntacticalString() { ; PROBLEMATIC
+    GetSyntacticalString() {
         syntactical_modifiers := ""
         for (modifier_name in this.List) {
-            if (Modifier.STANDARD_NAME_TO_SYTACTICAL.Has(modifier_name)) {
-                syntactical_modifiers := syntactical_modifiers Modifier.STANDARD_NAME_TO_SYTACTICAL[modifier_name]
+            mod := ModifierComposition.ModifierOf(modifier_name)
+            if (Modifier.SYMBOL_SYNTAX_MAP.Has(mod.symbol)) {
+                syntactical_modifiers := syntactical_modifiers Modifier.SYMBOL_SYNTAX_MAP[mod.symbol]
             }
         }
         return syntactical_modifiers
@@ -635,7 +603,7 @@ class ModifierComposition {
             send_string := (
                 send_string 
                 "{" 
-                Modifier.NAME_TO_SYMBOL[modifier_name] 
+                Modifier.List[modifier_name].symbol 
                 " "
                 mode
                 "}"

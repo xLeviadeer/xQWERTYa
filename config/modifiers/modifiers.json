@@ -1,0 +1,41 @@
+[
+    {
+        "priority": 10,
+        "name": "shift",
+        "target": "LShift"
+    },
+    {
+        "priority": 20,
+        "name": "control",
+        "target": "LCtrl"
+    },
+    {
+        "priority": 30,
+        "name": "curl",
+        "target": "Capslock",
+        "down_action": "CapsLockOff",
+        "up_action": "CapsLockOff"
+    },
+    {
+        "priority": 40,
+        "name": "alt",
+        "target": "RAlt"
+    },
+    {
+        "priority": 50,
+        "name": "elevate",
+        "target": "LAlt",
+    },
+    {
+        "priority": 60,
+        "name": "shelve",
+        "target": "LWin",
+        "alternates": [ "SC070" ]
+    },
+    {
+        "priority": 70,
+        "name": "windows",
+        "target": "RCtrl",
+        "lone_action": "Windows"
+    }
+]
