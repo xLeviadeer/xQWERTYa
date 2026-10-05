@@ -1,5 +1,5 @@
 #Include Key.ahk
-#Include Modifier.ahk
+#Include ../modifier/Modifier.ahk
 #Include CustomKeys.ahk
 
 ; class that describes a key event

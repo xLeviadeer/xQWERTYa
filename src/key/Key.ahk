@@ -5,7 +5,7 @@
 #Include ../profile/Profile.ahk
 #Include ../tools/JSON.ahk
 #Include ../Locks.ahk
-#Include Modifier.ahk
+#Include ../modifier/Modifier.ahk
 #Include ../key/KeyAction.ahk
 
 ; testing based include

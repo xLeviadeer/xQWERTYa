@@ -3,7 +3,7 @@
 #Include ../Key/Key.ahk
 #Include ../tools/JSON.ahk
 #Include ../tools/Badge.ahk
-#Include ../Key/Modifier.ahk
+#Include ../modifier/Modifier.ahk
 
 class Profile {
     

@@ -1,9 +1,9 @@
 #Requires AutoHotkey v2.0 
 
 #Include ..\Profile\Profile.ahk
-#Include ..\Key\key.ahk
-#Include ..\Key\CustomKeys.ahk
-#Include ..\Key\Modifier.ahk
+#Include ..\key\key.ahk
+#Include ..\key\CustomKeys.ahk
+#Include ..\modifier\Modifier.ahk
 #Include ..\tools\Badge.ahk
 
 launch() {

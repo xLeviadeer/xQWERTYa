@@ -1,8 +1,8 @@
 #include ../Key/Key.ahk
-#Include KeyProfile.ahk
+#Include ../key/KeyProfile.ahk
 #Include ../Profile/Profile.ahk
-#Include ../../keybinds/Curl.ahk
-#Include ../../keybinds/Windows.ahk
+#Include ../../config/modifiers/Curl.ahk
+#Include ../../config/modifiers/Windows.ahk
 
 ; tracks and manages the state of virtual modifiers
 class ModifierTracker {
@@ -10,6 +10,8 @@ class ModifierTracker {
     ; --- VARIABLES ---
 
     ; -- static --
+
+    static MODIFIERS_PATH => "config/modifiers/modifiers.json"
 
     ; - prefixes -
 
@@ -106,7 +108,7 @@ class ModifierTracker {
         ModifierTracker.SHIFT_SYMBOL, ModifierTracker.SHIFT_NAME
     )
 
-    static STANDARD_NAME_TO_SYTACTICAL => Map(
+    static STANDARD_NAME_TO_SYTACTICAL => Map( ; PROBLEMATIC
         ModifierTracker.WINDOWS_NAME, "#",
         ModifierTracker.ALT_NAME, "!",
         ModifierTracker.CONTROL_NAME, "^",
@@ -559,7 +561,7 @@ class ModifierComposition {
         )
 	}
 
-    GetSyntacticalString() {
+    GetSyntacticalString() { ; PROBLEMATIC
         syntactical_modifiers := ""
         for (modifier_name in this.List) {
             if (ModifierTracker.STANDARD_NAME_TO_SYTACTICAL.Has(modifier_name)) {
