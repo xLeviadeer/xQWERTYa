@@ -2,9 +2,8 @@
 .vscode
 
 config/*/**
-!config/keybinds/.gitkeep
-!config/modifiers/Curl.ahk
-!config/modifiers/Windows.ahk
+!config/*/**.gitkeep
+!config/modifiers/*
 
 profiles.json
 

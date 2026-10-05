@@ -1,8 +1,8 @@
 #include ../Key/Key.ahk
 #Include ../key/KeyProfile.ahk
 #Include ../Profile/Profile.ahk
-#Include ../../config/modifiers/Curl.ahk
-#Include ../../config/modifiers/Windows.ahk
+#Include ../tools/List.ahk
+#Include ../../config/modifiers/Actions.ahk
 
 ; tracks and manages the state of virtual modifiers
 class ModifierTracker {
@@ -117,8 +117,8 @@ class ModifierTracker {
 
     ; - list —
 
-    static List := unset
-    static init() => ModifierTracker.List := Map(
+    static List := List()
+    static init() => ModifierTracker.List := List(
         ; shift
         ModifierTracker.SHIFT_NAME, ModifierTracker(
             ModifierTracker.SHIFT_NAME,
@@ -137,8 +137,8 @@ class ModifierTracker {
             ModifierTracker.CURL_SYMBOL,
             ,
             ,
-            () => Curl.CapsLockOff(),
-            () => Curl.CapsLockOff()
+            () => Actions.CapsLockOff(),
+            () => Actions.CapsLockOff()
         ),
 
         ; alt
@@ -171,7 +171,7 @@ class ModifierTracker {
             ModifierTracker.WINDOWS_NAME,
             ModifierTracker.WINDOWS_SYMBOL,
             ,
-            () => Windows.Windows()
+            () => Actions.Windows()
         )
     )
 
