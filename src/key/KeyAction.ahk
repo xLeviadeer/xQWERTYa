@@ -81,7 +81,7 @@ class KeyAction {
 
     ; list of actions to execute for checking
     DETERMINATION_ORDER => [
-        this._LocksCheck, ; will break if needed on the first enumeration 
+        this._LocksCheck,
         this._ProfileExistsCheck,
         this._ModifierExistsCheck,
         this._BasedCheck,
@@ -604,6 +604,8 @@ class KeyAction {
         return false ; no, don't disable letters for this action
     }
 
+    ; - recurring processing starts -
+
     ; adjusts the modifier for locks
     ;   key — unchanged
     ;   profile — unchanged
@@ -615,7 +617,7 @@ class KeyAction {
     _LocksCheck() {
         ; check all locks
         for lock_name, lock_value in Locks.AccessMap {
-            ; check if the current lock (access) modifier is NOT the same as the currently held modifier(s)
+            ; check if the current lock (access) modifier is the same as the currently held modifier(s)
             if (lock_value.modifier == this.modifier_name) {
                 ; check if the matching lock is locked
                 if (
@@ -633,8 +635,6 @@ class KeyAction {
         }
         return KeyActionProcessing.Normal
     }
-
-    ; - recurring processing starts -
 
     ; checks if the profile reference exists on this action
     ;   key — unchanged
