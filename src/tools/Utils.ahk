@@ -19,5 +19,6 @@ class Utils {
             }
             i += 1
         }
+        throw ValueError("ele " ele " is not in the provided list")
     }
 }
