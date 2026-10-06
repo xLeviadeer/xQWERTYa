@@ -157,37 +157,6 @@ class Modifier {
         }
     }
 
-    ; --- Bind ---
-
-    static BindAll() {
-        for (modifier_name, modifier_value in Modifier.List) {
-            ; bind down
-            combination := Modifier.ConstructCombination(modifier_name, modifier_value.symbol)
-            Hotkey(combination, ObjBindMethod(Modifier, "_TrackKey", modifier_name, false))
-            Key.UsedCombinations[modifier_name] := combination
-            
-            ; bind up 
-            combination_up := combination Modifier.UP_KEYSYMBOL_LONG
-            Hotkey(combination_up, ObjBindMethod(Modifier, "_TrackKey", modifier_name, true))
-            Key.UsedCombinations[modifier_name Modifier.UP_KEYNAME] := combination_up   
-
-            ; if has alts
-            if (modifier_value.hasAlt) {
-                for alt in modifier_value.symbol_alts {
-                    ; bind down
-                    combination := Modifier.ConstructCombination(modifier_name, alt)
-                    Hotkey(combination, ObjBindMethod(Modifier, "_TrackKey", modifier_name, false))
-                    Key.UsedCombinations[modifier_name] := combination
-                    
-                    ; bind up 
-                    combination_up := combination Modifier.UP_KEYSYMBOL_LONG
-                    Hotkey(combination_up, ObjBindMethod(Modifier, "_TrackKey", modifier_name, true))
-                    Key.UsedCombinations[modifier_name Modifier.UP_KEYNAME] := combination_up   
-                }
-            }
-        }
-    }
-
     ; -- Instance --
 
     ;constructed name;
@@ -324,6 +293,39 @@ class Modifier {
     }
 
     ; --- DETERMINE ACTION ---
+
+    ; - bind -
+
+    static BindAll() {
+        for (modifier_name, modifier_value in Modifier.List) {
+            ; bind down
+            combination := Modifier.ConstructCombination(modifier_name, modifier_value.symbol)
+            Hotkey(combination, ObjBindMethod(Modifier, "_TrackKey", modifier_name, false))
+            Key.UsedCombinations[modifier_name] := combination
+            
+            ; bind up 
+            combination_up := combination Modifier.UP_KEYSYMBOL_LONG
+            Hotkey(combination_up, ObjBindMethod(Modifier, "_TrackKey", modifier_name, true))
+            Key.UsedCombinations[modifier_name Modifier.UP_KEYNAME] := combination_up   
+
+            ; if has alts
+            if (modifier_value.hasAlt) {
+                for alt in modifier_value.symbol_alts {
+                    ; bind down
+                    combination := Modifier.ConstructCombination(modifier_name, alt)
+                    Hotkey(combination, ObjBindMethod(Modifier, "_TrackKey", modifier_name, false))
+                    Key.UsedCombinations[modifier_name] := combination
+                    
+                    ; bind up 
+                    combination_up := combination Modifier.UP_KEYSYMBOL_LONG
+                    Hotkey(combination_up, ObjBindMethod(Modifier, "_TrackKey", modifier_name, true))
+                    Key.UsedCombinations[modifier_name Modifier.UP_KEYNAME] := combination_up   
+                }
+            }
+        }
+    }
+
+    ; - track -
 
     static _TrackKey(name, is_up_action, tk) {
         ; get tracked key
