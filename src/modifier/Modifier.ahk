@@ -89,6 +89,9 @@ class Modifier {
 
     static List := ModifierList()
     static Priority := unset
+    static RelPriorityOf(mod) { ; assumes valid modifier string mod
+        return Utils.IndexOf(Modifier.Priority, mod) ; gives an integer "priority" representing the position of the object not the real priority value
+    }
     static Symbols(include_alts := false) {
         targets := []
         for (name, value in Modifier.List) {
@@ -511,7 +514,10 @@ class ModifierComposition {
 
 	Add(mod) {
 		Modifier.CheckValidModifier(mod)
-        if (this.List.Count == 1) { 
+        if (
+            !(this.HasProp("Significant")) ; no significant yet
+            || (Modifier.RelPriorityOf(mod) < Modifier.RelPriorityOf(this.Significant)) ; mod has lower (more) priority than significant 
+        ) { 
             this.Significant := mod 
         }
 		this.List[mod] := false
