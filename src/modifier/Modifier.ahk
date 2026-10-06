@@ -466,8 +466,9 @@ class ModifierComposition {
 
 	;constructed List;
     ;constructed Significant;
+    changed_for_sig := true
 	;constructed Str;
-	changed := true
+	changed_for_str := true
 
     Length => this.List.Count
 
@@ -514,25 +515,22 @@ class ModifierComposition {
 
 	Add(mod) {
 		Modifier.CheckValidModifier(mod)
-        if (
-            !(this.HasProp("Significant")) ; no significant yet
-            || (Modifier.RelPriorityOf(mod) < Modifier.RelPriorityOf(this.Significant)) ; mod has lower (more) priority than significant 
-        ) { 
-            this.Significant := mod 
-        }
 		this.List[mod] := false
-		this.changed := true
+        this.changed_for_sig := true
+		this.changed_for_str := true
 	}
 
 	Remove(mod) {
         Modifier.CheckValidModifier(mod)
 		this.List.Remove(mod)
-		this.changed := true
+        this.changed_for_sig := true
+		this.changed_for_str := true
 	}
 
     Clear() {
         this.List.Clear()
-        this.changed := true
+        this.changed_for_sig := true
+        this.changed_for_str := true
     }
 
     ; does NOT validate the modifier name
@@ -602,10 +600,28 @@ class ModifierComposition {
 
 	; --- GET STRINGS ---
 
+    GetSignificantString() {
+        if this.changed_for_sig {
+            lowest := false
+            for mod in this.List {
+                if (
+                    (lowest == false) ; lowest not set
+                    || (Modifier.RelPriorityOf(mod) < Modifier.RelPriorityOf(lowest)) ; new lowest
+                ) {
+                    lowest := mod
+                }
+            }
+            this.changed_for_sig := false
+            this.Significant := lowest
+            return lowest
+        }
+        return this.Significant
+    }
+
 	GetNameString(is_up) {
 		; construct new if needed
         composition_str := ""
-		if (this.changed) {
+		if (this.changed_for_str) {
             ; if values
             if (this.List.Count > 0) {
                 isFirstModifier := true
@@ -622,7 +638,7 @@ class ModifierComposition {
             } else { ; no values
                 composition_str := KeyProfile.DEFAULT_NAME
             }
-            this.changed := false
+            this.changed_for_str := false
             this.Str := composition_str
 		} else {
 			composition_str := this.Str
