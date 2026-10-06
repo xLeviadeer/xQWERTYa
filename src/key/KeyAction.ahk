@@ -475,7 +475,7 @@ class KeyAction {
         }
 
         ; check if a base doesn't exist
-        modifier_base := this.modifier.Significant
+        modifier_base := this.modifier.GetSignificantString()
         if (!this._ModifierExists(modifier_base, true)) {
             throw ValueError("attempting to use base signifier to a key which does not have a base")
         }
@@ -709,9 +709,9 @@ class KeyAction {
         if (
             this.modifier.IsTripleBind ; only for triple binds
             && (!failure_condition) ; no fail conditions
-            && this._ModifierExists(this.modifier.Significant) ; has base
+            && this._ModifierExists(this.modifier.GetSignificantString()) ; has base
         ) {
-            this.modifier := ModifierComposition(this.modifier.Significant)
+            this.modifier := ModifierComposition(this.modifier.GetSignificantString())
             return KeyActionProcessing.Continue
         }
         return KeyActionProcessing.Normal

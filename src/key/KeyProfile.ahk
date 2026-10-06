@@ -1,3 +1,5 @@
+#Include ../modifier/Modifier.ahk
+
 class KeyProfile {
 
     ; --- VARIABLES ---
