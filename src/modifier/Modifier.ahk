@@ -3,6 +3,7 @@
 #Include ../Profile/Profile.ahk
 #Include ../tools/List.ahk
 #Include ../tools/JSON.ahk
+#Include ../tools/Composition.ahk
 #Include ModifierList.ahk
 #Include ../../config/modifiers/Actions.ahk
 
@@ -460,77 +461,39 @@ class Modifier {
 }
 
 ; holds a composition of virtual modifiers
-class ModifierComposition {
+class ModifierComposition extends Composition {
 
 	; --- VARIABLES ---
 
-	;constructed List;
     ;constructed Significant;
     changed_for_sig := true
-	;constructed Str;
-	changed_for_str := true
 
-    Length => this.List.Count
-
-    ; - IsTripleBind -
-    IsTripleBind => this.List.Count > 1
-
-	; --- CONSTRUCTOR ---
-
-	__New(v*) {
-        ; set modifier helper
-        this.List := Map()
-
-		; parse v
-        v_length := 0
-        for (_ in v) {
-            v_length += 1
-        }
-		if (v_length >= 1) {
-			completed := false
-			if (v_length == 2) {
-				if (v[1] is ModifierComposition) { ; modifier composition copy
-					for (modifier, _ in v.List) {
-						this.Add(modifier)
-					}
-
-					completed := true
-				} else if (v[1] is Array) { ; list of values
-					for (modifier in v[1]) {
-						this.Add(modifier)
-					}
-
-					completed := true
-				}
-			}
-			if !(completed) { ; multiple values
-				for (modifier in v) {
-					this.Add(modifier)
-				}
-			}
-		}
-	}
+    Priority() {
+        return Modifier.Priority
+    }
+    Blank() {
+        return KeyProfile.DEFAULT_NAME
+    }
 
 	; --- FUNCTIONS ---
 
+    ValidateKeystr(mod) {
+        Modifier.CheckValidModifier(mod)
+    }
+
 	Add(mod) {
-		Modifier.CheckValidModifier(mod)
-		this.List[mod] := false
+        super.Add(mod)
         this.changed_for_sig := true
-		this.changed_for_str := true
 	}
 
 	Remove(mod) {
-        Modifier.CheckValidModifier(mod)
-		this.List.Remove(mod)
+        super.Remove(mod)
         this.changed_for_sig := true
-		this.changed_for_str := true
 	}
 
     Clear() {
-        this.List.Clear()
+        super.Clear()
         this.changed_for_sig := true
-        this.changed_for_str := true
     }
 
     ; does NOT validate the modifier name
@@ -619,34 +582,9 @@ class ModifierComposition {
     }
 
 	GetNameString(is_up) {
-		; construct new if needed
-        composition_str := ""
-		if (this.changed_for_str) {
-            ; if values
-            if (this.List.Count > 0) {
-                isFirstModifier := true
-                for (mod in Modifier.PRIORITY) {
-                    if (this.List.Has(mod)) {
-                        composition_str := (
-                            composition_str 
-                            (isFirstModifier ? "" : Modifier.MODIFIER_JOIN)
-                            mod
-                        )
-                        isFirstModifier := false
-                    }
-                }
-            } else { ; no values
-                composition_str := KeyProfile.DEFAULT_NAME
-            }
-            this.changed_for_str := false
-            this.Str := composition_str
-		} else {
-			composition_str := this.Str
-		}
-
         ; add up if needed
         return (
-            composition_str
+            super.GetNameString()
             (is_up ? Modifier.UP_KEYNAME : "")
         )
 	}
@@ -712,11 +650,5 @@ class ModifierComposition {
         for (modifier_name in this.List) {
             ModifierComposition.ModifierOf(modifier_name).completed := true
         }
-    }
-
-    ; --- COPY ---
-
-    Copy() {
-        return ModifierComposition(this.List*)
     }
 }
