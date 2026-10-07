@@ -2,6 +2,7 @@
 
 #Include ../tools/Badge.ahk
 #Include ../tools/Utils.ahk
+#Include ../tools/Checks.ahk
 #Include ../tools/JSON.ahk
 #Include LockList.ahk
 #Include LockComposition.ahk
@@ -211,12 +212,12 @@ class Lock {
         this.Priority := priority
 
         ; is locked
-        Utils.CheckBool(is_locked)
+        Checks.CheckBool(is_locked)
         this.IsLocked := is_locked
         this.StartsLocked := is_locked
 
         ; is bindable
-        Utils.CheckBool(is_bindable)
+        Checks.CheckBool(is_bindable)
         this.IsBindable := is_bindable
 
         ; change action name
@@ -229,7 +230,7 @@ class Lock {
         this._ChangeActionName := change_action_name
 
         ; show badge
-        Utils.CheckBool(show_badge)
+        Checks.CheckBool(show_badge)
         this.ShowBadge := show_badge
 
         ; badge text
