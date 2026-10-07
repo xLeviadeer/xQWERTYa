@@ -137,7 +137,7 @@ class KeyProfile {
         (value is String) ; string
         || ( ; or int with value 0
             (value is Integer)
-            && KeyProfile.IsBool(value)
+            && Utils.IsBool(value)
         )
     )
     static CheckStrBool(value) {
@@ -245,22 +245,22 @@ class KeyProfile {
         KeyProfile.CheckStrBool(inherits_from)
         this.inherits_from := inherits_from
         ; else
-        KeyProfile.CheckBool(else_)
+        Utils.CheckBool(else_)
         this.else := else_
         ; else explicit
-        KeyProfile.CheckBool(else_explicit)
+        Utils.CheckBool(else_explicit)
         this.else_explicit := else_explicit
         ; collapse
-        KeyProfile.CheckBool(collapse)
+        Utils.CheckBool(collapse)
         this.collapse := collapse
         ; collapse explicit
-        KeyProfile.CheckBool(collapse_explicit)
+        Utils.CheckBool(collapse_explicit)
         this.collapse_explicit := collapse_explicit
         ; based
-        KeyProfile.CheckBool(based)
+        Utils.CheckBool(based)
         this.based := based
         ; based explicit
-        KeyProfile.CheckBool(based_explicit)
+        Utils.CheckBool(based_explicit)
         this.based_explicit := based_explicit
 
         ; default
