@@ -6,7 +6,7 @@
 class LockActions {
     static _RealDisincludes => [
         "PrintScreen",
-        Modifier.ALT_NAME
+        "RAlt"
     ]
     static OnRealChange(bool) {
         if bool {

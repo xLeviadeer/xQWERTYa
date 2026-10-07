@@ -40,7 +40,7 @@ class Modifier {
     static ALT_SYNTAX => "!"
     static WINDOWS_SYNTAX => "#"
     static SYNTAXES => Utils.SetOf(
-        Modifier.SHIFT_NAME,
+        Modifier.SHIFT_SYNTAX,
         Modifier.CONTROL_SYNTAX,
         Modifier.ALT_SYNTAX,
         Modifier.WINDOWS_SYNTAX
@@ -55,36 +55,6 @@ class Modifier {
         "LWin", Modifier.WINDOWS_SYNTAX,
         "RWin", Modifier.WINDOWS_SYNTAX
     )
-
-    ; - names/symbols -
-    
-    ; scan codes list found here: https://learn.microsoft.com/en-us/windows/win32/inputdev/about-keyboard-input
-    ; sharp keys releases here: https://github.com/randyrants/sharpkeys/releases
-
-    static SHIFT_NAME => "shift"
-    static SHIFT_SYMBOL => "LShift"
-
-    static CONTROL_NAME => "control"
-    static CONTROL_SYMBOL => "LCtrl"
-
-    static CURL_NAME => "curl"
-    static CURL_SYMBOL => "CapsLock"
-
-    static ALT_NAME => "alt"
-    static ALT_SYMBOL => "RAlt"
-
-    static ELEVATE_NAME => "elevate"
-    static ELEVATE_SYMBOL => "LAlt" 
-
-    static SHELVE_NAME => "shelve"
-    static SHELVE_SYMBOL => "LWin" 
-    static SHELVE_SYMBOL_ALT => "SC070"
-
-    static STEP_NAME => "step"
-    static STEP_SYMBOL => "SC073"
-
-    static WINDOWS_NAME => "windows"
-    static WINDOWS_SYMBOL => "RCtrl"
 
     ; - mappings -
 
