@@ -194,4 +194,18 @@ class ModifierComposition extends Composition {
             ModifierComposition.ModifierOf(modifier_name).completed := true
         }
     }
+
+    ; --- COPY ---
+
+    static _UP_KEYNAME_SIZE => StrLen(Modifier.UP_KEYNAME)
+    fromString(str) {
+        ; remove up ╎ up does not matter for modifier compositions
+        if (StrLen(str) >= (ModifierComposition._UP_KEYNAME_SIZE + 1)) { ; can possibly include up
+            transition := StrLen(str) - ModifierComposition._UP_KEYNAME_SIZE
+            if SubStr(str, transition + 1) == Modifier.UP_KEYNAME {
+                str := SubStr(str, 1, transition)
+            }
+        } 
+        super.fromString(str)
+    }
 }
