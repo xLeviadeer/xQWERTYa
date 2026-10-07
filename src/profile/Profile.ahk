@@ -4,6 +4,7 @@
 #Include ../tools/JSON.ahk
 #Include ../tools/Badge.ahk
 #Include ../modifier/Modifier.ahk
+#Include ../lock/Lock.ahk
 
 class Profile {
     
@@ -403,10 +404,10 @@ class Profile {
 
     static _SetCompatibility(profile_id) {
         if (profile_id == Profile.DEFAULT_NAME) {
-            Locks.Setcompatibility(Profile.DEFAULT_COMPATIBILITY, false)
+            Lock.List[Lock.COMPAD_NAME].SetLocked(Profile.DEFAULT_COMPATIBILITY, false)
         } else {
             prof := Profile.GetCurr()
-            Locks.Setcompatibility(prof.compatibility, false)
+            Lock.List[Lock.COMPAD_NAME].SetLocked(prof.compability, false)
         }
     }
 

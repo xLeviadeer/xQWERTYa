@@ -1,0 +1,26 @@
+[
+    {
+        "name": "caps",
+        "priority": 10,
+        "starts_locked": false,
+        "badge_text": "Caps Lock"
+    },
+    {
+        "name": "num",
+        "priority": 20,
+        "starts_locked": false,
+        "badge_text": "Num Lock"
+    },
+    {
+        "name": "real",
+        "starts_locked": false,
+        "bindable": false,
+        "change_action": "OnRealChange",
+        "badge_text": "Real",
+        "badge_side": "Left",
+        "badge_on_color": "C50000",
+        "badge_off_color": "000000",
+        "badge_on_color_bg": "450000",
+        "badge_off_color_bg": "A5A5A5"
+    }
+]

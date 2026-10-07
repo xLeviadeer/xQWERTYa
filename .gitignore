@@ -4,6 +4,7 @@
 config/*/**
 !config/*/**.gitkeep
 !config/modifiers/*
+!config/locks/*
 
 profiles.json
 

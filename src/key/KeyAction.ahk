@@ -1,5 +1,6 @@
 #Include Key.ahk
 #Include ../modifier/Modifier.ahk
+#Include ../lock/Lock.ahk
 #Include CustomKeys.ahk
 
 ; class that describes a key event
@@ -388,7 +389,7 @@ class KeyAction {
 
             ; lock action
             if (first_char == Key.LOCK_PREFIX) {
-                Locks.Swap(modifier_value_no_first)
+                Lock.Swap(modifier_value_no_first)
                 return
             }
             
@@ -532,7 +533,7 @@ class KeyAction {
     ;   profile — unchanged
     ;   modifier — unchanged
     _compatibilityMode() {
-        if (Locks.iscompatibility) { ; compability on
+        if (Lock.List[Lock.COMPAD_NAME].IsLocked) { ; compability on
             ; dont run for down actions test
             if (!this.is_up) {
                 return
@@ -616,12 +617,12 @@ class KeyAction {
     ;       Normal — when else
     _LocksCheck() {
         ; check all locks
-        for lock_name, lock_value in Locks.AccessMap {
+        for lock_name, lock_value in Lock.AccessMap {
             ; check if the current lock (access) modifier is the same as the currently held modifier(s)
             if (lock_value.modifier == this.modifier_name) {
                 ; check if the matching lock is locked
                 if (
-                    lock_value.locked ; is locked
+                    lock_value.locked() ; is locked
                     && this._ModifierExists(lock_name) ; lock exists on this action
                 ) {
                     ; set lock modifier
@@ -832,9 +833,11 @@ class KeyAction {
     ;       Continue — when uses was set
     ;       Normal — when else
     _UsesCheck() {
-        if (this._ModifierExists()) { ; if this modifier exists, skip this step
-            return KeyActionProcessing.Normal
-        }
+        ; deprecated because I don't think this can ever run because modifier cannot exist via the prior check 
+            ; will be removed later after testing
+        ; if (this._ModifierExists()) { ; if this modifier exists, skip this step
+        ;     return KeyActionProcessing.Normal
+        ; }
         at_least_one_found := false
 
         ; if there's a uses╌read it

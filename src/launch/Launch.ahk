@@ -4,6 +4,7 @@
 #Include ..\key\key.ahk
 #Include ..\key\CustomKeys.ahk
 #Include ..\modifier\Modifier.ahk
+#Include ..\lock\Lock.ahk
 #Include ..\tools\Badge.ahk
 
 launch() {
@@ -23,6 +24,15 @@ launch() {
 
     ; init badge
     Badge.init()
+
+    ; init locks
+    Badge.ShowBadge(
+        "building locks",
+        BADGE_LOC,
+        BADGE_BUILD_BG,
+        BADGE_BUILD_FG
+    )
+    Lock.init()
 
     ; init modifiers
     Badge.ShowBadge(
