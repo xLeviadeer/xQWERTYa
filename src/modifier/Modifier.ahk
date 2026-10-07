@@ -21,7 +21,6 @@ class Modifier {
     static PASSTHROUGH_SYMBOL => "~"
     static ALL_PREFIX => "*"
     static SAFTEY_PREFIX => "$"
-    static MODIFIER_JOIN => "_"
 
     ; - up -
     
