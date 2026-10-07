@@ -166,14 +166,14 @@ class Lock {
 
         ; - partial implementation logic -
         Lock.AccessMap := Map(
-            KeyProfile.ARROWLOCK_NAME, {locked: (*) => Lock.List["arrow"].IsLockedRef(), modifier: KeyProfile.DEFAULT_NAME},
-            KeyProfile.ARROWLOCK_SHIFT_NAME, {locked: (*) => Lock.List["arrow"].IsLockedRef(), modifier: Modifier.SHIFT_NAME},
-            KeyProfile.ARROWLOCK_SHIFT_CONTROL_NAME, {locked: (*) => Lock.List["arrow"].IsLockedRef(), modifier: KeyProfile.SHIFT_CONTROL_NAME},
-            KeyProfile.ARROWLOCK_ELEVATE_NAME, {locked: (*) => Lock.List["arrow"].IsLockedRef(), modifier: Modifier.ELEVATE_NAME},
-            KeyProfile.ARROWLOCK_CONTROL_NAME, {locked: (*) => Lock.List["arrow"].IsLockedRef(), modifier: Modifier.CONTROL_NAME},
-            KeyProfile.CAPSLOCK_NAME, {locked: (*) => Lock.List["caps"].IsLockedRef(), modifier: KeyProfile.DEFAULT_NAME},
-            KeyProfile.NUMLOCK_NAME, {locked: (*) => Lock.List["num"].IsLockedRef(), modifier: KeyProfile.DEFAULT_NAME},
-            KeyProfile.MOUSE_NAME, {locked: (*) => Lock.List["mouse"].IsLockedRef(), modifier: KeyProfile.DEFAULT_NAME}
+            "arrowlock", {locked: (*) => Lock.List["arrow"].IsLockedRef(), modifier: KeyProfile.DEFAULT_NAME},
+            "arrowlock_shift", {locked: (*) => Lock.List["arrow"].IsLockedRef(), modifier: Modifier.SHIFT_NAME},
+            "arrowlock_shift_control", {locked: (*) => Lock.List["arrow"].IsLockedRef(), modifier: "shift_control"},
+            "arrowlock_elevate", {locked: (*) => Lock.List["arrow"].IsLockedRef(), modifier: Modifier.ELEVATE_NAME},
+            "arrowlock_control", {locked: (*) => Lock.List["arrow"].IsLockedRef(), modifier: Modifier.CONTROL_NAME},
+            "capslock", {locked: (*) => Lock.List["caps"].IsLockedRef(), modifier: KeyProfile.DEFAULT_NAME},
+            "numlock", {locked: (*) => Lock.List["num"].IsLockedRef(), modifier: KeyProfile.DEFAULT_NAME},
+            "mouselock", {locked: (*) => Lock.List["mouse"].IsLockedRef(), modifier: KeyProfile.DEFAULT_NAME}
         )
         Lock._SwapMap := Map(
             "arrow", ObjBindMethod(Lock.List["arrow"], "Swap"),
