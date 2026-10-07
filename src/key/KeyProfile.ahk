@@ -122,10 +122,20 @@ class KeyProfile {
         this.based_explicit := based_explicit
 
         ; default
-        Checks.CheckStrBoolFunc(default)
+        if (
+            !(Checks.IsBool(default))
+            && !(default is KeyModifier)
+        ) {
+            throw TypeError("default must be an instance of KeyModifier or a boolean")
+        }
         this.default := default
         ; default up
-        Checks.CheckStrBoolFunc(default_up)
+        if (
+            !(Checks.IsBool(default_up))
+            && !(default_up is KeyModifier)
+        ) {
+            throw TypeError("default_up must be an instance of KeyModifier or a boolean")
+        }
         this.default_up := default_up
 
         ; modifiers
