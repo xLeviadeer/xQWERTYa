@@ -1,7 +1,7 @@
 #Requires AutoHotkey v2.0
 
 #Include ../tools/Composition.ahk
-#Include ../modifier/Modifier.ahk
+#Include Modifier.ahk
 
 ; holds a composition of virtual modifiers
 class ModifierComposition extends Composition {

@@ -5,7 +5,7 @@
 #Include ../tools/JSON.ahk
 #Include ModifierComposition.ahk
 #Include ModifierList.ahk
-#Include ../../config/modifiers/Actions.ahk
+#Include ../../config/modifiers/ModifierActions.ahk
 
 ; tracks and manages the state of virtual modifiers
 class Modifier {
@@ -121,7 +121,7 @@ class Modifier {
 
             ; duplicates
             if Modifier.UsedSymbols.Has(value.symbol) {
-                throw ValueError("cannot use target " value.symbol " because it has already been used")
+                throw ValueError("cannot use target ⸉" value.symbol "⸉ because it has already been used")
             }
             Modifier.UsedSymbols[value.symbol] := false
             if (value.hasAlt) {
@@ -155,10 +155,10 @@ class Modifier {
             if (this.lone_action_name == false) {
                 return false
             }
-            if !Actions.HasProp(this.lone_action_name) {
+            if !ModifierActions.HasProp(this.lone_action_name) {
                 throw ValueError("Actions does not contain a method named ⸉" this.lone_action_name "⸉")
             }
-            return () => Actions.%this.lone_action_name%()
+            return () => ModifierActions.%this.lone_action_name%()
         }
     }
     down_action {
@@ -166,10 +166,10 @@ class Modifier {
             if (this.down_action_name == false) {
                 return false
             }
-            if !Actions.HasProp(this.down_action_name) {
+            if !ModifierActions.HasProp(this.down_action_name) {
                 throw ValueError("Actions does not contain a method named ⸉" this.down_action_name "⸉")
             }
-            return () => Actions.%this.down_action_name%()
+            return () => ModifierActions.%this.down_action_name%()
         }
     }
     up_action {
@@ -177,10 +177,10 @@ class Modifier {
             if (this.up_action_name == false) {
                 return false
             }
-            if !Actions.HasProp(this.up_action_name) {
+            if !ModifierActions.HasProp(this.up_action_name) {
                 throw ValueError("Actions does not contain a method named ⸉" this.up_action_name "⸉")
             }
-            return () => Actions.%this.up_action_name%()
+            return () => ModifierActions.%this.up_action_name%()
         }
     }
 
@@ -385,16 +385,16 @@ class Modifier {
 
     static CreateCompositionSnapshot() {
         comp := ModifierComposition()
-        for (modifier_name, modifier_value in Modifier.List) {
+        for name, value in Modifier.List {
             ; check if the modifier is on
-            if (modifier_value.isDown) {
-                comp.Add(modifier_name)
+            if value.isDown {
+                comp.Add(name)
             }
         }
         return comp
     }
 
-    ; --- EXTERNAL VALIDATION HELPERS ---
+    ; --- VALIDATION ---
 
     ; checks if a string is a valid modifier
     static CheckValidModifier(str) {
@@ -402,7 +402,7 @@ class Modifier {
 			(str is String)
 			&& (Modifier.List.Has(str))
 		) {
-			throw ValueError("'" str "' is not a valid modifier name")
+			throw ValueError("⸉" str "⸉ is not a valid modifier name")
 		}
 	} 
 
