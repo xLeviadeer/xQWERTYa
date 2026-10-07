@@ -92,9 +92,9 @@ class Composition {
 
 	GetNameString() {
 		; construct new if needed
-        composition_str := ""
 		if (this.changed_for_str) {
             ; if values
+            composition_str := ""
             if (this.List.Count > 0) {
                 isFirstKeystr := true
                 for (keystr in this.Priority()) {
@@ -112,10 +112,8 @@ class Composition {
             }
             this.changed_for_str := false
             this.Str := composition_str
-		} else {
-			composition_str := this.Str
-		}
-        return composition_str
+        }
+        return this.Str
 	}
 
     ; --- COPY ---
