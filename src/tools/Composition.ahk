@@ -26,6 +26,15 @@ class Composition {
         throw MethodError("Blank is not implemented")
     }
 
+    ; --- INDEXABLE ---
+
+    __Item[key] {
+        get => this.List[key]
+        set => this.List[key] := value
+    }
+
+    __Enum(NumberOfVars) => this.List.__Enum(NumberOfVars)
+
 	; --- CONSTRUCTOR ---
 
 	__New(v*) {
@@ -128,11 +137,15 @@ class Composition {
             if keystr == substr {
                 i += 1
                 final_comp.Add(substr)
-                continue
+                if i > substrs.Length {
+                    break
+                } else { 
+                    continue 
+                }
             }
         }
-        if i != substrs.Length {
-            throw ValueError("provided composition string (" str ") does not follow keystrifier priority")
+        if (i - 1) != substrs.Length {
+            throw ValueError("provided composition string (" str ") does not follow keystr priority")
         }
         return final_comp
     }
