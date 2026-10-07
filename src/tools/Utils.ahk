@@ -27,16 +27,6 @@ class Utils {
         throw ValueError("ele " ele " is not in the provided list")
     }
 
-    static IsBool(value) => (
-        (value == true)
-        || (value == false)
-    )
-    static CheckBool(value) {
-        if !(Utils.IsBool(value)) {
-            throw TypeError( "value (" Type(value) ") must be a boolean")
-        }
-    }
-
     ; expects 
     ;   list — List
     static OrderByPriority(list) {

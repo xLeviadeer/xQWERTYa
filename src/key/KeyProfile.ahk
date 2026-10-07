@@ -1,4 +1,5 @@
 #Include ../modifier/Modifier.ahk
+#Include ../tools/Checks.ahk
 
 class KeyProfile {
 
@@ -133,32 +134,6 @@ class KeyProfile {
 
     ; --- CONSTRUCTORS ---
 
-    static IsStrBool(value) => (
-        (value is String) ; string
-        || ( ; or int with value 0
-            (value is Integer)
-            && Utils.IsBool(value)
-        )
-    )
-    static CheckStrBool(value) {
-        if !(KeyProfile.IsStrBool(value)) {
-            throw TypeError("binding value must be a string or bool")
-        }
-    }
-
-    static IsStrBoolFunc(value) => (
-        KeyProfile.IsStrBool(value)
-        || (
-            (value is Func)
-            || (value is BoundFunc)
-        )
-    )
-    static CheckStrBoolFunc(value) {
-        if !(KeyProfile.IsStrBoolFunc(value)) {
-            throw TypeError("binding value must be a string, function, or 0/false: '" value "'")
-        }
-    }
-
     __New(
         uses := true,
         uses_profile := true,
@@ -236,200 +211,200 @@ class KeyProfile {
         shift_alt_elevate_up := true
     ) {
         ; uses
-        KeyProfile.CheckStrBool(uses)
+        Checks.CheckStrBool(uses)
         this.uses := uses
         ; uses profile
-        KeyProfile.CheckStrBool(uses_profile)
+        Checks.CheckStrBool(uses_profile)
         this.uses_profile := uses_profile
         ; inherits from
-        KeyProfile.CheckStrBool(inherits_from)
+        Checks.CheckStrBool(inherits_from)
         this.inherits_from := inherits_from
         ; else
-        Utils.CheckBool(else_)
+        Checks.CheckBool(else_)
         this.else := else_
         ; else explicit
-        Utils.CheckBool(else_explicit)
+        Checks.CheckBool(else_explicit)
         this.else_explicit := else_explicit
         ; collapse
-        Utils.CheckBool(collapse)
+        Checks.CheckBool(collapse)
         this.collapse := collapse
         ; collapse explicit
-        Utils.CheckBool(collapse_explicit)
+        Checks.CheckBool(collapse_explicit)
         this.collapse_explicit := collapse_explicit
         ; based
-        Utils.CheckBool(based)
+        Checks.CheckBool(based)
         this.based := based
         ; based explicit
-        Utils.CheckBool(based_explicit)
+        Checks.CheckBool(based_explicit)
         this.based_explicit := based_explicit
 
         ; default
-        KeyProfile.CheckStrBoolFunc(default)
+        Checks.CheckStrBoolFunc(default)
         this.default := default
         ; default up
-        KeyProfile.CheckStrBoolFunc(default_up)
+        Checks.CheckStrBoolFunc(default_up)
         this.default_up := default_up
 
         ; shift
-        KeyProfile.CheckStrBoolFunc(shift)
+        Checks.CheckStrBoolFunc(shift)
         this.shift := shift
         ; shift up
-        KeyProfile.CheckStrBoolFunc(shift_up)
+        Checks.CheckStrBoolFunc(shift_up)
         this.shift_up := shift_up
 
         ; curl
-        KeyProfile.CheckStrBoolFunc(curl)
+        Checks.CheckStrBoolFunc(curl)
         this.curl := curl
         ; curl_up
-        KeyProfile.CheckStrBoolFunc(curl_up)
+        Checks.CheckStrBoolFunc(curl_up)
         this.curl_up := curl_up
 
         ; alt
-        KeyProfile.CheckStrBoolFunc(alt)
+        Checks.CheckStrBoolFunc(alt)
         this.alt := alt
         ; alt up
-        KeyProfile.CheckStrBoolFunc(alt_up)
+        Checks.CheckStrBoolFunc(alt_up)
         this.alt_up := alt_up
 
         ; control
-        KeyProfile.CheckStrBoolFunc(control)
+        Checks.CheckStrBoolFunc(control)
         this.control := control
         ; control up
-        KeyProfile.CheckStrBoolFunc(control_up)
+        Checks.CheckStrBoolFunc(control_up)
         this.control_up := control_up
 
         ; elevate
-        KeyProfile.CheckStrBoolFunc(elevate)
+        Checks.CheckStrBoolFunc(elevate)
         this.elevate := elevate
         ; elevate up
-        KeyProfile.CheckStrBoolFunc(elevate_up)
+        Checks.CheckStrBoolFunc(elevate_up)
         this.elevate_up := elevate_up
 
         ; shelve
-        KeyProfile.CheckStrBoolFunc(shelve)
+        Checks.CheckStrBoolFunc(shelve)
         this.shelve := shelve
         ; shelve up
-        KeyProfile.CheckStrBoolFunc(shelve_up)
+        Checks.CheckStrBoolFunc(shelve_up)
         this.shelve_up := shelve_up
 
         ; step
-        KeyProfile.CheckStrBoolFunc(step)
+        Checks.CheckStrBoolFunc(step)
         this.step := step
         ; step up
-        KeyProfile.CheckStrBoolFunc(step_up)
+        Checks.CheckStrBoolFunc(step_up)
         this.step_up := step_up
 
         ; windows
-        KeyProfile.CheckStrBoolFunc(windows)
+        Checks.CheckStrBoolFunc(windows)
         this.windows := windows
         ; windows up
-        KeyProfile.CheckStrBoolFunc(windows_up)
+        Checks.CheckStrBoolFunc(windows_up)
         this.windows_up:= windows_up
 
         ; arrow lock
-        KeyProfile.CheckStrBoolFunc(capslock)
+        Checks.CheckStrBoolFunc(capslock)
         this.capslock := capslock
         ; arrow lock up
-        KeyProfile.CheckStrBoolFunc(capslock_up)
+        Checks.CheckStrBoolFunc(capslock_up)
         this.capslock_up := capslock_up
         ; arrowlock_shift
-        KeyProfile.CheckStrBoolFunc(arrowlock_shift)
+        Checks.CheckStrBoolFunc(arrowlock_shift)
         this.arrowlock_shift := arrowlock_shift
         ; arrowlock_shift_up
-        KeyProfile.CheckStrBoolFunc(arrowlock_shift_up)
+        Checks.CheckStrBoolFunc(arrowlock_shift_up)
         this.arrowlock_shift_up := arrowlock_shift_up
         ; arrowlock_shift_control
-        KeyProfile.CheckStrBoolFunc(arrowlock_shift_control)
+        Checks.CheckStrBoolFunc(arrowlock_shift_control)
         this.arrowlock_shift_control := arrowlock_shift_control
         ; arrowlock_shift_control_up
-        KeyProfile.CheckStrBoolFunc(arrowlock_shift_control_up)
+        Checks.CheckStrBoolFunc(arrowlock_shift_control_up)
         this.arrowlock_shift_control_up := arrowlock_shift_control_up
         ; arrowlock_elevate
-        KeyProfile.CheckStrBoolFunc(arrowlock_elevate)
+        Checks.CheckStrBoolFunc(arrowlock_elevate)
         this.arrowlock_elevate := arrowlock_elevate
         ; arrowlock_elevate_up
-        KeyProfile.CheckStrBoolFunc(arrowlock_elevate_up)
+        Checks.CheckStrBoolFunc(arrowlock_elevate_up)
         this.arrowlock_elevate_up := arrowlock_elevate_up
         ; arrowlock_control
-        KeyProfile.CheckStrBoolFunc(arrowlock_control)
+        Checks.CheckStrBoolFunc(arrowlock_control)
         this.arrowlock_control := arrowlock_control
         ; arrowlock_control_up
-        KeyProfile.CheckStrBoolFunc(arrowlock_control_up)
+        Checks.CheckStrBoolFunc(arrowlock_control_up)
         this.arrowlock_control_up := arrowlock_control_up
         ; arrowlock_windows
-        KeyProfile.CheckStrBoolFunc(arrowlock_windows)
+        Checks.CheckStrBoolFunc(arrowlock_windows)
         this.arrowlock_windows := arrowlock_windows
         ; arrowlock_windows_up
-        KeyProfile.CheckStrBoolFunc(arrowlock_windows_up)
+        Checks.CheckStrBoolFunc(arrowlock_windows_up)
         this.arrowlock_windows_up := arrowlock_windows_up
 
         ; caps lock
-        KeyProfile.CheckStrBoolFunc(arrowlock)
+        Checks.CheckStrBoolFunc(arrowlock)
         this.arrowlock := arrowlock
         ; caps lock up
-        KeyProfile.CheckStrBoolFunc(arrowlock_up)
+        Checks.CheckStrBoolFunc(arrowlock_up)
         this.arrowlock_up := arrowlock_up
         ; num lock
-        KeyProfile.CheckStrBoolFunc(numlock)
+        Checks.CheckStrBoolFunc(numlock)
         this.numlock := numlock
         ; num lock up
-        KeyProfile.CheckStrBoolFunc(numlock_up)
+        Checks.CheckStrBoolFunc(numlock_up)
         this.numlock_up := numlock_up
         ; mouse lock
-        KeyProfile.CheckStrBoolFunc(mouselock)
+        Checks.CheckStrBoolFunc(mouselock)
         this.mouselock := mouselock
         ; mouse lock up
-        KeyProfile.CheckStrBoolFunc(mouselock_up)
+        Checks.CheckStrBoolFunc(mouselock_up)
         this.mouselock_up := mouselock_up
 
         ; shift control
-        KeyProfile.CheckStrBoolFunc(shift_control)
+        Checks.CheckStrBoolFunc(shift_control)
         this.shift_control := shift_control
         ; shift control up
-        KeyProfile.CheckStrBoolFunc(shift_control_up)
+        Checks.CheckStrBoolFunc(shift_control_up)
         this.shift_control_up := shift_control_up
         ; shift curl
-        KeyProfile.CheckStrBoolFunc(shift_curl)
+        Checks.CheckStrBoolFunc(shift_curl)
         this.shift_curl := shift_curl
         ; shift curl up
-        KeyProfile.CheckStrBoolFunc(shift_curl_up)
+        Checks.CheckStrBoolFunc(shift_curl_up)
         this.shift_curl_up := shift_curl_up
         ; shift alt 
-        KeyProfile.CheckStrBoolFunc(shift_alt)
+        Checks.CheckStrBoolFunc(shift_alt)
         this.shift_alt := shift_alt
         ; shift alt up
-        KeyProfile.CheckStrBoolFunc(shift_alt_up)
+        Checks.CheckStrBoolFunc(shift_alt_up)
         this.shift_alt_up := shift_alt_up
         ; shift elevate
-        KeyProfile.CheckStrBoolFunc(shift_elevate)
+        Checks.CheckStrBoolFunc(shift_elevate)
         this.shift_elevate := shift_elevate
         ; shift elevate up
-        KeyProfile.CheckStrBoolFunc(shift_elevate_up)
+        Checks.CheckStrBoolFunc(shift_elevate_up)
         this.shift_elevate_up := shift_elevate_up
         ; shift shelve 
-        KeyProfile.CheckStrBoolFunc(shift_shelve)
+        Checks.CheckStrBoolFunc(shift_shelve)
         this.shift_shelve := shift_shelve
         ; shift shelve up
-        KeyProfile.CheckStrBoolFunc(shift_shelve_up)
+        Checks.CheckStrBoolFunc(shift_shelve_up)
         this.shift_shelve_up := shift_shelve_up
         ; shift step
-        KeyProfile.CheckStrBoolFunc(shift_step)
+        Checks.CheckStrBoolFunc(shift_step)
         this.shift_step := shift_step
         ; shift step up
-        KeyProfile.CheckStrBoolFunc(shift_step_up)
+        Checks.CheckStrBoolFunc(shift_step_up)
         this.shift_step_up := shift_step_up
 
         ; control curl
-        KeyProfile.CheckStrBoolFunc(alt_elevate)
+        Checks.CheckStrBoolFunc(alt_elevate)
         this.alt_elevate := alt_elevate
         ; control curl up
-        KeyProfile.CheckStrBoolFunc(alt_elevate_up)
+        Checks.CheckStrBoolFunc(alt_elevate_up)
         this.alt_elevate_up := alt_elevate_up
         ; shift control curl
-        KeyProfile.CheckStrBoolFunc(shift_alt_elevate)
+        Checks.CheckStrBoolFunc(shift_alt_elevate)
         this.shift_alt_elevate := shift_alt_elevate
         ; shift control curl up
-        KeyProfile.CheckStrBoolFunc(shift_alt_elevate_up)
+        Checks.CheckStrBoolFunc(shift_alt_elevate_up)
         this.shift_alt_elevate_up := shift_alt_elevate_up
     }
 
