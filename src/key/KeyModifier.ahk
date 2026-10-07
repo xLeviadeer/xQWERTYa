@@ -10,7 +10,14 @@ class KeyModifier {
 
     ; --- VARIABLES ---
 
+    ; -- Static ---
+
     static _UNSET => -1
+    static _LOCKS_NAME => "locks"
+
+    static DEFAULT_NAME => "default"
+
+    ; -- Instance --
 
     default := KeyModifier._UNSET
     locks := KeyModifier._UNSET
@@ -25,17 +32,17 @@ class KeyModifier {
 
         ; search map
         if (
-            this.HasOwnProp("locks")
-            && this.GetOwnPropDesc("locks").Value.Has(search_name)
+            this.HasOwnProp(KeyModifier._LOCKS_NAME)
+            && this.GetOwnPropDesc(KeyModifier._LOCKS_NAME).Value.Has(search_name)
         ) {
-            return this.GetOwnPropDesc("locks").Value[search_name]
+            return this.GetOwnPropDesc(KeyModifier._LOCKS_NAME).Value[search_name]
         }
     }
 
     __Set(search_name, search_params, value) {
         ; search map
         if this.HasProp(search_name) {
-            this.GetOwnPropDesc("locks").Value[search_name].Set(value)
+            this.GetOwnPropDesc(KeyModifier._LOCKS_NAME).Value[search_name].Set(value)
             return
         }
         this.DefineProp(search_name, {value:search_name})
@@ -50,8 +57,8 @@ class KeyModifier {
         
         ; search map
         return (
-            this.HasOwnProp("locks")
-            && this.GetOwnPropDesc("locks").Value.Has(search_name)
+            this.HasOwnProp(KeyModifier._LOCKS_NAME)
+            && this.GetOwnPropDesc(KeyModifier._LOCKS_NAME).Value.Has(search_name)
         )
     }
 
@@ -68,9 +75,9 @@ class KeyModifier {
             if !(locks is Map) {
                 throw TypeError("locks must be a map of lock names and associated actions")
             }
-            for lock_name, value in locks {
+            for name, value in locks {
                 ; if it can be composed from a string we know it's valid even if we don't need it now
-                LockComposition().fromString(lock_name)
+                LockComposition().fromString(name)
                 ; value must be strboolfunc like default
                 Checks.CheckStrBoolFunc(value)
             }
@@ -81,7 +88,7 @@ class KeyModifier {
     ; --- SERIALIZABLE ---
 
     static toJSON(kmod) {
-        map_ := Map("default", kmod.default)
+        map_ := Map(KeyModifier.DEFAULT_NAME, kmod.default)
         if kmod.locks != false {
             for name, value in kmod.locks {
                 map_[name] := value
@@ -92,7 +99,7 @@ class KeyModifier {
     toJSON() => KeyModifier.toJSON(this)
 
     static _JSON_EXCLUDES => Utils.SetOf(
-        "default"
+        KeyModifier.DEFAULT_NAME
     )
     static fromJSON(data) {
         data_excess := Map()
@@ -103,7 +110,7 @@ class KeyModifier {
             data_excess[name] := value
         }
         return KeyModifier(
-            data.Has("default") ? data["default"] : false,
+            data.Has(KeyModifier.DEFAULT_NAME) ? data[KeyModifier.DEFAULT_NAME] : false,
             data_excess
         )
     }
