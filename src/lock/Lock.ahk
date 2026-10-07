@@ -255,6 +255,13 @@ class Lock {
 
     ; --- FUNCTIONS ---
 
+    static Swap(lock_name, show_badge := unset) {
+        if !Lock.List.Has(lock_name) {
+            throw ValueError("lock_name (" lock_name ") is not a valid lock name")
+        }
+        Lock.List[lock_name].Swap(show_badge?)
+    }
+
     SetLocked(bool, show_badge := unset) {
         ; change and run action
         this.IsLocked := bool
