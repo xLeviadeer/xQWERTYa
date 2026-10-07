@@ -4,7 +4,6 @@
 #Include CustomKeys.ahk
 #Include ../profile/Profile.ahk
 #Include ../tools/JSON.ahk
-#Include ../Locks.ahk
 #Include ../modifier/Modifier.ahk
 #Include ../key/KeyAction.ahk
 #Include ../tools/Utils.ahk
@@ -57,12 +56,6 @@ class Key {
 
     ; down key lazy init tracker
     static DownTracking := Map()
-
-    ; bool to text helper
-    static BoolToText => Map(
-        true, "On",
-        false, "Off"
-    )
 
     ; --- CONSTRUCIOR ---
 
@@ -217,7 +210,7 @@ class Key {
 
     ; sets a combination to enabled or disabled
     static _SetKey(combination, enabled) {
-        Hotkey(combination, , Key.BoolToText[enabled])
+        Hotkey(combination, , Utils.BoolToText[enabled])
     }
 
     ; enabled expects an enabled bool, true to enable, false to disable

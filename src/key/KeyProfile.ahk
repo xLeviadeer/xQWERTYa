@@ -133,16 +133,6 @@ class KeyProfile {
 
     ; --- CONSTRUCTORS ---
 
-    static IsBool(value) => (
-        (value == true)
-        || (value == false)
-    )
-    static CheckBool(value) {
-        if !(KeyProfile.IsBool(value)) {
-            throw TypeError("binding value must be a bool")
-        }
-    }
-
     static IsStrBool(value) => (
         (value is String) ; string
         || ( ; or int with value 0

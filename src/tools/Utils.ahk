@@ -1,6 +1,11 @@
 #Requires AutoHotkey v2.0
 
 class Utils {
+    static BoolToText => Map(
+        true, "On",
+        false, "Off"
+    )
+    
     static SetOf(values*) {
         set := Map()
         for (val in values) {
@@ -21,4 +26,15 @@ class Utils {
         }
         throw ValueError("ele " ele " is not in the provided list")
     }
+
+    static IsBool(value) => (
+        (value == true)
+        || (value == false)
+    )
+    static CheckBool(value) {
+        if !(Utils.IsBool(value)) {
+            throw TypeError( "value (" Type(value) ") must be a boolean")
+        }
+    }
+
 }
