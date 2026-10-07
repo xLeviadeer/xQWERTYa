@@ -8,20 +8,7 @@
 #Include LockComposition.ahk
 #Include ../../config/locks/LockActions.ahk
 
-; delete when not using weird partial implementation
-#Include ../key/KeyProfile.ahk
-
 class Lock {
-    
-    ; - PARTIAL IMPLEMENTATION LOGIC -
-    static AccessMap := unset
-    static _SwapMap := unset
-    static Swap(lock_name) {
-        if !Lock._SwapMap.Has(lock_name) {
-            throw ValueError("lock_name (" lock_name ") is not a valid lock name")
-        }
-        Lock._SwapMap[lock_name].Call()
-    }
 
     ; --- VARIABLES ----
 
@@ -123,11 +110,6 @@ class Lock {
         }
     }
 
-    ; - partial implementation logic -
-    IsLockedRef() {
-        return this.IsLocked
-    }
-
     ; --- CONSTRUCTOR --- 
 
     static init() {
@@ -163,26 +145,6 @@ class Lock {
             }
             Lock._UsedNames[name] := false
         }
-
-        ; - partial implementation logic -
-        Lock.AccessMap := Map(
-            "arrowlock", {locked: (*) => Lock.List["arrow"].IsLockedRef(), modifier: KeyProfile.DEFAULT_NAME},
-            "arrowlock_shift", {locked: (*) => Lock.List["arrow"].IsLockedRef(), modifier: Modifier.SHIFT_NAME},
-            "arrowlock_shift_control", {locked: (*) => Lock.List["arrow"].IsLockedRef(), modifier: "shift_control"},
-            "arrowlock_elevate", {locked: (*) => Lock.List["arrow"].IsLockedRef(), modifier: Modifier.ELEVATE_NAME},
-            "arrowlock_control", {locked: (*) => Lock.List["arrow"].IsLockedRef(), modifier: Modifier.CONTROL_NAME},
-            "capslock", {locked: (*) => Lock.List["caps"].IsLockedRef(), modifier: KeyProfile.DEFAULT_NAME},
-            "numlock", {locked: (*) => Lock.List["num"].IsLockedRef(), modifier: KeyProfile.DEFAULT_NAME},
-            "mouselock", {locked: (*) => Lock.List["mouse"].IsLockedRef(), modifier: KeyProfile.DEFAULT_NAME}
-        )
-        Lock._SwapMap := Map(
-            "arrow", ObjBindMethod(Lock.List["arrow"], "Swap"),
-            "caps", ObjBindMethod(Lock.List["caps"], "Swap"),
-            "num", ObjBindMethod(Lock.List["num"], "Swap"),
-            "mouse", ObjBindMethod(Lock.List["mouse"], "Swap"),
-            "compad", ObjBindMethod(Lock.List["compad"], "Swap"),
-            "real", ObjBindMethod(Lock.List["real"], "Swap")
-        ) 
     }
 
     __New(
