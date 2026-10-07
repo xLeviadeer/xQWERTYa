@@ -22,7 +22,7 @@ In addition to these principles xQWERTYa has many benefits over a typical QWERTY
     - and more
 
 ## How to Use xQWERTYa 
-**xQWERTYa is a complex system. Please read the [documentation](./Docs/Index.md) to understand how to use xQWERTYa**. Read the known limitations [here](./Docs/Limitations.md).
+**xQWERTYa is a complex system. Please read the [documentation](./docs/Index.md) to understand how to use xQWERTYa**. Read the known limitations [here](./docs/Limitations.md).
 
 ### EXE (most users)
 1. Download the [latest releases's](../../releases) `.zip`.
@@ -46,7 +46,7 @@ If you intend to run xQWERTYa with Method Calls or use advanced functionality yo
     "default": "b"
 }
 ```
-- More examples can be found [under the samples directory](./Docs/Samples/) starting at [a](./Docs/Samples/keybinds/a.json), [b](./Docs/Samples/keybinds/b.json), and [c](./Docs/Samples/keybinds/c.json).
+- More examples can be found [under the samples directory](./docs/Samples/) starting at [a](./docs/Samples/keybinds/a.json), [b](./docs/Samples/keybinds/b.json), and [c](./docs/Samples/keybinds/c.json).
 
 ## Documentation
-You can read the documentation [here, under `Docs/`](./Docs/Index.md).
+You can read the documentation [here, under `docs/`](./docs/Index.md).
