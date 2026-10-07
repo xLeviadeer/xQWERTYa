@@ -3,7 +3,7 @@
 #Include ../../src/profile/Profile.ahk
 #Include ../../src/modifier/Modifier.ahk
 
-class Actions {
+class ModifierActions {
     ; --- CURL ---
 
     static CapsLockOff() {
