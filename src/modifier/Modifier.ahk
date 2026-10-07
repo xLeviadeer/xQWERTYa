@@ -106,42 +106,16 @@ class Modifier {
     ; --- INIT ---
 
     static init() {
-        ; check if modifiers.json exists
-        relative_path := Modifier.MODIFIERS_PATH
-        if (FileExist(relative_path)) {
-            Modifier.List := JSON.LoadFile(ModifierList, relative_path, "UTF-8")
+        ; check if modifiers.json exists & priority
+        if (FileExist(Modifier.MODIFIERS_PATH)) {
+            Modifier.List := JSON.LoadFile(ModifierList, Modifier.MODIFIERS_PATH, "UTF-8")
         }
+        Modifier.Priority := Utils.OrderByPriority(Modifier.List)
 
-        ; priority & symbol to name & used symbols
-        Modifier.Priority := Array()
+        ; symbol to name & used symbols
         Modifier.SymbolToName := Map("", KeyProfile.DEFAULT_NAME)
         Modifier.UsedSymbols := Map()
         for name, value in Modifier.List {
-            ; priority
-            if (Modifier.Priority.Length == 0) {
-                Modifier.Priority.Push(name)
-            } else {
-                ; adds in increasing priority order not allowing duplicates
-                i := 1
-                added := false
-                for search_name in Modifier.Priority {
-                    search_priority := Modifier.List[search_name].priority
-                    if (value.priority == search_priority) {
-                        throw ValueError("in modifiers.json: two priorities cannot have the same value")
-                    }
-                    if (search_priority > value.priority) {
-                        Modifier.Priority.InsertAt(i, name)
-                        added := true
-                        break
-                    }
-                    ; incr
-                    i += 1
-                }
-                if (added == false) {
-                    Modifier.Priority.Push(name)
-                }
-            }
-
             ; symbol to name
             Modifier.SymbolToName[value.symbol] := name
 

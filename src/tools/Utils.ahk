@@ -37,4 +37,36 @@ class Utils {
         }
     }
 
+    ; expects 
+    ;   list — List
+    static OrderByPriority(list) {
+        priority := Array()
+        for name, value in list {
+            ; priority
+            if (priority.Length == 0) {
+                priority.Push(name)
+            } else {
+                ; adds in increasing priority order not allowing duplicates
+                i := 1
+                added := false
+                for search_name in priority {
+                    search_priority := list[search_name].priority
+                    if (value.priority == search_priority) {
+                        throw ValueError("error creating priority: two priorities cannot have the same value: " search_priority " on " name)
+                    }
+                    if (search_priority > value.priority) {
+                        priority.InsertAt(i, name)
+                        added := true
+                        break
+                    }
+                    ; incr
+                    i += 1
+                }
+                if (added == false) {
+                    priority.Push(name)
+                }
+            }
+        }
+        return priority
+    }
 }
