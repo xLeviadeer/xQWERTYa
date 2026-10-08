@@ -9,10 +9,10 @@ class LockList extends List {
     static toJSON(obj) => obj.data
     toJSON() => LockList.toJSON(this)
 
-    static fromJSON(map_) {
+    static fromJSON(arr) {
         ; the json will be a list of maps by default; it must be converted to a list of modifier trackers
         map_of_modifiers := Map()
-        for value in map_ {
+        for value in arr {
             lck := Lock.fromJSON(value)
             map_of_modifiers[lck.name] := lck
         }

@@ -9,10 +9,10 @@ class ModifierList extends List {
     static toJSON(obj) => obj.data
     toJSON() => ModifierList.toJSON(this)
 
-    static fromJSON(map_) {
+    static fromJSON(arr) {
         ; the json will be a list of maps by default; it must be converted to a list of modifier trackers
         map_of_modifiers := Map()
-        for value in map_ {
+        for value in arr {
             mod := Modifier.fromJSON(value)
             map_of_modifiers[mod.name] := mod
         }
