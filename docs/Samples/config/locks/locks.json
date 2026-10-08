@@ -1,0 +1,8 @@
+[
+    {
+        "name": "caps",
+        "priority": 10,
+        "starts_locked": false,
+        "badge_text": "Caps Lock"
+    }
+]

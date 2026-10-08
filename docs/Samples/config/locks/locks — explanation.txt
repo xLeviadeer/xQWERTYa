@@ -1,0 +1,5 @@
+ⓘ locks define the locks that can be used like "capslock" or "numlock".
+
+`locks.json` can be left empty or omitted if you do not want to have any locks.
+
+the only lock included in this sample is `caps` intended to work like `capslock`. You can see an example usage of capslock in ⸢d⸥.

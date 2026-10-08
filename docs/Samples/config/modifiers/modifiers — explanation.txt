@@ -1,0 +1,7 @@
+ⓘ modifiers define the modifier keys (like shift and control) that can be used
+
+`modifiers.json` can be left empty or omitted if you do not want to have any modifiers. 
+
+the modifiers included in this example are made to mimic default windows modifiers. They target both left and right options where the left side are the ⸉primary⸉ targets meaning they will be preferred when simulating the modifier. 
+
+Typically, `lone_action` would not have any accessible values without running the program in AHK mode (as opposed to EXE mode). However, `"Windows"` a built-in action in the default executable which can be called from any modifier. 

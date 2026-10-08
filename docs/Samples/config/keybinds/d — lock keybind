@@ -1,0 +1,13 @@
+ⓘd is a keybind demonstrating how to use locks
+
+in default ⌄
+    when no modifiers
+        when caps lock is not active
+            types d
+        when caps lock is active
+            types D
+    when shift
+        when caps lock is not active
+            types D
+        when caps lock is active
+            types d

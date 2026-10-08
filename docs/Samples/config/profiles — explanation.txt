@@ -1,5 +1,7 @@
 ⓘ profiles defines all profiles that are used in the samples. remember, the default profile always exists even without a definition.
 
+`profiles.json` can be left empty or omitted if you do not want to have any profiles.
+
 profiles 1 〜 3 are example profiles used for key-profile examples.
     - profile 1 will show as red
     - profile 2 will show as blue

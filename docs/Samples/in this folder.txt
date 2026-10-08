@@ -1,7 +1,5 @@
-this folder contains a set of samples all inside of the `keybinds/` folder. 
-if you choose to, you can paste the entire samples keybinds in your `keybinds/` folder and test all samples
-
-this folder also contains a `modifiers.json` which roughly mimics the default Windows modifiers. 
+this folder contains a sample configuration including `keybinds/*`, `modifiers/modifiers.json`, `locks/locks.json` and `profiles.json`.
+each file a text file that sits next to it with an explanation of what to expect from it's behavior.
 
 resources ⌄
 • scan codes list found here: https://learn.microsoft.com/en-us/windows/win32/inputdev/about-keyboard-input

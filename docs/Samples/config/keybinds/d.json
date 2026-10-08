@@ -1,0 +1,13 @@
+{
+    "target": "d",
+    "default": {
+        "default": {
+            "default": "d",
+            "caps": "D"
+        },
+        "shift": {
+            "default": "D",
+            "caps": "d"
+        }
+    }
+}

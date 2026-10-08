@@ -29,9 +29,9 @@ in profile_2 ⌄
         - does nothing
     when shift
         - types ⸉w-shift⸉
-    when shift_shelve
+    when shift_alt
         - types ⸉w-shift⸉
-        - shift_shelve is set to base & hence types it's base (shift: ⸉w-shift⸉)
+        - shift_alt is set to base & hence types it's base (shift: ⸉w-shift⸉)
     when any other modifier
         - types w
         - profile_1 inherits from default

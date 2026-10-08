@@ -21,6 +21,7 @@
         "priority": 4,
         "name": "windows",
         "target": "LWin",
-        "alternates": ["RWin"]
+        "alternates": ["RWin"],
+        "lone_action": "Windows"
     }
 ]
