@@ -8,11 +8,12 @@ class ProfileList extends List {
     static toJSON(obj) => obj.data
     toJSON() => ProfileList.toJSON(this)
 
-    static fromJSON(map_) {
+    static fromJSON(arr) {
         ; the json will be a map of maps by default; it must be converted to a map of profiles
         mapOfProfiles := Map()
-        for key_, value in map_ {
-            mapOfProfiles[key_] := Profile.fromJSON(value)
+        for value in arr {
+            prof := Profile.fromJSON(value)
+            mapOfProfiles[prof.id] := prof
         }
         return ProfileList(mapOfProfiles)
     }

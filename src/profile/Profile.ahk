@@ -407,7 +407,7 @@ class Profile {
             Lock.List[Lock.COMPAD_NAME].SetLocked(Profile.DEFAULT_COMPATIBILITY, false)
         } else {
             prof := Profile.GetCurr()
-            Lock.List[Lock.COMPAD_NAME].SetLocked(prof.compability, false)
+            Lock.List[Lock.COMPAD_NAME].SetLocked(prof.compatibility, false)
         }
     }
 
@@ -523,7 +523,7 @@ class Profile {
         }
 
         ; check if there any profiles to cycle
-        if (Profile.List.Count == 0) {
+        if (Profile.List.Length == 0) {
             return
         }
 
@@ -543,7 +543,7 @@ class Profile {
         positionAdjusted := position + 1
 
         ; if next profile is out of bounds, set to default
-        if (positionAdjusted > Profile.ListVisible.Count) {
+        if (positionAdjusted > Profile.ListVisible.Length) {
             Profile._profile_switch(Profile.DEFAULT_NAME)
             Badge.ShowBadge(Profile.DEFAULT_NAME, , , Badge.COLOR_FOREGROUND)
             Profile._UpdateForProfile(Profile.DEFAULT_NAME)
