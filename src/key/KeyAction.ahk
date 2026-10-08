@@ -82,7 +82,6 @@ class KeyAction {
 
     ; list of actions to execute for checking
     DETERMINATION_ORDER => [
-        this._LocksCheck,
         this._ProfileExistsCheck,
         this._ModifierExistsCheck,
         this._BasedCheck,
@@ -128,15 +127,9 @@ class KeyAction {
 
     ;constructed modifier;
     ;constructed original_modifier;
-    _get_modifier_name(is_up) {
-        if (this.lock_modifier_name) { ; returns lock name if lock is being used
-            return this.lock_modifier_name
-        }
-        return this.modifier.GetNameString(is_up)
-    }
-    modifier_name => this._get_modifier_name(this.is_up)
-    modifier_name_down => this._get_modifier_name(false)
-    modifier_name_up => this._get_modifier_name(true)
+    modifier_name => this.modifier.GetNameString(this.is_up)
+    modifier_name_down => this.modifier.GetNameString(false)
+    modifier_name_up => this.modifier.GetNameString(true)
     _ModifierExists(
         modifier_name := true, ; true = do default
         nonexistent_value := true, ; whether to consider nonexistent
@@ -144,83 +137,122 @@ class KeyAction {
     ) {
         ; default modifier name
         if (modifier_name == true) {
-            modifier_name := this._get_modifier_name(is_up)
+            modifier_name := this.modifier.GetNameString(is_up)
         }
 
         ; return check if modifier exists
+        ; MsgBox(modifier_name)
+        ; MsgBox(this.curr_profile_id)
         return (
             this._ProfileRefExists() ; profile exists
             && (this.curr_profile_ref.HasProp(modifier_name)) ; modifier exists
             && (this.curr_profile_ref.%modifier_name% != nonexistent_value) ; modifier isn't true
         )
     }
-    lock_modifier_name := false
-    _get_modifier_value() {
-        if this.do_up_gen { 
-            ; we know that this action must be an up bind with an existing down bind based on the check that sets do_up_gen
-            down_value := this.curr_profile_ref.%this.modifier_name_down%
-
-            ; boolean check & signifier check
-            is_bool := (
-                (down_value == true)
-                || (down_value == false)
-            )
-            is_signifier := this._signifier_map.Has(down_value)
-            if (
-                is_signifier
-                || is_bool
-            ) { ; directly use signifier/bool (but with is_up context)
-                return down_value
-            }
-
-            ; already contains up signal
-            is_up_signal := RegExMatch(down_value, "Up(\s*)}")
-            if is_up_signal {
-                throw ValueError("cannot convert a down action which already signals Down/Up to an automatically generated up action: " down_value " on " this.curr_key_name)
-            }
-            
-            ; convert downs to ups & check if last is already up
-            ;   behavioral quirk: would act as follows for converting something like 🜚 {a}{b Down} → {a}{b Up}
-            ;   {a} is never assigned because it has no ⸉Down⸉
-            down_value := RegExReplace(down_value, "Down(\s*)}", "Up}") ; replace downs with ups if they exist
-            last_is_up := (
-                (StrLen(down_value) >= 4) ; can contan ⸉ Up}⸉
-                && (SubStr(down_value, StrLen(down_value) - 4, StrLen(down_value)) == " Up}")
-            )
-            if last_is_up {
-                return down_value
-            }
-
-            ; check for valid container
-            is_valid_container := ( 
-                (StrLen(down_value) >= 3) ; len 3 or more 🜚 {a}
-                && (SubStr(down_value, StrLen(down_value), 1) == "}") ; last == }
-            )
-            if is_valid_container { ; insert up
-                stub := SubStr(down_value, 1, StrLen(down_value) - 1) ; string without } 🜚 {a
-                return stub Modifier.UP_KEYSYMBOL_LONG "}" 
-            }
-
-            ; check for valid
-            is_valid := (
-                (StrLen(down_value) >= 1) ; len 1 or more 🜚 a
-                && ( ; either { ꭉ } are not included
-                    (StrOccur(down_value, "{") == 0) ; no {
-                    || (StrOccur(down_value, "}") == 0) ; no }
-                )
-            )
-            if is_valid { ; wrap up
-                return "{" down_value Modifier.UP_KEYSYMBOL_LONG "}" 
-            }
-            throw ValueError("cannot convert a complex down action to an automatically generated up action: " down_value " on " this.curr_key_name)
+    modifier_value  => this._get_modifier_value()
+    _get_modifier_value(mod_comp := true) { ; true as default
+        ; default modifier name
+        if mod_comp == true {
+            mod_comp := this.modifier
         }
-        return this.curr_profile_ref.%this.modifier_name% ; up or down auto
+
+        ; get the value respective to up generation
+        if this.do_up_gen {
+            return this.curr_profile_ref.%mod_comp.GetNameString(false)% ; down
+        } else {
+            return this.curr_profile_ref.%mod_comp.GetNameString(this.is_up)% ; up or down
+        }
     }
-    do_up_gen := false
+
+    ; - lock -
+
+    lock_name {
+        get {
+            if this.lock_select != false {
+                return this.lock_select
+            }
+            return KeyModifier.DEFAULT_NAME ; default if nothing selected
+        }
+    }
+    lock_select := false ; expected to be a string lock combination correlate
+    
+    lock_value {
+        get {
+            ; if false: return false ╎ acts like `"my_modifier": { "my_anything": false }`
+            if this.modifier_value == false {
+                return false
+            }
+
+            ; accounts for ⌄
+            ;   `do_up_gen` ¡selection¡ 🝗 not value generation 𐑶 in `modifer_value` 
+            ;   `lock_select` in `lock_name`
+            val := this.modifier_value.%this.lock_name%
+
+            ; account for `do_up_gen` generation
+            if this.do_up_gen { 
+                return this._generate_up_action(val)
+            } else {
+                return val
+            }
+        }
+    }
 
     ; - is_up -
 
     ;constructed is_up;
+    do_up_gen := false
+    _generate_up_action(down_value) { ; expects a value string
+        ; boolean check & signifier check
+        is_bool := Checks.IsBool(down_value)
+        is_signifier := this._signifier_map.Has(down_value)
+        if (
+            is_signifier
+            || is_bool
+        ) { ; directly use signifier/bool (but with is_up context)
+            return down_value
+        }
+
+        ; already contains up signal
+        is_up_signal := RegExMatch(down_value, "Up(\s*)}")
+        if is_up_signal {
+            throw ValueError("cannot convert a down action which already signals Down/Up to an automatically generated up action: " down_value " on " this.curr_key_name)
+        }
+        
+        ; convert downs to ups & check if last is already up
+        ;   behavioral quirk: would act as follows for converting something like 🜚 {a}{b Down} → {a}{b Up}
+        ;   {a} is never assigned because it has no ⸉Down⸉
+        down_value := RegExReplace(down_value, "Down(\s*)}", "Up}") ; replace downs with ups if they exist
+        last_is_up := (
+            (StrLen(down_value) >= 4) ; can contan ⸉ Up}⸉
+            && (SubStr(down_value, StrLen(down_value) - 4, StrLen(down_value)) == " Up}")
+        )
+        if last_is_up {
+            return down_value
+        }
+
+        ; check for valid container
+        is_valid_container := ( 
+            (StrLen(down_value) >= 3) ; len 3 or more 🜚 {a}
+            && (SubStr(down_value, StrLen(down_value), 1) == "}") ; last == }
+        )
+        if is_valid_container { ; insert up
+            stub := SubStr(down_value, 1, StrLen(down_value) - 1) ; string without } 🜚 {a
+            return stub Modifier.UP_KEYSYMBOL_LONG "}" 
+        }
+
+        ; check for valid
+        is_valid := (
+            (StrLen(down_value) >= 1) ; len 1 or more 🜚 a
+            && ( ; either { ꭉ } are not included
+                (StrOccur(down_value, "{") == 0) ; no {
+                || (StrOccur(down_value, "}") == 0) ; no }
+            )
+        )
+        if is_valid { ; wrap up
+            return "{" down_value Modifier.UP_KEYSYMBOL_LONG "}" 
+        }
+        throw ValueError("cannot convert a complex down action to an automatically generated up action: " down_value " on " this.curr_key_name)
+    }
 
     ; - cancelled -
 
@@ -231,15 +263,18 @@ class KeyAction {
     ; --- CONSTRUCTOR ---
 
     ; sets the starting point for this execution
-        ; expects key_name to be a valid string key name
-        ; expects profile_id to be a valid string profile name
-        ; expects modifier to be a ModifierComposition
-        ; expects is_up to be a boolean
-    __New(key_name, profile_id, modifier, is_up) {
+    __New(
+        key_name, ; expects key_name to be a valid string key name
+        profile_id, ; expects profile_id to be a valid string profile name
+        modifier, ; expects modifier to be a ModifierComposition
+        lock, ; expects lock to be a LockComposition
+        is_up ; expects is_up to be a boolean
+    ) {
         this.curr_key_name := key_name
         this.curr_profile_id := profile_id
         this.modifier := modifier
         this.original_modifier := modifier.Copy() ; tracked for completing the originally pressed modifier rather than what the modifier is resolved to
+        this.lock := lock
         this.is_up := is_up
     }
 
@@ -267,6 +302,7 @@ class KeyAction {
             key_event.key_target, ; currently pressed key
             Profile.Curr, ; current profile
             Modifier.CreateCompositionSnapshot(), ; snapshot of currently held keys
+            Lock.CreateCompositionSnapshot(), ; snapshot of currently active locks
             key_event.is_up
         )
 
@@ -317,23 +353,23 @@ class KeyAction {
     ; executes the action using its current properties as target settings
     _Execute() {
         ; switch based on modifier value
-        mod_val := this._get_modifier_value()
+        lock_val := this.lock_value
         if (
-            (mod_val == false)
-            || (mod_val == true)
+            (lock_val == false)
+            || (lock_val == true)
         ) {
             return ; do nothing
-        } else if (mod_val is String) {            
+        } else if (lock_val is String) {            
             ; string with no contents, do nothing
-            if (StrLen(mod_val) <= 0) {
+            if (StrLen(lock_val) <= 0) {
                 return
             }
 
             ; set mut copy
-            modifier_value_adj := mod_val
+            modifier_value_adj := lock_val
 
             ; down prefix
-            first_char := SubStr(mod_val, 1, 1)
+            first_char := SubStr(lock_val, 1, 1)
             if (first_char == Key.DOWN_PREFIX) {
                 ; if it's an up bind
                 if (this.is_up) { ; set to no longer down
@@ -352,7 +388,7 @@ class KeyAction {
                     }
                 }
                 
-                modifier_value_adj := SubStr(mod_val, 2)
+                modifier_value_adj := SubStr(lock_val, 2)
                 if (StrLen(modifier_value_adj) == 0) {
                     return ; no further action needed, string is now empty
                 }
@@ -417,7 +453,7 @@ class KeyAction {
             ; text
             SendInput(blinded_modifier_value)
         } else {
-            mod_val.Call(this.curr_key_name)
+            lock_val.Call(this.curr_key_name)
         }
     }
 
@@ -427,10 +463,10 @@ class KeyAction {
     ;   returns
     ;       true — if signifier
     ;       false — if ⊰not⊱ signifier
-    _checkSignifiers(mod_val) {
+    _checkSignifiers(lock_val) {
         ; for each signifier
         for (sig_name, sig_func in this._signifier_map) {
-            if (mod_val == sig_name) {
+            if (lock_val == sig_name) {
                 return sig_func.Call(this)
             }
         }
@@ -456,7 +492,8 @@ class KeyAction {
         KeyAction(
             this.curr_key_name,
             Profile.Curr,
-            ModifierComposition(),
+            ModifierComposition(), ; empty modifiers
+            this.lock,
             this.is_up
         ).Run()
         return true
@@ -483,9 +520,10 @@ class KeyAction {
 
         ; run a new action using this modifier (will allow for inheritance and such)
         KeyAction(
-            this.curr_key_name, ; same pressed key
-            Profile.Curr, ; current profile
+            this.curr_key_name, 
+            Profile.Curr, 
             ModifierComposition(modifier_base), ; base modifier
+            this.lock,
             this.is_up
         ).Run()
         return true
@@ -607,36 +645,6 @@ class KeyAction {
 
     ; - recurring processing starts -
 
-    ; adjusts the modifier for locks
-    ;   key — unchanged
-    ;   profile — unchanged
-    ;   modifier — if locked and lock existst on action,
-    ;       set to the associated lock modifier
-    ;   returns
-    ;       Break — when locked and lock existst on action
-    ;       Normal — when else
-    _LocksCheck() {
-        ; check all locks
-        for lock_name, lock_value in Lock.AccessMap {
-            ; check if the current lock (access) modifier is the same as the currently held modifier(s)
-            if (lock_value.modifier == this.modifier_name) {
-                ; check if the matching lock is locked
-                if (
-                    lock_value.locked() ; is locked
-                    && this._ModifierExists(lock_name) ; lock exists on this action
-                ) {
-                    ; set lock modifier
-                    this.lock_modifier_name := lock_name
-
-                    ; break — stops looking for inheritance
-                        ; this makes these statements only valid at toplevel
-                    return KeyActionProcessing.Break
-                }
-            } ; continue
-        }
-        return KeyActionProcessing.Normal
-    }
-
     ; checks if the profile reference exists on this action
     ;   key — unchanged
     ;   profile — if nonexistent,
@@ -658,22 +666,126 @@ class KeyAction {
 
     ; - profile definitely exists at this point, but could be default -
 
+    ; finds a valid modifier on the provided KeyModifier* ⧼via mod_name⧽ 
+        ; changes do_up_gen — only on break return
+        ; changes lock_select — only on break return
+        ; may return outer loop control signals ⧼intended to be interpretted⧽
+            ; true when Break should be used
+            ; false when Normal should be used
+
+    _FindLock(mod_comp := true) { ; true as default
+        ; default mod_name 
+        if mod_comp == true {
+            mod_comp := this.modifier
+        }
+
+        if !this._ModifierExists(mod_comp.GetNameString(this.is_up)) { ; modifier does not exist
+            if ( ; ⓘ up bind does not exist, but down bind does
+                this.is_up ; is up bind
+                && this._ModifierExists(mod_comp.GetNameString(false)) ; down bind exist
+            ) {
+                this.do_up_gen := true
+                ; don't break out of function
+            } else {
+                return false
+                ; modifier (and down bind if this is an up bind) do not exist, normal
+            }
+        }
+        ; modifier must exist or down binding for this non-existent up binding
+
+        ; break if false
+        if this._get_modifier_value(mod_comp) == false {
+            return true
+            ; this signals to process `"my_modifier": false`
+        }
+        ; modifier must be a KeyModifier because the contract with KeyProfile means
+            ; • true → non-existent ⌃⌃
+            ; • false → we just broke ^
+            ; • KeyModifier → ⌄
+
+        ; check that locks should be looped
+        largest_matching_combo := false
+        if (
+            (this.lock.Length > 0) ; at least one lock active
+            && (this._get_modifier_value(mod_comp).locks != false) ; there are any locks to loop
+        ) { 
+            ; loop through all lock combinations on this modifier
+            for lock_name, lock_value in this._get_modifier_value(mod_comp).locks {
+                curr_comp := LockComposition().fromString(lock_name)
+                
+                ; check if the curr composition does ¡not¡ fit in the active comp: skip
+                if !this.lock.Composes(curr_comp) {
+                    continue
+                }
+
+                ; check if the the composed composition is larger than the existing largest: set largest
+                if (
+                    (largest_matching_combo == false)
+                    || (curr_comp.Length > largest_matching_combo.Length)
+                ) {
+                    largest_matching_combo := curr_comp
+                    continue
+                }
+
+                ; if equal length
+                if curr_comp.Length == largest_matching_combo.Length {
+                    ; use priority to resolve the best match
+                    ; zip both comps
+                    loop curr_comp.Length {
+                        curr_ponet := curr_comp[A_Index]
+                        largest_ponet := largest_matching_combo[A_Index]
+
+                        ; if both are the same: skip
+                        if curr_ponet == largest_ponet { ; faster to compare strings than look up priority
+                            continue
+                        }
+
+                        ; set highest of two and break
+                        if Lock.RelPriorityOf(curr_ponet) > Lock.RelPriorityOf(largest_ponet) {
+                            largest_matching_combo := curr_comp
+                            break
+                        } else {
+                            ; no change
+                            break
+                        }
+                    }
+                }
+            }
+        }
+        ; highest found combo will exist at this point as ⌄
+        ;   false — if there was nothing to search, or the search could not find any matches
+        ;   a composition — if anything was searched that was composed in the active locks
+
+        ; if no matches were found
+        if largest_matching_combo == false {
+            ; check if default exists to be collapsed into
+            if this._get_modifier_value(mod_comp).default != false { ; exists
+                return true 
+                ; this signals to process `"my_modifier": { "default": ⌯ }
+            } else { ; does not exist
+                this.do_up_gen := false
+                ; disabled in-case it was enabled earlier for searching ╎ it is no longer relevant and should be disabled
+                return false
+                ; continue like the modifier does not exist (it essentially does not)
+            }
+            ; all options return meaning an else block does not need to follow
+        }
+
+        ; highest found combo must be an existing combination at this point
+        this.lock_select := largest_matching_combo.GetNameString()
+        return true
+        ; signals to process `"my_modifier": { "my_lock": ⌯ }
+    }
+
     ; checks if the modifier doesn't exists
     ;   key — unchanged
     ;   profile — unchanged
     ;   modifier — unchanged
     ;   returns
-    ;       Break — when modifier exists
-    ;       Normal — when modifier doesn't exist
+    ;       Break — when the modifier and valid lock both exist
+    ;       Normal — when modifier doesn't exist or the lock does not exist
     _ModifierExistsCheck() {
-        if this._ModifierExists() { ; modifier exists
-            return KeyActionProcessing.Break
-        }
-        if ( ; (bind does not exist)
-            this.is_up ; is up bind
-            && this._ModifierExists(, , false) ; down bind exist
-        ) {
-            this.do_up_gen := true ; do up generation for value gets of this key
+        if this._FindLock() {
             return KeyActionProcessing.Break
         }
         return KeyActionProcessing.Normal
@@ -712,8 +824,13 @@ class KeyAction {
             && (!failure_condition) ; no fail conditions
             && this._ModifierExists(this.modifier.GetSignificantString()) ; has base
         ) {
-            this.modifier := ModifierComposition(this.modifier.GetSignificantString())
-            return KeyActionProcessing.Continue
+            ; check new comp for valid lock
+            new_comp := ModifierComposition(this.modifier.GetSignificantString())
+            if this._FindLock(new_comp) {
+                ; `lock_select` & `do_up_gen` will be set in `_FindLock`
+                this.modifier := new_comp
+                return KeyActionProcessing.Break ; since we know a valid lock was found we can break here
+            }
         }
         return KeyActionProcessing.Normal
     }
@@ -752,8 +869,12 @@ class KeyAction {
             (this.modifier_name_down != KeyProfile.DEFAULT_NAME) ; is not default modifier already
             && (!failure_condition) ; no fail conditions
         ) {
-            this.modifier.Clear() ; sets to default
-            return KeyActionProcessing.Continue
+            empty_comp := ModifierComposition()
+            if this._FindLock(empty_comp) {
+                ; `lock_select` & `do_up_gen` will be set in `_FindLock`.
+                this.modifier.Clear() ; sets to default
+                return KeyActionProcessing.Break
+            }
         }
         return KeyActionProcessing.Normal
     }
