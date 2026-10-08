@@ -296,10 +296,11 @@ class Profile {
 
     static init() {
         ; check if profiles.json exists
-        relative_path := Profile.PROFILES_PATH
-        if (FileExist(relative_path)) {
-            ; set list
-            Profile.List := JSON.LoadFile(ProfileList, relative_path, "UTF-8")
+        if (FileExist(Profile.PROFILES_PATH)) {
+            try {
+                Profile.List := JSON.LoadFile(ProfileList, Profile.PROFILES_PATH, "UTF-8")
+            } catch (Error) {
+            }
         }
 
         ; set list of only visible profiles

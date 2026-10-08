@@ -77,7 +77,10 @@ class Modifier {
     static init() {
         ; check if modifiers.json exists & priority
         if (FileExist(Modifier.MODIFIERS_PATH)) {
-            Modifier.List := JSON.LoadFile(ModifierList, Modifier.MODIFIERS_PATH, "UTF-8")
+            try {
+                Modifier.List := JSON.LoadFile(ModifierList, Modifier.MODIFIERS_PATH, "UTF-8")
+            } catch (Error) {
+            }
         }
         Modifier.Priority := Utils.OrderByPriority(Modifier.List)
 

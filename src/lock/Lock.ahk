@@ -116,19 +116,29 @@ class Lock {
     ; --- CONSTRUCTOR --- 
 
     static init() {
+        ; create compad lock
+        Lock.List := LockList(
+            Lock.COMPAD_NAME, Lock( ; compad
+                Lock.COMPAD_NAME, -1,
+                false, false, ; off by default ╎ not bindable
+                false, true, ; no change action ╎ show badge
+                "Compad Mode" 
+            )
+        )
+
         ; check if locks.json exists & priority
         if (FileExist(Lock.LOCKS_PATH)) {
-            Lock.List := Map(
-                Lock.COMPAD_NAME, Lock( ; compad
-                    Lock.COMPAD_NAME, -1,
-                    false, false, ; off by default ╎ not bindable
-                    false, true, ; no change action ╎ show badge
-                    "Compad Mode" 
-                )
-            )
-            for name, value in JSON.LoadFile(LockList, Lock.LOCKS_PATH, "UTF-8") {
-                Lock.List[name] := value
+            try_read_json() {
+                try {
+                    data := JSON.LoadFile(LockList, Lock.LOCKS_PATH, "UTF-8")
+                } catch (Error) {
+                    return
+                }
+                for name, value in data {
+                    Lock.List[name] := value
+                }
             }
+            try_read_json()
         }
         ; create list without un-bindables ╎ excludes un-bindables from the priority
         bindables := Map()
