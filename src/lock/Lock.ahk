@@ -23,6 +23,9 @@ class Lock {
 
     static List := LockList()
     static Priority := unset
+    static RelPriorityOf(lck) { ; assumes valid lck string mod
+        return Utils.IndexOf(Modifier.Priority, lck) ; gives an integer "priority" representing the position of the object not the real priority value
+    }
     static _UsedNames := unset 
 
     ; -- Instance --
