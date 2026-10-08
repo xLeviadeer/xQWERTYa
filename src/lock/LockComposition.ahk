@@ -20,4 +20,21 @@ class LockComposition extends Composition {
     ValidateKeystr(lck) {
         Lock.CheckValidLock(lck)
     }
+
+    ; --- COMPARISON ---
+
+    Composes(other) {
+        ; type check
+        if !(other is LockComposition) {
+            throw TypeError("other must be a LockComposition")
+        }
+
+        ; loop other contents and check if all are contained in this
+        for ponet in other {
+            if !this.List.Has(ponet) {
+                return false
+            }
+        }
+        return true
+    }
 }
