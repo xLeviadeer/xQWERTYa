@@ -141,8 +141,6 @@ class KeyAction {
         }
 
         ; return check if modifier exists
-        ; MsgBox(modifier_name)
-        ; MsgBox(this.curr_profile_id)
         return (
             this._ProfileRefExists() ; profile exists
             && (this.curr_profile_ref.HasProp(modifier_name)) ; modifier exists
