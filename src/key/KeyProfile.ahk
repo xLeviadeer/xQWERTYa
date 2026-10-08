@@ -89,8 +89,8 @@ class KeyProfile {
         collapse_explicit := false,
         based := false,
         based_explicit := false,
-        default := false,
-        default_up := false,
+        default := true,
+        default_up := true,
         modifiers := false
     ) {
         ; uses
@@ -122,19 +122,36 @@ class KeyProfile {
         this.based_explicit := based_explicit
 
         ; default
-        if (
-            !(Checks.IsBool(default))
-            && !(default is KeyModifier)
+        if (default is String) {
+            default := KeyModifier(default)
+            this.default := default
+        } else if (default is Map) {
+            default := KeyModifier.fromJSON(default)
+            this.default := default
+        } else if (
+            Checks.IsBool(default)
+            || (default is KeyModifier)
         ) {
-            throw TypeError("default must be an instance of KeyModifier or a boolean")
+            this.default := default
+        } else {
+            for item in default {
+                MsgBox(item)
+            }
+            throw TypeError("default must be an instance of KeyModifier, a Map or a boolean not " Type(default))
         }
-        this.default := default
         ; default up
-        if (
-            !(Checks.IsBool(default_up))
-            && !(default_up is KeyModifier)
+        if (default_up is String) {
+            default_up := KeyModifier(default_up)
+        } else if (default_up is Map) {
+            default_up := KeyModifier.fromJSON(default_up)
+            this.default_up := default_up
+        } else if (
+            Checks.IsBool(default_up)
+            || (default_up is KeyModifier)
         ) {
-            throw TypeError("default_up must be an instance of KeyModifier or a boolean")
+            this.default_up := default_up
+        } else {
+            throw TypeError("default_up must be an instance of KeyModifier, a Map or a boolean not " Type(default_up))
         }
         this.default_up := default_up
 
@@ -146,13 +163,29 @@ class KeyProfile {
             for name, value in modifiers {
                 ; if it can be composed from a string we know it's valid even if we don't need it now
                 ModifierComposition().fromString(name)
-                ; value must be KeyModifier or bool
-                if (
-                    !(Checks.IsBool(value))
-                    && !(value is KeyModifier)
-                ) {
-                    throw TypeError("value (of " name ") must be an instance of KeyModifier or a boolean")
+                
+                ; convert String to KeyModifier
+                if (value is String) {
+                    modifiers[name] := KeyModifier(value)
+                    continue
                 }
+
+                ; convert map to KeyModifier
+                if (value is Map) {
+                    modifiers[name] := KeyModifier.fromJSON(value)
+                    continue
+                }
+
+                ; check bool or KeyModifier
+                if (
+                    (Checks.IsBool(value))
+                    || (value is KeyModifier)
+                ) {
+                    ; no change
+                    continue
+                }
+                
+                throw TypeError("value (of " name ") must be an instance of KeyModifier, a Map or a boolean")
             }
         }
         this.modifiers := modifiers
@@ -195,7 +228,10 @@ class KeyProfile {
     )
     static fromJSON(data) { 
         ; check for simplified format
-        if (data is String) {
+        if (
+            (data is String)
+            || Checks.IsBool(data)
+        ) {
             return KeyProfile(
                 ,,,,,
                 true, ; collapse
@@ -209,26 +245,7 @@ class KeyProfile {
             if KeyProfile._JSON_EXCLUDES.Has(name) {
                 continue
             }
-
-            ; check for semi-simplified format
-            if value is String {
-                data_excess[name] := KeyModifier(value)
-                continue
-            } 
-
-            ; create from json data
-            if value is Map {
-                data_excess[name] := KeyModifier.fromJSON(value)
-                continue
-            }
-
-            ; false (unset)
-            if Checks.IsBool(value) {
-                data_excess[name] := value
-                continue
-            }
-
-            throw TypeError("KeyProfile modifier value must be a String, KeyModifier or a boolean")
+            data_excess[name] := value
         }
         return KeyProfile(
             data.Has(KeyProfile.USES_NAME) ? data[KeyProfile.USES_NAME] : true,
@@ -240,8 +257,8 @@ class KeyProfile {
             data.Has(KeyProfile._COLLAPSE_EXPLICIT_NAME) ? data[KeyProfile._COLLAPSE_EXPLICIT_NAME] : false,
             data.Has(KeyProfile.BASED_NAME) ? data[KeyProfile.BASED_NAME] : false,
             data.Has(KeyProfile._BASED_EXPLICIT_NAME) ? data[KeyProfile._BASED_EXPLICIT_NAME] : false,
-            data.Has(KeyProfile.DEFAULT_NAME) ? data[KeyProfile.DEFAULT_NAME] : false,
-            data.Has(KeyProfile.DEFAULT_NAME_UP) ? data[KeyProfile.DEFAULT_NAME_UP] : false,
+            data.Has(KeyProfile.DEFAULT_NAME) ? data[KeyProfile.DEFAULT_NAME] : true,
+            data.Has(KeyProfile.DEFAULT_NAME_UP) ? data[KeyProfile.DEFAULT_NAME_UP] : true,
             data_excess
         )
     }
