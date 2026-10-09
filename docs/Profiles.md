@@ -3,16 +3,16 @@ xQWERTYa uses ⸉profiles⸉ to allow the creation of separate modes of operatio
 
 Profiles are simple but may become complex as they are customized. All profiles must be defined in `config/profiles.json`. Except for the `default` profile which always exists, cannot be re-defined in `profiles.json` and has a set of default characteristics. An example `profiles.json` with two simple profiles ⌄
 ```json
-{
-    "profile_one": {
+[
+    {
         "id": "profile_one",
         "name": "Profile One"
     },
-    "profile_two": {
+    {
         "id": "profile_two",
         "name": "Profile Two"
     }
-}
+]
 ```
 
 **Profile attributes are ¡not¡ inherited.**
