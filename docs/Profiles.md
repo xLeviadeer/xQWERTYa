@@ -1,6 +1,7 @@
 # Profiles
 xQWERTYa uses ⸉profiles⸉ to allow the creation of separate modes of operation for the keyboard. For example: one profile may bind ⸢a⸥ to ⸢b⸥ but another may rebind ⸢a⸥ to ⸢c⸥. And the button ⸢g⸥ swaps from one profile to the other. Depending on the active profile, ⸢a⸥ will either result in ⸢b⸥ or ⸢c⸥. 
 
+## Profile Configuration
 Profiles are simple but may become complex as they are customized. All profiles must be defined in `config/profiles.json`. Except for the `default` profile which always exists, cannot be re-defined in `profiles.json` and has a set of default characteristics. An example `profiles.json` with two simple profiles ⌄
 ```json
 [
@@ -15,10 +16,23 @@ Profiles are simple but may become complex as they are customized. All profiles 
 ]
 ```
 
-**Profile attributes are ¡not¡ inherited.**
+## Key-Profiles
+To make use of defined profiles a key-profile must be created on a key. A key-profile defnies the behavior of a profile under existing narrowed conditions. An example key-profile definition using the `profiles.json` configuration above ⌄.
+```json
+{
+    "target": "a",
+    "default": "a",
+    "profile_one": "b",
+    "profile_two": "c"
+}
+```
+The following statements are true given the binding above ⌄.
+- when in the `default` profile and ⸢a⸥ is pressed: ⸉a⸉ is typed.
+- when in `profile_one` and ⸢a⸥ is pressed: ⸉b⸉ is typed.
+- when in `profile_two` and ⸢a⸥ is pressed: ⸉c⸉ is typed. 
 
 ## Attributes
-A list of possible attributes that may exist on a profile are detailed as follows
+A list of possible attributes that may exist on a profile are detailed as follows. **Profile attributes are ¡not¡ inherited.**
 
 ### ID
 - required — yes
