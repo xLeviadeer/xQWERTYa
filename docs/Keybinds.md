@@ -1,15 +1,18 @@
 # Keybinds
 xQWERTYa uses ⸉keybinds⸉ to bind specific keys. Each keybind has an expected structure. Each keybind is a single `.json` file in the `config/keybinds/` folder including ⌄
 1. a ⸉target⸉ key to remap.
-2. a key-profile; a dictionary of profiles which the key and profile has associated ⸉bindings⸉ for. Key-profiles must be profiles that exist in `profiles.json` (see [Profiles](./Profiles.md)).
+2. a binding of various formats ⌄
+    1. a binding in the form of a boolean or string. 
+    2. a key-profile; a dictionary of profiles which the key and profile has associated ⸉bindings⸉ for. Key-profiles must be profiles that exist in `profiles.json` (see [Profiles](./Profiles.md)). 
 
 A ⸉**binding**⸉ is a singular mapping which specifies ⌄
 1. the key that is remapped (via the target of the keybind).
-2. the profile for which the mapping takes place under.
-3. the modifiers that must be pressed alongside the target to trigger the mapping.
-4. the associated action to take when the above circumstances are fulfilled.
+2. the [profile](./Profiles.md) for which the mapping takes place under.
+3. the [modifiers](./Modifiers.md) that must be pressed alongside the target to trigger the mapping.
+4. the behavior for when a certain combination of [locks](./Locks.md) are active.  
+5. the associated action to take when the above circumstances are fulfilled.
 
-⌄ is a sample keybind.
+⌄ is a sample keybind. This sample does not use locks. See [locks](./Locks.md) for details on usage of locks. 
 ```json
 {
     "target": "a",
@@ -215,13 +218,13 @@ The ⌄ is an order╌from top to bottom╌that occurs when interpretting a keys
 1. disabled letters check
 	- if a letter is supposed to be disabled in a profile it will be disabled now
 2. an interpretation loop starts; the following steps loop until default is hit or a valid action is found
-	1. lock interpretation
-		- if a lock is present it will be interpreted
-		- locks ignore `else` treatment, inheritance, and uses: a lock will default to the default of the current key + profile + modifier if the lock isn't present
-	2. nonexistent profile inheritance
+	1. nonexistent profile inheritance
 		- if a profile doesn't exist it's inherited via profile settings
-	3. modifier existence
+	2. modifier existence
 		- if a modifier exists it will be executed
+        - locks are interpretted and resolved at this stage
+    3. base logic
+        - base logic runs, changing the target modifier
 	4. collapse logic
 		- collapse logic runs, changing the target modifier
 	5. else logic
