@@ -2,7 +2,7 @@
 xQWERTYa may use a set of ⸉Locks⸉ which are states that work like how caps-lock works on a typical QWERTY keyboard. They are intended to be [triggered via a binding](./keybinds.md#toggle-lock). Locks are distinctly toggle-based (switch on, switch off). The [sample binding for locks](./Samples/config/locks/locks.json) includes only an example lock for caps-lock. And a usage example can be found in the key ⸢d⸥. 
 
 ## Lock Configuration
-Locks are customizable properties. They must be defined in `config/locks/locks.json` except for the `compad` lock which always exists, cannot be re-defined in `locks.json` and has a set of un-changable characteristics. An example `locks.json` with two simple locks ⌄
+Locks are customizable properties. They must be defined in `config/locks/locks.json` except for the `compad` lock which always exists, cannot be re-defined in `locks.json` and has a set of un-changable characteristics. An example `locks.json` with two simple locks ⌄.
 ```json
 [
     {
