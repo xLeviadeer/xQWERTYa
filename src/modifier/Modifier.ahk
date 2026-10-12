@@ -383,7 +383,7 @@ class Modifier {
     static toJSON(mod) => Map(
         "name", mod.name,
         "priority", mod.priority,
-        "symbol", mod.symbol,
+        "target", mod.symbol,
         "alternates", mod.symbol_alts,
         "else", mod.else_,
         "lone_action", mod.lone_action_name,
