@@ -77,7 +77,7 @@ A list of possibles that may exist on a lock are detailed as follows.
 - description — the priority in the composition order for this lock.
     - two locks cannot share the same priority
     - a lock with a lower priority appears before other locks in string combination form ⌄
-        - given lock `caps` with priority 10 & lock `num` with priority: the combination would be required as `caps_num`.
+        - given lock `caps` with priority 10 & lock `num` with priority 20: the combination would be required as `caps_num`.
     - priority may be used to resolve conflicts a key-modifier structure.
 
 ### Starts Locked
@@ -99,8 +99,8 @@ A list of possibles that may exist on a lock are detailed as follows.
 - required — no 
     - defaults to `false` if unspecified.
 - keyword — `change_action`
-- value type — a string function name or `false` (meaning none)
-- description — the name of AHK method located in `config/locks/LockActions` to run when this lock changes state. 
+- value type — string function name or `false` (meaning none)
+- description — the name of AHK method located in `config/locks/LockActions.ahk` to run when this lock changes state. 
     - only built-in methods can be used if running in EXE mode. 
 
 ### Show Badge
@@ -114,7 +114,7 @@ A list of possibles that may exist on a lock are detailed as follows.
 - required — no
     - defaults to `Right` if unspecified
 - keyword — `badge_side`
-- value type — a string matching one of ⌄
+- value type — string matching one of ⌄
     - `"Right"`
     - `"Middle"`
     - `"Left"`
