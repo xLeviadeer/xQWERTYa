@@ -9,7 +9,7 @@ class KeyCache {
     ; --- VARIABLES ---
 
     static DoCaching := false
-    
+
     static ProfCache := Map()
     static CacheOf := false
 
@@ -39,6 +39,13 @@ class KeyCache {
         ) {
             return ; skip if already set
         }
+
+        ; show badge
+        Badge.ShowBadge(
+            "Caching…",
+            , 
+            "8688A6", "47476B"
+        )
 
         ; loop keys
         new_cache := Map()
