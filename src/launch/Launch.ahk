@@ -6,6 +6,7 @@
 #Include ..\modifier\Modifier.ahk
 #Include ..\lock\Lock.ahk
 #Include ..\tools\Badge.ahk
+#Include ..\key\KeyCache.ahk
 
 launch() {
     ; spam protection highened window
@@ -87,6 +88,17 @@ launch() {
         BADGE_BUILD_FG
     )
     Key.BindAll()
+
+    ; ALPHA caching code ╎ create profile cache
+    if KeyCache.DoCaching {
+        Badge.ShowBadge(
+            "compiling cache",
+            BADGE_LOC,
+            BADGE_BUILD_BG,
+            BADGE_BUILD_FG
+        )
+        KeyCache.SetProfileCache(Profile.DEFAULT_NAME)
+    }
 
     ; startup badge
     Badge.ShowBadge(

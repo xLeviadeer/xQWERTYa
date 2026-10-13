@@ -2,65 +2,9 @@
 #Include ../modifier/Modifier.ahk
 #Include ../lock/Lock.ahk
 #Include CustomKeys.ahk
-
-; class that describes a key event
-class KeyEvent {
-
-    ; --- VARIABLES ---
-
-    ;constructed key_target;
-    ;constructed is_up;
-
-    ; --- CONSTRUCTOR ---
-
-    __New(
-        key_target,
-        is_up
-    ) {
-        this.key_target := key_target
-        this.is_up := is_up
-    }
-
-    static FromHotkeyString(HotkeyString) {
-        ; match positions out of the hotkey name
-        RegExMatch(
-            HotkeyString,
-            "^(?!.*\+.*\+)(?!.*\$.*\$)[\*\$]+",
-            &info
-        )
-        splitPosition := 0
-        if (info is RegExMatchInfo) {
-            splitPosition := info.Len
-        }
-
-        ; check if it's an up action
-        hotkeyStringLen := StrLen(HotkeyString)
-        upKeysymbolLen := StrLen(Modifier.UP_KEYSYMBOL_LONG)
-        cutLength := 0
-        is_up := false
-        if (
-            (hotkeyStringLen > upKeysymbolLen) ; long enough to contain " Up"
-            && (SubStr( ; ends with " Up"
-                HotkeyString, 
-                hotkeyStringLen - (upKeysymbolLen - 1),
-                hotkeyStringLen
-            ) == Modifier.UP_KEYSYMBOL_LONG)
-        ) {
-            cutLength := upKeysymbolLen
-            is_up := true
-        }
-
-        ; get the key name out of the hotkey name
-        key_target := SubStr(
-            HotkeyString,
-            splitPosition + 1,
-            (hotkeyStringLen - (splitPosition - 1)) - (cutLength + 1)
-        )
-
-        ; return new
-        return KeyEvent(key_target, is_up)
-    }
-}
+#Include KeyEvent.ahk
+#Include ActionExecutor.ahk
+#Include KeyCache.ahk
 
 ; (enum) holds constants for KeyAction processing
 class KeyActionProcessing {
@@ -126,7 +70,6 @@ class KeyAction {
     ; - modifier -
 
     ;constructed modifier;
-    ;constructed original_modifier;
     modifier_name => this.modifier.GetNameString(this.is_up)
     modifier_name_down => this.modifier.GetNameString(false)
     modifier_name_up => this.modifier.GetNameString(true)
@@ -242,8 +185,8 @@ class KeyAction {
         is_valid := (
             (StrLen(down_value) >= 1) ; len 1 or more 🜚 a
             && ( ; either { ꭉ } are not included
-                (StrOccur(down_value, "{") == 0) ; no {
-                || (StrOccur(down_value, "}") == 0) ; no }
+                (Utils.StrOccur(down_value, "{") == 0) ; no {
+                || (Utils.StrOccur(down_value, "}") == 0) ; no }
             )
         )
         if is_valid { ; wrap up
@@ -271,7 +214,6 @@ class KeyAction {
         this.curr_key_name := key_name
         this.curr_profile_id := profile_id
         this.modifier := modifier
-        this.original_modifier := modifier.Copy() ; tracked for completing the originally pressed modifier rather than what the modifier is resolved to
         this.lock := lock
         this.is_up := is_up
     }
@@ -295,12 +237,31 @@ class KeyAction {
         ; parse the key
         key_event := KeyEvent.FromHotkeyString(HotkeyString)
 
+        ; create snapshots
+        mod := Modifier.CreateCompositionSnapshot() ; snapshot of currently held keys
+        lck := Lock.CreateCompositionSnapshot() ; snapshot of currently active locks
+
+        ; ALPHA caching code
+        if KeyCache.DoCaching {
+            cache_key := KeyCache.CreateKey(
+                key_event.key_target,
+                Profile.Curr,
+                mod.GetNameString(false), ; always down
+                lck.GetNameString(),
+                key_event.is_up
+            )
+            if KeyCache.ProfCache.Has(cache_key) {
+                KeyCache.ProfCache[cache_key].Execute(mod) 
+                return
+            }
+        }
+
         ; create a starting point action
         key_action := KeyAction(
-            key_event.key_target, ; currently pressed key
-            Profile.Curr, ; current profile
-            Modifier.CreateCompositionSnapshot(), ; snapshot of currently held keys
-            Lock.CreateCompositionSnapshot(), ; snapshot of currently active locks
+            key_event.key_target, 
+            Profile.Curr, 
+            mod,
+            lck,
             key_event.is_up
         )
 
@@ -310,14 +271,14 @@ class KeyAction {
 
     ; runs this action; executes the appropriate thing for this action
     Run() {
+        original_modifier := this.modifier.Copy()
+        executor := this.Resolve()
+        executor.Execute(original_modifier)
+    }
+
+    Resolve() {
         ; compatibility mode checks
         this._compatibilityMode()
-
-        ; check if the starting profile disables letters
-        if (this._DisablesLetters()) {
-            this.original_modifier.MarkCompleted()
-            return
-        }
         
         ; start inheritance loop
         search_for_more_inheritance := true
@@ -338,128 +299,38 @@ class KeyAction {
         }
 
         ; check if it's been cancelled
-        if (this.cancelled) {
-            this.original_modifier.MarkCompleted()
-            return
-        }
+        value := this.cancelled ? this.cancelled : this.lock_value ; use cancelled value if cancelled
+        do_down_tracking := false ; false if cancelled
+        if !this.cancelled { ; skip down tracking and signifiers if cancelled
+            ; check if down tracking is present
+            do_down_tracking := SubStr(value, 1, 1) == Key.DOWN_PREFIX
+            if do_down_tracking {
+                value := SubStr(value, 2) ; adj value to get rid of Key.DOWN_PREFIX
+            }
 
+            ; check for signifiers
+            action := this._checkSignifiers(value)
+            if action != false {
+                value := action ; change the value into the action
+            }
+        }
+            
         ; execute
-        this._Execute()
-        this.original_modifier.MarkCompleted()
-    }
-
-    ; executes the action using its current properties as target settings
-    _Execute() {
-        ; switch based on modifier value
-        lock_val := this.lock_value
-        if (
-            (lock_val == false)
-            || (lock_val == true)
-        ) {
-            return ; do nothing
-        } else if (lock_val is String) {            
-            ; string with no contents, do nothing
-            if (StrLen(lock_val) <= 0) {
-                return
-            }
-
-            ; set mut copy
-            modifier_value_adj := lock_val
-
-            ; down prefix
-            first_char := SubStr(lock_val, 1, 1)
-            if (first_char == Key.DOWN_PREFIX) {
-                ; if it's an up bind
-                if (this.is_up) { ; set to no longer down
-                    Key.DownTracking[this.curr_key_name] := false
-
-                ; track down status
-                } else {
-                    if (
-                        !(Key.DownTracking.Has(this.curr_key_name))
-                        || (Key.DownTracking[this.curr_key_name] == false)
-                    ) { ; not in the down tracking map or false in the map
-                        Key.DownTracking[this.curr_key_name] := true
-                        ; continue
-                    } else { ; in map and true, do nothing
-                        return ; return
-                    }
-                }
-                
-                modifier_value_adj := SubStr(lock_val, 2)
-                if (StrLen(modifier_value_adj) == 0) {
-                    return ; no further action needed, string is now empty
-                }
-            }
-            first_char := SubStr(modifier_value_adj, 1, 1) ; adj for down tracking
-            modifier_value_no_first := SubStr(modifier_value_adj, 2) ; remove first char
-
-            ; if any signifiers are present
-            if (this._checkSignifiers(modifier_value_adj)) {
-                return
-            }
-
-            ; mouse button
-            if (first_char == Key.MOUSE_PREFIX) { 
-                ; split into comma arguments
-                    ; button, x, y, count, speed, state, relative
-                    ; 🜚 L, , , , , D
-                args := StrReplace(modifier_value_no_first, " ", "") ; remove spaces
-                args := StrSplit(args, ",") ; split by commas
-                for (i, arg in args) {
-                    if arg == "" {
-                        args.Delete(i)
-                    }
-                }
-                MouseClick(args*)
-                return
-            } 
-
-            ; profile action
-            if (first_char == Key.PROFILE_PREFIX) {
-                Profile.SwitchTo(modifier_value_no_first)
-                return
-            }
-
-            ; lock action
-            if (first_char == Key.LOCK_PREFIX) {
-                Lock.Swap(modifier_value_no_first)
-                return
-            }
-            
-            ; custom action
-            if (first_char == Key.ACTION_PREFIX) { 
-                custom_target := CustomKeys.List[this.curr_key_name]
-                function_name := modifier_value_no_first
-                if !(custom_target.HasMethod(function_name)) {
-                    throw ValueError("function not in targeted CustomKey reference; '" function_name "' is not a valid function")
-                }
-                custom_target.%function_name%.Call(modifier_value_no_first)
-                return
-            } 
-
-            ; check blind
-            if (this.curr_profile_is_default) {
-                do_blind := Profile.DEFAULT_BLIND
-            } else {
-                do_blind := this.curr_profile.blind
-            }
-
-            ; adjust for blind
-            blinded_modifier_value := (do_blind) ? "{Blind}" modifier_value_adj : modifier_value_adj
-            
-            ; text
-            SendInput(blinded_modifier_value)
-        } else {
-            lock_val.Call(this.curr_key_name)
-        }
+        do_blind := (this.curr_profile_is_default) ? Profile.DEFAULT_BLIND : this.curr_profile.Blind
+        return ActionExecutor(
+            this.curr_key_name,
+            value,
+            this.is_up,
+            do_blind,
+            do_down_tracking
+        )
     }
 
     ; --- SIGNIFIERS ---
 
     ; checks for if this string is a signifier
     ;   returns
-    ;       true — if signifier
+    ;       action — if signifier
     ;       false — if ⊰not⊱ signifier
     _checkSignifiers(lock_val) {
         ; for each signifier
@@ -487,20 +358,18 @@ class KeyAction {
         this.modifier.Clear() ; sets to default
 
         ; run a new key action using this modifier
-        KeyAction(
+        return KeyAction(
             this.curr_key_name,
             Profile.Curr,
             ModifierComposition(), ; empty modifiers
             this.lock,
             this.is_up
-        ).Run()
-        return true
+        ).Resolve()
     }
 
     ; else
     _sigElse() {
-        this._RunElse()
-        return true
+        return this._ResolveElse()
     }
 
     ; base
@@ -517,47 +386,49 @@ class KeyAction {
         }
 
         ; run a new action using this modifier (will allow for inheritance and such)
-        KeyAction(
+        return KeyAction(
             this.curr_key_name, 
             Profile.Curr, 
             ModifierComposition(modifier_base), ; base modifier
             this.lock,
             this.is_up
-        ).Run()
-        return true
+        ).Resolve()
     }
 
     ; cycle
     _sigCycle() {
-        Profile.Cycle() 
-        return true
+        return (target) => Profile.Cycle() 
     }
 
     ; reload 
     _sigReload() {
-        Badge.ShowBadge(
-            "Reloading the program",
-            "Middle",
-            "996300",
-            "ffA500"
-        )
-        ; as long as this isn't instant then `this.modifier.MarkCompleted()` doesn't need to be run early (which is the only thing that has to finalize before closing the program)
-        SetTimer(() => Reload(), -Badge.TOOLTIP_TIME_MS)
-        return true
+        rel() {
+            Badge.ShowBadge(
+                "Reloading the program",
+                "Middle",
+                "996300",
+                "ffA500"
+            )
+            ; as long as this isn't instant then `this.modifier.MarkCompleted()` doesn't need to be run early (which is the only thing that has to finalize before closing the program)
+            SetTimer(() => Reload(), -Badge.TOOLTIP_TIME_MS)
+        }
+        return (target) => rel()
     }
 
     ; kill
     _sigKill() {
-        Key.SetKeys(false) ; disable all binds to prevent glitches when turning off
-        Badge.ShowBadge(
-            "Exited the program",
-            "Middle",
-            "460026",
-            "FF0000"
-        )
-        ; as long as this isn't instant then `this.modifier.MarkCompleted()` doesn't need to be run early (which is the only thing that has to finalize before closing the program)
-        SetTimer(() => ExitApp(), -Badge.TOOLTIP_TIME_MS)
-        return true
+        kill() {
+            Key.SetKeys(false) ; disable all binds to prevent glitches when turning off
+            Badge.ShowBadge(
+                "Exited the program",
+                "Middle",
+                "460026",
+                "FF0000"
+            )
+            ; as long as this isn't instant then `this.modifier.MarkCompleted()` doesn't need to be run early (which is the only thing that has to finalize before closing the program)
+            SetTimer(() => ExitApp(), -Badge.TOOLTIP_TIME_MS)
+        }
+        return (target) => kill()
     }
 
     ; --- DETERMINATIONS ---
@@ -601,44 +472,6 @@ class KeyAction {
                 }
             }
         }
-    }
-
-    ; checks if the current action should disable letters
-    ;   key — unchanged
-    ;   profile — unchanged
-    ;   modifier — unchanged
-    ;   returns
-    ;       true — when this action should be cancelled
-    ;       false — when this action shouldn't be cancelled
-    _DisablesLetters() {
-        if (
-            !(this.curr_profile_is_default)
-            && (this.curr_profile.disablesLetters)
-            && (Key.IsLetterKey(this.curr_key_name))
-        ) {
-            if !(this.is_up) { ; don't run press counting for up actions 
-                if (Key.letterPressCount < Key.letterPressRequirement) {
-                    Key.addLetterPress()
-                    Badge.ShowBadge(
-                        "No letters profile: (" Key.letterPressCount "/" Key.letterPressRequirement ")",
-                        "Middle",
-                        Badge.COLOR_BACKGROUND,
-                        "C50000"
-                    )
-                    SetTimer(ObjBindMethod(Key, "subLetterPress"), -Key.letterPressTime)
-                } else {
-                    Profile.SwitchTo(Profile.DEFAULT_NAME)
-                    Badge.ShowBadge(
-                        "Default re-enabled",
-                        "Middle",
-                        "FFD5D5",
-                        "FF0000"
-                    )
-                }
-            }
-            return true ; yes, disable letters for this action
-        }
-        return false ; no, don't disable letters for this action
     }
 
     ; - recurring processing starts -
@@ -880,7 +713,7 @@ class KeyAction {
     ; - modifier definitely doesn't exist at this point, profile still could be default - 
 
     ; helper for running else actions on the current key action
-    _RunElse() {
+    _ResolveElse() {
         ; check if up action exists on this action
         upActionExists := (this._ModifierExists(this.modifier_name_up))
                 
@@ -900,7 +733,7 @@ class KeyAction {
 
         ; send input
         if (elsed_modifier_input != false) {
-            SendInput(elsed_modifier_input)
+            return elsed_modifier_input
         }
     }
 
@@ -931,11 +764,8 @@ class KeyAction {
         )
 
         if (!failure_condition) { ; no fail conditions
-            ; run the else action
-            this._RunElse()
-
-            ; some kind of keypress will be executed, so it will always be cancelled and we always break
-            this.cancelled := true
+            ; set else action
+            this.cancelled := this._ResolveElse()
             return KeyActionProcessing.Break
         }
         return KeyActionProcessing.Normal

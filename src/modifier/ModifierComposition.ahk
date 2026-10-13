@@ -205,7 +205,7 @@ class ModifierComposition extends Composition {
             if SubStr(str, transition + 1) == Modifier.UP_KEYNAME {
                 str := SubStr(str, 1, transition)
             }
-        } 
-        super.fromString(str)
+        }
+        return super.fromString(str)
     }
 }

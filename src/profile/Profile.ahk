@@ -1,6 +1,7 @@
 #Requires AutoHotkey v2.0 
 #Include ProfileList.ahk
-#Include ../Key/Key.ahk
+#Include ../key/Key.ahk
+#Include ../key/KeyCache.ahk
 #Include ../tools/JSON.ahk
 #Include ../tools/Badge.ahk
 #Include ../modifier/Modifier.ahk
@@ -34,7 +35,7 @@ class Profile {
     static DEFAULT_BASED => true
     static DEFAULT_COLLAPSE => true
     static DEFAULT_ELSE => false
-    static DEFAULT_BLIND => false 
+    static DEFAULT_BLIND => false
     static DEFAULT_QUICK_SWITCH => false
     static Curr := Profile.DEFAULT_NAME
 
@@ -460,6 +461,10 @@ class Profile {
 
         ; update curr
         Profile.Curr := profile_id
+        ; ALPHA caching code
+        if KeyCache.DoCaching {
+            KeyCache.SetProfileCache(profile_id) ; set cache
+        }
     }
 
     static _do_quick_switch(profile_id) {

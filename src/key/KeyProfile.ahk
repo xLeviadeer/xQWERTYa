@@ -35,6 +35,8 @@ class KeyProfile {
         ;constructed collapse_explicit;
     ;constructed based;
         ;constructed based_explicit;
+    ;constructed default;
+    ;constructed default_up;
     ;constructed modifiers;
 
     ; --- GET/SET ---
