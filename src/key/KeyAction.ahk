@@ -13,10 +13,6 @@ class KeyActionProcessing {
     static Break => 2
 } 
 
-StrOccur(haystack, needle) {
-    return StrSplit(haystack, needle).Length - 1
-}
-
 ; code for determining an action to execute when a key is pressed
 class KeyAction {
 

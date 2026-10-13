@@ -59,4 +59,8 @@ class Utils {
         }
         return priority
     }
+
+    static StrOccur(haystack, needle) {
+        return StrSplit(haystack, needle).Length - 1
+    }
 }
