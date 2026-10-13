@@ -34,20 +34,6 @@ class Key {
     static PROFILE_PREFIX => ">"
     static LOCK_PREFIX => "<"
 
-    ; letter keys
-    static LetterKeys := Utils.SetOf(
-        "a","b","c","d","e","f","g","h","i","j","k","l","m",
-        "n","o","p","q","r","s","t","u","v","w","x","y","z",
-        " ","1","2","3","4","5","6","7","8","9","0"
-    )
-    static letterPressTime => 5000
-    static letterPressRequirement => 5
-    static addLetterPress() => Key.letterPressCount += 1
-    static subLetterPress() => Key.letterPressCount -= 1
-    static resetLetterPress() => Key.letterPressCount := 0
-    static letterPressCount := 0
-    static IsLetterKey(key_name) => Key.LetterKeys.Has(key_name)
-
     ; key registry
     static List := List()
 

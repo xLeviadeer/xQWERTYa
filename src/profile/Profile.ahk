@@ -62,7 +62,6 @@ class Profile {
     ;constructed blind?;
     ;constructed color?;
     ;constructed showBadge?;
-    ;constructed disablesLetters?;
     ;constructed quickSwitch?;
 
     ; --- CONSTRUCTORS ---
@@ -82,7 +81,6 @@ class Profile {
         blind := true,
         color := Badge.COLOR_FOREGROUND,
         showBadge := true,
-        disablesLetters := false,
         quickSwitch := false
     ) {
         ; create new
@@ -100,7 +98,6 @@ class Profile {
             blind,
             color, 
             showBadge, 
-            disablesLetters,
             quickSwitch
         )
 
@@ -123,7 +120,6 @@ class Profile {
         blind := true,
         color := Badge.COLOR_FOREGROUND,
         showBadge := true,
-        disablesLetters := false,
         quickSwitch := false
     ) {
         ; check id
@@ -254,15 +250,6 @@ class Profile {
         }
         this.showBadge := showBadge
 
-        ; check disablesLetters
-        if (
-            (disablesLetters != true)
-            && (disablesLetters != false)
-        ) {
-            throw TypeError("disablesLetters must be a boolean")
-        }
-        this.disablesLetters := disablesLetters
-
         ; quick switch
         if (
             (quickSwitch != true)
@@ -332,7 +319,6 @@ class Profile {
         "blind", profile.blind,
         "color", profile.color,
         "showBadge", profile.showBadge,
-        "disablesLetters", profile.disablesLetters,
         "quickSwitch", profile.quickSwitch
     )
     toJSON() => Profile.toJSON(this)
@@ -352,7 +338,6 @@ class Profile {
             map.Has("blind") ? map["blind"] : true,
             map.Has("color") ? map["color"] : Badge.COLOR_FOREGROUND,
             map.Has("showBadge") ? map["showBadge"] : true,
-            map.Has("disablesLetters") ? map["disablesLetters"] : false,
             map.Has("quickSwitch") ? map["quickSwitch"] : false
         )
     }

@@ -142,15 +142,6 @@ A list of possible attributes that may exist on a profile are detailed as follow
 - value type — boolean
 - description — whether to show the the profile switch badge when switching to this profile
 
-### Disables Letters
-- required — no
-    - defaults to `false` if unspecified
-- keyword — `disablesLetters`
-- value type — boolean
-- description — Whether this profile should show a warning and do nothing when attempting to type with letter keys on this profile which are not inherited and are otherwise undefined 
-    - the program will automatically switch into the default profile if enough letter keys are pressed
-    - this is mostly a legacy system left in for compatibility
-
 ### Quick Switch
 - required — no
     - defaults to `false` if unspecified
