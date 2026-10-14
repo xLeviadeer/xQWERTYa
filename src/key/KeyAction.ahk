@@ -439,7 +439,7 @@ class KeyAction {
     ;   profile — unchanged
     ;   modifier — unchanged
     _compatibilityMode() {
-        if (Lock.List[Lock.COMPAD_NAME].IsLocked) { ; compability on
+        if this.curr_profile.compatibility { ; compatibility on
             ; dont run for down actions test
             if (!this.is_up) {
                 return

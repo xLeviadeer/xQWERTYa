@@ -298,8 +298,7 @@ class Profile {
             Profile.ListVisible[key_] := value
         }
 
-        ; turn on compatibility mode if on
-        Profile._SetCompatibility(Profile.DEFAULT_ID)
+        ; set quick switching default
         Profile._last_profile_was_quick_switcher := Profile.List[Profile.DEFAULT_ID].quickSwitch
     }
 
@@ -401,13 +400,6 @@ class Profile {
         }
     }
 
-    static _SetCompatibility(profile_id) {
-        Lock.List[Lock.COMPAD_NAME].SetLocked(
-            Profile.GetCurr().compatibility, 
-            false
-        )
-    }
-
     static _validated_exceptions := Map() ; lazy validates exceptions (set)
     static SetExceptions(profile_id) {
         exceptions := Profile.GetCurr().exceptions
@@ -455,7 +447,6 @@ class Profile {
     static _UpdateForProfile(profile_id) {
         ; if quick switch, do nothing
         if !(Profile._do_quick_switch(profile_id)) {
-            Profile._SetCompatibility(profile_id)
             Profile._SetPassthrough(profile_id)
             Profile.SetExceptions(profile_id)
             Profile.RunDelay()

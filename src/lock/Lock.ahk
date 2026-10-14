@@ -19,8 +19,6 @@ class Lock {
     static BADGE_ON_COLOR_BG => "A5D2A5"
     static BADGE_OFF_COLOR_BG => "D2A5A5"
 
-    static COMPAD_NAME => "compad"
-
     static List := LockList()
     static Priority := unset
     static RelPriorityOf(lck) { ; assumes valid lck string mod
@@ -116,25 +114,12 @@ class Lock {
     ; --- CONSTRUCTOR --- 
 
     static init() {
-        ; create compad lock
-        Lock.List := LockList(
-            Lock.COMPAD_NAME, Lock( ; compad
-                Lock.COMPAD_NAME, -1,
-                false, false, ; off by default ╎ not bindable
-                false, true, ; no change action ╎ show badge
-                "Compad Mode" 
-            )
-        )
-
         ; check if locks.json exists & priority
         if (
             FileExist(Lock.LOCKS_PATH)
             && (FileGetSize(Lock.LOCKS_PATH) != 0)
         ) {
-            data := JSON.LoadFile(LockList, Lock.LOCKS_PATH, "UTF-8")
-            for name, value in data {
-                Lock.List[name] := value
-            }
+            Lock.List := JSON.LoadFile(LockList, Lock.LOCKS_PATH, "UTF-8")
         }
         ; create list without un-bindables ╎ excludes un-bindables from the priority
         bindables := Map()
