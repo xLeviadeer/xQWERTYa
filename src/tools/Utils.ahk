@@ -63,4 +63,17 @@ class Utils {
     static StrOccur(haystack, needle) {
         return StrSplit(haystack, needle).Length - 1
     }
+
+    static StrJoin(str_lst, sep) {
+        ; validation
+        final_str := ""
+        for i, str in str_lst {
+            if (i == 1) { 
+                final_str .= str
+                continue 
+            }
+            final_str .= sep str
+        }
+        return final_str
+    }
 }
