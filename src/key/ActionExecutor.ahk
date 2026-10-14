@@ -28,12 +28,7 @@ class ActionExecutor {
         ) {
             return ; do nothing
         } else if (this.value is String) {            
-            ; string with no contents, do nothing
-            if (StrLen(this.value) <= 0) {
-                return
-            }
-
-            ; down prefix
+            ; down tracking
             if this.do_down_tracking {
                 ; if it's an up bind
                 if (this.is_up) { ; set to no longer down
@@ -51,6 +46,11 @@ class ActionExecutor {
                         return ; return
                     }
                 }
+            }
+
+            ; string with no contents, do nothing
+            if (StrLen(this.value) <= 0) {
+                return
             }
 
             ; split value
