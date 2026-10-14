@@ -4,6 +4,7 @@
 #Include CustomKeys.ahk
 #Include KeyEvent.ahk
 #Include ActionExecutor.ahk
+#Include ActionSignifier.ahk
 #Include KeyCache.ahk
 
 ; (enum) holds constants for KeyAction processing
@@ -37,6 +38,8 @@ class KeyAction {
     static CYCLE_SIGNIFIER => "ⓝcycle"
     static RELOAD_SIGNIFIER => "ⓝreload"
     static KILL_SIGNIFIER => "ⓝkill"
+    static LOWER_SIGNIFIER => "ⓝlower"
+    static UPPER_SIGNIFIER => "ⓝupper"
 
     ; -- Instance --
 
@@ -133,7 +136,7 @@ class KeyAction {
     _generate_up_action(down_value) { ; expects a value string
         ; boolean check & signifier check
         is_bool := Checks.IsBool(down_value)
-        is_signifier := this._signifier_map.Has(down_value)
+        is_signifier := ActionSignifier.Has(down_value)
         if (
             is_signifier
             || is_bool
@@ -308,8 +311,10 @@ class KeyAction {
             }
 
             ; check for signifiers
-            action := this._checkSignifiers(value)
-            if action != false {
+            action := ActionSignifier.CheckAll(this, value)
+            if action == true {
+                value := false ; do nothing 
+            } else if action != false { ; (false changes nothing)
                 value := action ; change the value into the action
             }
         }
@@ -323,111 +328,6 @@ class KeyAction {
             do_blind,
             do_down_tracking
         )
-    }
-
-    ; --- SIGNIFIERS ---
-
-    ; checks for if this string is a signifier
-    ;   returns
-    ;       action — if signifier
-    ;       false — if ⊰not⊱ signifier
-    _checkSignifiers(lock_val) {
-        ; for each signifier
-        for (sig_name, sig_func in this._signifier_map) {
-            if (lock_val == sig_name) {
-                return sig_func.Call(this)
-            }
-        }
-        return false
-    }
-
-    ; signifiers list
-    _signifier_map := Map(
-        KeyAction.COLLAPSE_SIGNIFIER, this._sigCollapse,
-        KeyAction.ELSE_SIGNIFIER, this._sigElse,
-        KeyAction.BASE_SIGNIFIER, this._sigBase,
-        KeyAction.CYCLE_SIGNIFIER, this._sigCycle,
-        KeyAction.RELOAD_SIGNIFIER, this._sigReload,
-        KeyAction.KILL_SIGNIFIER, this._sigKill
-    )
-
-    ; collapse
-    _sigCollapse() {
-        ; clear modifiers 
-        this.modifier.Clear() ; sets to default
-
-        ; run a new key action using this modifier
-        return KeyAction(
-            this.curr_key_name,
-            Profile.Curr,
-            ModifierComposition(), ; empty modifiers
-            this.lock,
-            this.is_up
-        ).Resolve()
-    }
-
-    ; else
-    _sigElse() {
-        return this._ResolveElse()
-    }
-
-    ; base
-    _sigBase() {
-        ; check if this is a base
-        if (!this.modifier.IsTripleBind) {
-            throw ValueError("base signifier cannot be used on a single or double bind")
-        }
-
-        ; check if a base doesn't exist
-        modifier_base := this.modifier.GetSignificantString()
-        if (!this._ModifierExists(modifier_base, true)) {
-            throw ValueError("attempting to use base signifier to a key which does not have a base")
-        }
-
-        ; run a new action using this modifier (will allow for inheritance and such)
-        return KeyAction(
-            this.curr_key_name, 
-            Profile.Curr, 
-            ModifierComposition(modifier_base), ; base modifier
-            this.lock,
-            this.is_up
-        ).Resolve()
-    }
-
-    ; cycle
-    _sigCycle() {
-        return (target) => Profile.Cycle() 
-    }
-
-    ; reload 
-    _sigReload() {
-        rel() {
-            Badge.ShowBadge(
-                "Reloading the program",
-                "Middle",
-                "996300",
-                "ffA500"
-            )
-            ; as long as this isn't instant then `this.modifier.MarkCompleted()` doesn't need to be run early (which is the only thing that has to finalize before closing the program)
-            SetTimer(() => Reload(), -Badge.TOOLTIP_TIME_MS)
-        }
-        return (target) => rel()
-    }
-
-    ; kill
-    _sigKill() {
-        kill() {
-            Key.SetKeys(false) ; disable all binds to prevent glitches when turning off
-            Badge.ShowBadge(
-                "Exited the program",
-                "Middle",
-                "460026",
-                "FF0000"
-            )
-            ; as long as this isn't instant then `this.modifier.MarkCompleted()` doesn't need to be run early (which is the only thing that has to finalize before closing the program)
-            SetTimer(() => ExitApp(), -Badge.TOOLTIP_TIME_MS)
-        }
-        return (target) => kill()
     }
 
     ; --- DETERMINATIONS ---
@@ -521,7 +421,6 @@ class KeyAction {
         ; may return outer loop control signals ⧼intended to be interpretted⧽
             ; true when Break should be used
             ; false when Normal should be used
-
     _FindLock(mod_comp := true) { ; true as default
         ; default mod_name 
         if mod_comp == true {

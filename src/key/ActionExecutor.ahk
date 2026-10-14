@@ -21,30 +21,33 @@ class ActionExecutor {
     }
 
     _Execute() {
-        ; switch based on modifier value
-        if Checks.IsBool(this.value) {
-            return ; do nothing
-        } else if (this.value is String) {            
-            ; down tracking
-            if this.do_down_tracking {
-                ; if it's an up bind
-                if (this.is_up) { ; set to no longer down
-                    Key.DownTracking[this.target] := false
+        ; down tracking
+        if this.do_down_tracking {
+            ; if it's an up bind
+            if (this.is_up) { ; set to no longer down
+                Key.DownTracking[this.target] := false
 
-                ; track down status
-                } else {
-                    if (
-                        !(Key.DownTracking.Has(this.target))
-                        || (Key.DownTracking[this.target] == false)
-                    ) { ; not in the down tracking map or false in the map
-                        Key.DownTracking[this.target] := true
-                        ; continue
-                    } else { ; in map and true, do nothing
-                        return ; return
-                    }
+            ; track down status
+            } else {
+                if (
+                    !(Key.DownTracking.Has(this.target))
+                    || (Key.DownTracking[this.target] == false)
+                ) { ; not in the down tracking map or false in the map
+                    Key.DownTracking[this.target] := true
+                    ; continue
+                } else { ; in map and true, do nothing
+                    return ; return
                 }
             }
+        }
 
+        ; boolean 
+        if Checks.IsBool(this.value) {
+            return ; do nothing
+        } 
+        
+        ; string 
+        if (this.value is String) {            
             ; string with no contents, do nothing
             if (StrLen(this.value) <= 0) {
                 return
@@ -98,8 +101,10 @@ class ActionExecutor {
             
             ; text
             SendInput(blinded_modifier_value)
-        } else {
-            this.value.Call(this.target)
-        }
+            return
+        } 
+        
+        ; method
+        this.value.Call(this.target)
     }
 }
