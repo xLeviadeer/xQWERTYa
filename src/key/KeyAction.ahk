@@ -303,6 +303,16 @@ class KeyAction {
             do_down_tracking := SubStr(value, 1, 1) == Key.DOWN_PREFIX
             if do_down_tracking {
                 value := SubStr(value, 2) ; adj value to get rid of Key.DOWN_PREFIX
+            } else if this.is_up {
+                ; check to see if down tracking exists on down bind
+                up_exec := KeyAction(
+                    this.curr_key_name,
+                    this.curr_profile_id,
+                    this.modifier,
+                    this.lock,
+                    false
+                ).Resolve()
+                do_down_tracking := up_exec.do_down_tracking
             }
 
             ; check for signifiers
