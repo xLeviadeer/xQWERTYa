@@ -446,11 +446,15 @@ class KeyAction {
             ; for pressed modifiers
             for (modifier_name, mod in Modifier.List) {
                 ; try to get reg state
-                physical_state := unset
+                physical_state := -1
                 try {
                     physical_state := GetKeyState(mod.symbol, "P")
                 } catch {
-                    ; try to get alt state
+                }
+
+                ; try to get alt state
+                physical_state_alt := -1
+                if mod.symbol_alts != false {
                     for alt in mod.symbol_alts {
                         try {
                             physical_state_alt := GetKeyState(alt, "P")
@@ -460,7 +464,12 @@ class KeyAction {
                         }
                     }
                 }
-                if !IsSet(physical_state) { ; if not found, do nothing
+
+                ; if neither could be found: skip
+                if (
+                    (physical_state == -1)
+                    && (physical_state_alt == -1)
+                ) {
                     return
                 }
                 
