@@ -74,16 +74,14 @@ launch() {
     )
     CustomKeys.init()
 
-    ; ALPHA caching code ╎ create profile cache
-    if KeyCache.DoCaching {
-        Badge.ShowBadge(
-            "pooling cache",
-            BADGE_LOC,
-            BADGE_BUILD_BG,
-            BADGE_BUILD_FG
-        )
-        KeyCache.init()
-    }
+    ; create profile cache
+    Badge.ShowBadge(
+        "pooling cache",
+        BADGE_LOC,
+        BADGE_BUILD_BG,
+        BADGE_BUILD_FG
+    )
+    KeyCache.init()
 
     ; bind modifiers
     Badge.ShowBadge(

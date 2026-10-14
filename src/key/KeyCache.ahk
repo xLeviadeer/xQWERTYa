@@ -10,8 +10,6 @@ class KeyCache {
 
     ; --- VARIABLES ---
 
-    static DoCaching := false
-
     static RECENT_CACHE_SIZE => 300
     static RecentCache := unset
 

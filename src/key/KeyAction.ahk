@@ -237,24 +237,22 @@ class KeyAction {
         mod := Modifier.CreateCompositionSnapshot() ; snapshot of currently held keys
         lck := Lock.CreateCompositionSnapshot() ; snapshot of currently active locks
 
-        ; ALPHA caching code
-        if KeyCache.DoCaching {
-            cache_key := KeyCache.CreateKey(
-                key_event.key_target,
-                Profile.Curr,
-                mod.GetNameString(false), ; always down
-                lck.GetNameString(),
-                key_event.is_up
-            )
+        ; ; get cache key
+        cache_key := KeyCache.CreateKey(
+            key_event.key_target,
+            Profile.Curr,
+            mod.GetNameString(false), ; always down
+            lck.GetNameString(),
+            key_event.is_up
+        )
 
-            ; check recent cache
-            if KeyCache.RecentCache.Has(cache_key) {
-                KeyCache.RecentCache[cache_key].Execute(mod)
-                return
-            }
+        ; check recent cache
+        if KeyCache.RecentCache.Has(cache_key) {
+            KeyCache.RecentCache[cache_key].Execute(mod)
+            return
         }
 
-        ; create a starting point action
+        ; resolve an action & cache it & run it
         key_action := KeyAction(
             key_event.key_target, 
             Profile.Curr, 
@@ -264,11 +262,7 @@ class KeyAction {
         )
         original_modifier := mod.Copy()
         executor := key_action.Resolve()
-        ; run this action
-        ; ALPHA caching code
-        if KeyCache.DoCaching {
-            KeyCache.RecentCache[cache_key] := executor
-        }
+        KeyCache.RecentCache[cache_key] := executor
         executor.Execute(original_modifier)
     }
 
