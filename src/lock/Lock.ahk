@@ -127,18 +127,14 @@ class Lock {
         )
 
         ; check if locks.json exists & priority
-        if (FileExist(Lock.LOCKS_PATH)) {
-            try_read_json() {
-                try {
-                    data := JSON.LoadFile(LockList, Lock.LOCKS_PATH, "UTF-8")
-                } catch (Error) {
-                    return
-                }
-                for name, value in data {
-                    Lock.List[name] := value
-                }
+        if (
+            FileExist(Lock.LOCKS_PATH)
+            && (FileGetSize(Lock.LOCKS_PATH) != 0)
+        ) {
+            data := JSON.LoadFile(LockList, Lock.LOCKS_PATH, "UTF-8")
+            for name, value in data {
+                Lock.List[name] := value
             }
-            try_read_json()
         }
         ; create list without un-bindables ╎ excludes un-bindables from the priority
         bindables := Map()

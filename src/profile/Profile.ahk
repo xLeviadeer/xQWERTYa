@@ -264,10 +264,19 @@ class Profile {
 
     static init() {
         ; check if profiles.json exists
-        if (FileExist(Profile.PROFILES_PATH)) {
-            try {
-                Profile.List := JSON.LoadFile(ProfileList, Profile.PROFILES_PATH, "UTF-8")
-            } catch (Error) {
+        if (
+            FileExist(Profile.PROFILES_PATH)
+            && (FileGetSize(Profile.PROFILES_PATH) != 0)
+        ) {
+            data := JSON.LoadFile(ProfileList, Profile.PROFILES_PATH, "UTF-8")
+            for id, value in data {
+                if ( ; default must not inherit
+                    (id == Profile.DEFAULT_ID)
+                    && (value.inheritsFrom != false)
+                ) { 
+                    throw ValueError("inherits_from cannot be set to anything except false for the default profile")
+                }
+                Profile.List[id] := value
             }
         }
 
