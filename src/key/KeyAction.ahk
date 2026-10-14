@@ -452,16 +452,21 @@ class KeyAction {
             ; for pressed modifiers
             for (modifier_name, mod in Modifier.List) {
                 ; try to get reg state
+                physical_state := unset
                 try {
                     physical_state := GetKeyState(mod.symbol, "P")
                 } catch {
-                    return
+                    ; try to get alt state
+                    for alt in mod.symbol_alts {
+                        try {
+                            physical_state_alt := GetKeyState(alt, "P")
+                            break
+                        } catch {
+                            continue
+                        }
+                    }
                 }
-
-                ; try to get alt state
-                try {
-                    physical_state_alt := GetKeyState(mod.symbol_alt, "P")
-                } catch {
+                if !IsSet(physical_state) { ; if not found, do nothing
                     return
                 }
                 
