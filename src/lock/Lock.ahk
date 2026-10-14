@@ -280,7 +280,7 @@ class Lock {
         this.IsLocked := bool
         if this.ChangeAction != false {
             this.ChangeAction.Call(bool)
-        }
+        } 
         
         ; fix show_badge and show
         if !IsSet(show_badge) {

@@ -136,9 +136,6 @@ class KeyProfile {
         ) {
             this.default := default
         } else {
-            for item in default {
-                MsgBox(item)
-            }
             throw TypeError("default must be an instance of KeyModifier, a Map or a boolean not " Type(default))
         }
         ; default up
