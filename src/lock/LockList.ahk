@@ -14,6 +14,9 @@ class LockList extends List {
         map_of_modifiers := Map()
         for value in arr {
             lck := Lock.fromJSON(value)
+            if map_of_modifiers.Has(lck.name) {
+                throw ValueError("lock name already exists and cannot be defined twice: " lck.name)
+            }
             map_of_modifiers[lck.name] := lck
         }
         return LockList(map_of_modifiers)

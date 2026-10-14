@@ -14,6 +14,9 @@ class ModifierList extends List {
         map_of_modifiers := Map()
         for value in arr {
             mod := Modifier.fromJSON(value)
+            if map_of_modifiers.Has(mod.name) {
+                throw ValueError("modifier name already exists and cannot be defined twice: " mod.name)
+            }
             map_of_modifiers[mod.name] := mod
         }
         return ModifierList(map_of_modifiers)

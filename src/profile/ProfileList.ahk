@@ -13,6 +13,9 @@ class ProfileList extends List {
         mapOfProfiles := Map()
         for value in arr {
             prof := Profile.fromJSON(value)
+            if mapOfProfiles.Has(prof.id) {
+                throw ValueError("id already exists and cannot be defined twice: " prof.id)
+            }
             mapOfProfiles[prof.id] := prof
         }
         return ProfileList(mapOfProfiles)
