@@ -167,7 +167,7 @@ In addition to modifier bindings a key-profile may include several behavior flag
 
 ### Inherits From
 - syntax — `"inherits_from": "‹profile id›"`
-- description — sets this key-profile's passthrough bindings to inherit from a different key-profile on the same key. `‹profile id›` is expected to be the profile for which to inherit from.
+- description — sets this key-profile's passthrough bindings to inherit from a different key-profile on the same key. `‹profile id›` is expected to be the profile for which to inherit from or `false` to stop inheritance. 
 
 ### Uses
 - syntax — `"uses": "‹target›"

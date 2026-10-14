@@ -19,7 +19,7 @@ class Profile {
     static PROFILES_PATH => "config/profiles.json"
 
     ; current profile tracker
-    static DEFAULT_NAME => "default"
+    static DEFAULT_ID => "default"
     static DEFAULT_MODIFIER_PASSTHROUGH => Map(
         "shift", true,
         "control", true,
@@ -30,20 +30,11 @@ class Profile {
         "step", false,
         "windows", false
     )
-    static DEFAULT_EXCEPTIONS => false
-    static DEFAULT_COMPATIBILITY => true
-    static DEFAULT_BASED => true
-    static DEFAULT_COLLAPSE => true
-    static DEFAULT_ELSE => false
-    static DEFAULT_BLIND => false
-    static DEFAULT_QUICK_SWITCH => false
-    static Curr := Profile.DEFAULT_NAME
+    static Curr := Profile.DEFAULT_ID
+    static _last_profile_was_quick_switcher := unset 
 
     ; returns a profile object or false if the default profile
     static GetCurr() {
-        if (Profile.Curr == Profile.DEFAULT_NAME) {
-            return false
-        }
         return Profile.List[Profile.Curr]
     }
 
@@ -70,7 +61,7 @@ class Profile {
     static Create(
         id,
         name,
-        inheritsFrom := Profile.DEFAULT_NAME,
+        inheritsFrom := Profile.DEFAULT_ID,
         modifierPassthrough := false,
         exceptions := false,
         hidden := false,
@@ -109,7 +100,7 @@ class Profile {
     __New(
         id,
         name,
-        inheritsFrom := Profile.DEFAULT_NAME,
+        inheritsFrom := Profile.DEFAULT_ID,
         modifierPassthrough := false,
         exceptions := false,
         hidden := false,
@@ -126,9 +117,6 @@ class Profile {
         if !(id is String) {
             throw TypeError("id must be a string")
         }
-        if (Profile.List.Has(id)) {
-            throw ValueError("id already exists and cannot be defined twice")
-        }
         this.id := id
 
         ; check name
@@ -138,7 +126,10 @@ class Profile {
         this.name := name
 
         ; check inheritsFrom
-        if !(inheritsFrom is String) {
+        if (
+            (inheritsFrom != false)
+            && !(inheritsFrom is String)
+        ) {
             throw TypeError("inheritsFrom must be a string")
         }
         this.inheritsFrom := inheritsFrom
@@ -263,6 +254,25 @@ class Profile {
     ; --- INIT ---
 
     static init() {
+        ; create default profile
+        Profile.List := ProfileList(
+            Profile.DEFAULT_ID, Profile(
+                Profile.DEFAULT_ID, "Default",
+                false, ; inherits from
+                Profile.DEFAULT_MODIFIER_PASSTHROUGH,
+                , ; exceptions
+                , ; hidden
+                true, ; compatibility
+                true, ; based
+                true, ; collapse
+                false, ; else
+                false, ; blind
+                , ; color
+                , ; show badge
+                ; quick switch
+            )
+        )
+
         ; check if profiles.json exists
         if (
             FileExist(Profile.PROFILES_PATH)
@@ -289,7 +299,8 @@ class Profile {
         }
 
         ; turn on compatibility mode if on
-        Profile._SetCompatibility(Profile.DEFAULT_NAME)
+        Profile._SetCompatibility(Profile.DEFAULT_ID)
+        Profile._last_profile_was_quick_switcher := Profile.List[Profile.DEFAULT_ID].quickSwitch
     }
 
     ; --- SERIALIZABLE ---
@@ -316,7 +327,7 @@ class Profile {
         return Profile(
             map["id"],
             map["name"],
-            map.Has("inheritsFrom") ? map["inheritsFrom"] : Profile.DEFAULT_NAME,
+            map.Has("inheritsFrom") ? map["inheritsFrom"] : Profile.DEFAULT_ID,
             map.Has("modifierPassthrough") ? map["modifierPassthrough"] : false,
             map.Has("exceptions") ? map["exceptions"] : false,
             map.Has("hidden") ? map["hidden"] : false,
@@ -334,21 +345,17 @@ class Profile {
     ; --- DATA ---
 
     is_or_inherits(profile_id) {
-        if (profile_id == Profile.DEFAULT_NAME) {
-            return true ; all profiles inherit from default
-        } else {
-            if !Profile.List.Has(profile_id) { ; error not a valid profile id
-                throw ValueError("profile_id is not a valid profile id: " profile_id)
-            }
-            if profile_id == this.id { ; true if profile matches this id
-                return True
-            }
-            inherits_from := Profile.List[this.id].inheritsFrom
-            if inherits_from == Profile.DEFAULT_NAME { ; if inherits_from is default (and profile_id is not default) then false
-                return False
-            } 
-            return Profile.List[inherits_from].is_or_inherits(profile_id) ; recurse to the inherited profile
+        if !Profile.List.Has(profile_id) { ; error not a valid profile id
+            throw ValueError("profile_id is not a valid profile id: " profile_id)
         }
+        if profile_id == this.id { ; true if profile matches this id
+            return True
+        }
+        inherits_from := Profile.List[this.id].inheritsFrom
+        if inherits_from == false { ; profile does not inherit
+            return false
+        }
+        return Profile.List[inherits_from].is_or_inherits(profile_id) ; recurse to the inherited profile
     }
 
     ; --- SWITCHING ---
@@ -377,14 +384,10 @@ class Profile {
 
     static GetPassthrough(profile_id) {
         ; get the pass list
-        if (profile_id == Profile.DEFAULT_NAME) {
+        if (Profile.List[profile_id].modifierPassthrough == false) {
             return Profile.DEFAULT_MODIFIER_PASSTHROUGH 
         } else {
-            if (Profile.List[profile_id].modifierPassthrough == false) {
-                return Profile.DEFAULT_MODIFIER_PASSTHROUGH 
-            } else {
-                return  Profile.List[profile_id].modifierPassthrough
-            }
+            return  Profile.List[profile_id].modifierPassthrough
         }
     }
 
@@ -399,22 +402,15 @@ class Profile {
     }
 
     static _SetCompatibility(profile_id) {
-        if (profile_id == Profile.DEFAULT_NAME) {
-            Lock.List[Lock.COMPAD_NAME].SetLocked(Profile.DEFAULT_COMPATIBILITY, false)
-        } else {
-            prof := Profile.GetCurr()
-            Lock.List[Lock.COMPAD_NAME].SetLocked(prof.compatibility, false)
-        }
+        Lock.List[Lock.COMPAD_NAME].SetLocked(
+            Profile.GetCurr().compatibility, 
+            false
+        )
     }
 
     static _validated_exceptions := Map() ; lazy validates exceptions (set)
     static SetExceptions(profile_id) {
-        ; get exceptions list
-        if (profile_id == Profile.DEFAULT_NAME) {
-            exceptions := Profile.DEFAULT_EXCEPTIONS
-        } else {
-            exceptions := Profile.GetCurr().exceptions
-        }
+        exceptions := Profile.GetCurr().exceptions
 
         ; validate exceptions
         if !(Profile._validated_exceptions.Has(profile_id)) {
@@ -444,31 +440,17 @@ class Profile {
         Key.SetKeys(false, exceptions, false, true)
     }
 
-    static last_profile_was_quick_switcher := Profile.DEFAULT_QUICK_SWITCH
     static _profile_switch(profile_id) {
-        ; switch for default for quick switching
-        if (Profile.Curr == Profile.DEFAULT_NAME) {
-            Profile.last_profile_was_quick_switcher := Profile.DEFAULT_QUICK_SWITCH
-        } else {
-            Profile.last_profile_was_quick_switcher := Profile.GetCurr().quickSwitch
-        }
-
-        ; update curr
+        Profile._last_profile_was_quick_switcher := Profile.GetCurr().quickSwitch
         Profile.Curr := profile_id
     }
 
     static _do_quick_switch(profile_id) {
         ; true if last was quick switch
-        if (Profile.last_profile_was_quick_switcher) {
+        if (Profile._last_profile_was_quick_switcher) {
             return true
         } 
-
-        ; check if default
-        if (profile_id == Profile.DEFAULT_NAME) {
-            return Profile.DEFAULT_QUICK_SWITCH
-        } else {
-            return Profile.List[profile_id].quickSwitch
-        }
+        return Profile.List[profile_id].quickSwitch
     }
     static _UpdateForProfile(profile_id) {
         ; if quick switch, do nothing
@@ -484,19 +466,6 @@ class Profile {
     static SwitchTo(id, show_badge := -1) {
         ; don't activate if delaying
         if (Profile.isDelaying) {
-            return
-        }
-
-        ; if the default profile
-        if (id == Profile.DEFAULT_NAME) {
-            Profile._profile_switch(Profile.DEFAULT_NAME)
-            if (
-                (show_badge == true) ; true
-                || (show_badge == -1) ; unset
-            ) {
-                Badge.ShowBadge(Profile.DEFAULT_NAME, , , Badge.COLOR_FOREGROUND)
-            }
-            Profile._UpdateForProfile(Profile.DEFAULT_NAME)
             return
         }
 
@@ -540,9 +509,9 @@ class Profile {
 
         ; if next profile is out of bounds, set to default
         if (positionAdjusted > Profile.ListVisible.Length) {
-            Profile._profile_switch(Profile.DEFAULT_NAME)
-            Badge.ShowBadge(Profile.DEFAULT_NAME, , , Badge.COLOR_FOREGROUND)
-            Profile._UpdateForProfile(Profile.DEFAULT_NAME)
+            Profile._profile_switch(Profile.DEFAULT_ID)
+            Badge.ShowBadge(Profile.DEFAULT_ID, , , Badge.COLOR_FOREGROUND)
+            Profile._UpdateForProfile(Profile.DEFAULT_ID)
             return
         }
 

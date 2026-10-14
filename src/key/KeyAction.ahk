@@ -48,15 +48,7 @@ class KeyAction {
     ; - profile -
 
     ;constructed curr_profile_id;
-    curr_profile {
-        get {
-            if (this.curr_profile_is_default) {
-                return false ; fail whatever action is attempted
-            } 
-            return Profile.List[this.curr_profile_id]
-        }
-    }
-    curr_profile_is_default => this.curr_profile_id == Profile.DEFAULT_NAME
+    curr_profile => Profile.List[this.curr_profile_id]
 
     ; - profile_ref -
 
@@ -323,7 +315,7 @@ class KeyAction {
         }
             
         ; execute
-        do_blind := (this.curr_profile_is_default) ? Profile.DEFAULT_BLIND : this.curr_profile.Blind
+        do_blind := this.curr_profile.Blind
         return ActionExecutor(
             this.curr_key_name,
             value,
@@ -503,12 +495,17 @@ class KeyAction {
     ;       set to the inherited profile (from profile definition, defaults as default)
     ;   modifier — unchanged
     ;   returns
+    ;       Break — when nonexistent and inheritsFrom is false
     ;       Continue — when nonexistent
     ;       Normal — else
     _ProfileExistsCheck() {
         if !(this._ProfileRefExists()) {
-            if (this.curr_profile_is_default) {
+            if (this.curr_profile_id == Profile.DEFAULT_ID) {
                 throw ValueError("default profile reference doesn't exist on this key: '" this.curr_profile_id "'")
+            }
+            if this.curr_profile.inheritsFrom == false {
+                this.cancelled := true
+                return KeyActionProcessing.Break
             }
             this.curr_profile_id := this.curr_profile.inheritsFrom
             return KeyActionProcessing.Continue
@@ -654,12 +651,7 @@ class KeyAction {
     ;       Continue — when unset triple bind with existing base
     ;       Normal — when else
     _BasedCheck() {
-        if (this.curr_profile_is_default) {
-            based_true_on_profile := Profile.DEFAULT_BASED
-        } else {
-            based_true_on_profile := this.curr_profile.based
-        }
-
+        based_true_on_profile := this.curr_profile.based
         based_false_on_profile_ref := (this.curr_profile_ref.%KeyProfile.BASED_NAME% == false)
 
         failure_condition := ( ; profile false & modifier false | does the profile and the key have based off? 
@@ -698,12 +690,7 @@ class KeyAction {
     ;       Continue — when collapse is present
     ;       Normal — when collapse is not present
     _CollapseCheck() {
-        if (this.curr_profile_is_default) {
-            collapse_true_on_profile := Profile.DEFAULT_COLLAPSE
-        } else {
-            collapse_true_on_profile := this.curr_profile.collapse
-        }
-
+        collapse_true_on_profile := this.curr_profile.collapse
         collapse_false_on_profile_ref := (this.curr_profile_ref.%KeyProfile.COLLAPSE_NAME% == false)
 
         failure_condition := (
@@ -767,12 +754,7 @@ class KeyAction {
     ;       Normal — when else is not present
     ;   cancels — when else exists
     _ElseCheck() {
-        if (this.curr_profile_is_default) {
-            else_true_on_profile := Profile.DEFAULT_ELSE
-        } else {
-            else_true_on_profile := this.curr_profile.else
-        }
-
+        else_true_on_profile := this.curr_profile.else
         else_false_on_profile_ref := (this.curr_profile_ref.%KeyProfile.ELSE_NAME% == false)
 
         failure_condition := ( ; false on both profile and profile ref
@@ -838,10 +820,7 @@ class KeyAction {
         ; run process for uses profile
         if (prosp_profile_id != false) {
             ; check if the uses string is a valid key
-            if (
-                (prosp_profile_id != Profile.DEFAULT_NAME)
-                && !(Profile.List.Has(prosp_profile_id))
-            ) {
+            if !(Profile.List.Has(prosp_profile_id)) {
                 throw ValueError("'" prosp_profile_id "' is not a valid profile to use")
             } 
             this.curr_profile_id := prosp_profile_id
@@ -862,17 +841,19 @@ class KeyAction {
     ;       set to the inherits_from profile
     ;   modifier — unchanged
     ;   returns
-    ;       Continue — when inherits_from was set
+    ;       Break — when inherits was set to false
+    ;       Continue — when inherits_from was set to a profile
     ;       Normal — when else
     _InheritsCheck() {
         ; check for key based inheritance
         if (this._ModifierExists(KeyProfile.INHERITS_FROM_NAME)) {
             ; check if the inherits from string is a valid profile
             prosp_profile_name := this.curr_profile_ref.%KeyProfile.INHERITS_FROM_NAME%
-            if (
-                (prosp_profile_name != Profile.DEFAULT_NAME)
-                && !(Profile.List.Has(prosp_profile_name))
-            ) {
+            if prosp_profile_name == false { ; set to explicitly not inherit
+                this.cancelled := true
+                return KeyActionProcessing.Break
+            }
+            if !(Profile.List.Has(prosp_profile_name)) {
                 throw ValueError("'" prosp_profile_name "' is not a valid profile to use")
             }
             this.curr_profile_id := prosp_profile_name
@@ -880,7 +861,7 @@ class KeyAction {
         }
 
         ; if default profile (cannot inherit, must have explicitly not collapsed or based) do nothing and quit
-        if (this.curr_profile_is_default) {
+        if this.curr_profile.inheritsFrom == false {
             this.cancelled := true
             return KeyActionProcessing.Break
         }

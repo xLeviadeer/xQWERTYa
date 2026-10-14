@@ -22,10 +22,7 @@ class ActionExecutor {
 
     _Execute() {
         ; switch based on modifier value
-        if (
-            (this.value == false)
-            || (this.value == true)
-        ) {
+        if Checks.IsBool(this.value) {
             return ; do nothing
         } else if (this.value is String) {            
             ; down tracking

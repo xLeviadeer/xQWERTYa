@@ -158,7 +158,7 @@ class Key {
             }
 
             ; look for default
-            if (key_ == Profile.DEFAULT_NAME) {
+            if (key_ == Profile.DEFAULT_ID) {
                 foundDefault := true
             } else if !(Profile.List.Has(key_)) { ; check profile is a profile in the profiles list
                 throw ValueError("'" key_ "' is not a profile in profiles.json")

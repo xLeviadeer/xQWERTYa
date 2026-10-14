@@ -324,13 +324,7 @@ class Modifier {
 
     static ConstructSymbol(symbol) => Modifier.ALL_PREFIX Modifier.SAFTEY_PREFIX symbol
 
-    static ConstructPassthrough(name) {
-        if (Profile.Curr == Profile.DEFAULT_NAME) {
-            return (Profile.DEFAULT_MODIFIER_PASSTHROUGH[name] ? Modifier.PASSTHROUGH_SYMBOL : "")
-        } else {
-            return (Profile.GetPassthrough(Profile.Curr)[name] ? Modifier.PASSTHROUGH_SYMBOL : "")
-        }
-    }
+    static ConstructPassthrough(name) => Profile.GetPassthrough(Profile.Curr)[name] ? Modifier.PASSTHROUGH_SYMBOL : ""
 
     static ConstructCombination(
         name, 
