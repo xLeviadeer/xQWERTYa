@@ -260,26 +260,6 @@ class Profile {
         this.quickSwitch := quickSwitch
     }
 
-    ; --- DATA ---
-
-    is_or_inherits(profile_id) {
-        if (profile_id == Profile.DEFAULT_NAME) {
-            return true ; all profiles inherit from default
-        } else {
-            if !Profile.List.Has(profile_id) { ; error not a valid profile id
-                throw ValueError("profile_id is not a valid profile id: " profile_id)
-            }
-            if profile_id == this.id { ; true if profile matches this id
-                return True
-            }
-            inherits_from := Profile.List[this.id].inheritsFrom
-            if inherits_from == Profile.DEFAULT_NAME { ; if inherits_from is default (and profile_id is not default) then false
-                return False
-            } 
-            return Profile.List[inherits_from].is_or_inherits(profile_id) ; recurse to the inherited profile
-        }
-    }
-
     ; --- INIT ---
 
     static init() {
@@ -340,6 +320,26 @@ class Profile {
             map.Has("showBadge") ? map["showBadge"] : true,
             map.Has("quickSwitch") ? map["quickSwitch"] : false
         )
+    }
+
+    ; --- DATA ---
+
+    is_or_inherits(profile_id) {
+        if (profile_id == Profile.DEFAULT_NAME) {
+            return true ; all profiles inherit from default
+        } else {
+            if !Profile.List.Has(profile_id) { ; error not a valid profile id
+                throw ValueError("profile_id is not a valid profile id: " profile_id)
+            }
+            if profile_id == this.id { ; true if profile matches this id
+                return True
+            }
+            inherits_from := Profile.List[this.id].inheritsFrom
+            if inherits_from == Profile.DEFAULT_NAME { ; if inherits_from is default (and profile_id is not default) then false
+                return False
+            } 
+            return Profile.List[inherits_from].is_or_inherits(profile_id) ; recurse to the inherited profile
+        }
     }
 
     ; --- SWITCHING ---
