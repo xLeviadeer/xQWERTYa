@@ -21,20 +21,25 @@ class KeyEvent {
     }
 
     static FromHotkeyString(HotkeyString) {
+        ; get lengths
+        hotkeyStringLen := StrLen(HotkeyString)
+        upKeysymbolLen := StrLen(Modifier.UP_KEYSYMBOL_LONG)
+
         ; match positions out of the hotkey name
-        RegExMatch(
-            HotkeyString,
-            "^(?!.*\+.*\+)(?!.*\$.*\$)[\*\$]+",
-            &info
-        )
         splitPosition := 0
-        if (info is RegExMatchInfo) {
-            splitPosition := info.Len
+        loop hotkeyStringLen {
+            char := SubStr(HotkeyString, splitPosition + 1, 1)
+            if (
+                (char == "*")
+                || (char == "$")
+            ) {
+                splitPosition += 1
+                continue
+            }
+            break
         }
 
         ; check if it's an up action
-        hotkeyStringLen := StrLen(HotkeyString)
-        upKeysymbolLen := StrLen(Modifier.UP_KEYSYMBOL_LONG)
         cutLength := 0
         is_up := false
         if (
