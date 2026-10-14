@@ -1,6 +1,6 @@
 #Requires AutoHotkey v2.0 
 #SingleInstance Force
 
-#Include src/launch/Launch.ahk
+#Include src/launch/Launcher.ahk
 
-launch()
+Launcher.launch()

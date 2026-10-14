@@ -1,0 +1,6 @@
+{
+    "cache_size": 500,
+    "max_hotkeys_per_interval": 300,
+    "process_priority": "H",
+    "admin": false
+}

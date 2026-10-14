@@ -10,14 +10,13 @@ class KeyCache {
 
     ; --- VARIABLES ---
 
-    static RECENT_CACHE_SIZE => 300
     static RecentCache := unset
 
     ; --- INIT ---
 
-    static init() {
+    static init(cache_size) {
         ; set up recent cache
-        KeyCache.RecentCache := RollingBuffer(KeyCache.RECENT_CACHE_SIZE)
+        KeyCache.RecentCache := RollingBuffer(cache_size)
     }
 
     ; --- KEYING ---
