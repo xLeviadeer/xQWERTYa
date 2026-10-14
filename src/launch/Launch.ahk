@@ -9,6 +9,9 @@
 #Include ..\key\KeyCache.ahk
 
 launch() {
+    ; priority
+    ProcessSetPriority("H")
+    
     ; spam protection highened window
     A_MaxHotkeysPerInterval := 300
 
@@ -71,6 +74,17 @@ launch() {
     )
     CustomKeys.init()
 
+    ; ALPHA caching code ╎ create profile cache
+    if KeyCache.DoCaching {
+        Badge.ShowBadge(
+            "compiling cache",
+            BADGE_LOC,
+            BADGE_BUILD_BG,
+            BADGE_BUILD_FG
+        )
+        KeyCache.init()
+    }
+
     ; bind modifiers
     Badge.ShowBadge(
         "binding modifiers",
@@ -88,18 +102,6 @@ launch() {
         BADGE_BUILD_FG
     )
     Key.BindAll()
-
-    ; ALPHA caching code ╎ create profile cache
-    if KeyCache.DoCaching {
-        ; badge will show with caching
-        ; Badge.ShowBadge(
-        ;     "compiling cache",
-        ;     BADGE_LOC,
-        ;     BADGE_BUILD_BG,
-        ;     BADGE_BUILD_FG
-        ; )
-        KeyCache.SetProfileCache(Profile.DEFAULT_NAME)
-    }
 
     ; startup badge
     Badge.ShowBadge(

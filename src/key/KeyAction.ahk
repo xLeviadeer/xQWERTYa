@@ -246,8 +246,16 @@ class KeyAction {
                 lck.GetNameString(),
                 key_event.is_up
             )
+            
+            ; check profile cache 
             if KeyCache.ProfCache.Has(cache_key) {
-                KeyCache.ProfCache[cache_key].Execute(mod) 
+                KeyCache.ProfCache[cache_key].Execute(mod)
+                return
+            }
+
+            ; check recent cache
+            if KeyCache.RecentCache.Has(cache_key) {
+                KeyCache.RecentCache[cache_key].Execute(mod)
                 return
             }
         }
@@ -260,9 +268,14 @@ class KeyAction {
             lck,
             key_event.is_up
         )
-
-        ; run this actiokn
-        key_action.Run()
+        original_modifier := mod.Copy()
+        executor := key_action.Resolve()
+        ; run this action
+        ; ALPHA caching code
+        if KeyCache.DoCaching {
+            KeyCache.RecentCache[cache_key] := executor
+        }
+        executor.Execute(original_modifier)
     }
 
     ; runs this action; executes the appropriate thing for this action

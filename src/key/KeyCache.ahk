@@ -4,16 +4,33 @@
 #Include ../lock/Lock.ahk
 #Include ../lock/LockComposition.ahk
 #Include Key.ahk
+#Include ../tools/RollingBuffer.ahk
 
 class KeyCache {
+
     ; --- VARIABLES ---
 
     static DoCaching := false
+    
+    static ProfCache := unset
+    static ProfCacheProfID := unset
 
-    static ProfCache := Map()
-    static CacheOf := false
+    static RECENT_CACHE_SIZE => 300
+    static RecentCache := unset
 
-    ; --- METHODS ---
+    ; --- INIT ---
+
+    static init() {
+        ; set up profile cache
+        KeyCache.ProfCache := Map()
+        KeyCache.ProfCacheProfID := false
+        KeyCache.SetProfileCache(Profile.DEFAULT_NAME)
+
+        ; set up recent cache
+        KeyCache.RecentCache := RollingBuffer(KeyCache.RECENT_CACHE_SIZE)
+    }
+
+    ; --- KEYING ---
 
     static CreateKey(
         target,
@@ -31,81 +48,81 @@ class KeyCache {
         )
     }
 
+    ; --- PROFILE CACHE ---
+
     static SetProfileCache(profile_id) {
         ; wipe current cache if different
         if (
-            (KeyCache.CacheOf != false) 
-            && (KeyCache.CacheOf == profile_id) 
+            (KeyCache.ProfCacheProfID != false) 
+            && (KeyCache.ProfCacheProfID == profile_id) 
         ) {
             return ; skip if already set
         }
 
-        ; show badge
-        Badge.ShowBadge(
-            "Caching…",
-            , 
-            "8688A6", "47476B"
-        )
-
         ; loop keys
         new_cache := Map()
         for target, ky in Key.List {
-            ; default modifier
-            KeyCache._AddMod(
+            ; default modifier & default lock
+            KeyCache._AddLock(
                 target,
                 profile_id,
                 KeyProfile.DEFAULT_NAME,
+                KeyModifier.DEFAULT_NAME,
                 &new_cache
             )
 
             ; loop modifiers
             for mod_name, mod in Modifier.List {
-                KeyCache._AddMod(
+                ; default lock
+                KeyCache._AddLock(
                     target,
                     profile_id,
                     mod_name,
+                    KeyModifier.DEFAULT_NAME,
                     &new_cache
                 )
             }
         }
 
         ; set new cache
-        KeyCache.CacheOf := profile_id
+        KeyCache.ProfCacheProfID := profile_id
         KeyCache.ProfCache := new_cache
     }
 
-    static _AddMod(
-        target,
-        profile_id,
-        mod_name,
-        &new_cache
-    ) {
-        ; default lock
-        KeyCache._AddLock(
-            target,
-            profile_id,
-            mod_name,
-            KeyModifier.DEFAULT_NAME,
-            &new_cache
-        )
+    ; ALPHA DEPRECATED 
+    ; static _AddMod(
+    ;     target,
+    ;     profile_id,
+    ;     mod_name,
+    ;     &new_cache
+    ; ) {
+    ;     ; default lock
+    ;     KeyCache._AddLock(
+    ;         target,
+    ;         profile_id,
+    ;         mod_name,
+    ;         KeyModifier.DEFAULT_NAME,
+    ;         &new_cache
+    ;     )
 
-        ; loop locks
-        for lock_name, lck in Lock.List {
-            ; skip if non-bindable
-            if !lck.IsBindable {
-                continue
-            }
+    ;     ; loop locks
+    ;     for lock_name, lck in Lock.List {
+    ;         ; skip if non-bindable
+    ;         if !lck.IsBindable {
+    ;             continue
+    ;         }
 
-            KeyCache._AddLock(
-                target,
-                profile_id,
-                mod_name,
-                lock_name,
-                &new_cache
-            )
-        }
-    }
+    ;         KeyCache._AddLock(
+    ;             target,
+    ;             profile_id,
+    ;             mod_name,
+    ;             lock_name,
+    ;             &new_cache
+    ;         )
+    ;     }
+    ; }
 
+    ; ALPHA DEPRECATED 
     static _AddLock(
         target,
         profile_id,
@@ -140,5 +157,14 @@ class KeyCache {
                 is_up
             ).Resolve()
         }
+    }
+
+    ; executes a profile cache action by key: returning true if anything was executed, false if nothing happened
+    static ProfExec(key, original_modifier) {
+        if KeyCache.ProfCache.Has(key) {
+            KeyCache.ProfCache[key].Execute(original_modifier)
+            return true
+        }
+        return false
     }
 }
