@@ -446,10 +446,6 @@ class Profile {
 
         ; update curr
         Profile.Curr := profile_id
-        ; ALPHA caching code
-        if KeyCache.DoCaching {
-            KeyCache.SetProfileCache(profile_id) ; set cache
-        }
     }
 
     static _do_quick_switch(profile_id) {
