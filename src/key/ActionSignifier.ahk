@@ -1,6 +1,7 @@
 #Requires AutoHotkey v2.0
 
 #Include ../tools/Checks.ahk
+#Include ../tools/Capitalization.ahk
 
 class ActionSignifier {
     ; --- VARIABLES ---
