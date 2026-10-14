@@ -77,7 +77,7 @@ launch() {
     ; ALPHA caching code ╎ create profile cache
     if KeyCache.DoCaching {
         Badge.ShowBadge(
-            "compiling cache",
+            "pooling cache",
             BADGE_LOC,
             BADGE_BUILD_BG,
             BADGE_BUILD_FG
@@ -111,13 +111,3 @@ launch() {
         BADGE_START_FG
     )
 }
-
-; conventions for default include
-    ; shift is falsed
-    ; alt is falsed
-    ; control is elsed
-    ; windows is elsed
-    ; curl is falsed
-    ; elevate is falsed
-    ; shelve is falsed
-
