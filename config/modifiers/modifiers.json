@@ -25,13 +25,12 @@
     {
         "priority": 50,
         "name": "elevate",
-        "target": "LAlt",
+        "target": "LAlt"
     },
     {
         "priority": 60,
         "name": "shelve",
-        "target": "LWin",
-        "alternates": [ "SC070" ]
+        "target": "LWin"
     },
     {
         "priority": 70,

@@ -228,11 +228,16 @@ class KeyAction {
         ; parse the key
         key_event := KeyEvent.FromHotkeyString(HotkeyString)
 
+        ; compatibility mode check
+        if Profile.GetCurr().compatibility {
+            Modifier.Sync()
+        }
+
         ; create snapshots
         mod := Modifier.CreateCompositionSnapshot() ; snapshot of currently held keys
         lck := Lock.CreateCompositionSnapshot() ; snapshot of currently active locks
 
-        ; ; get cache key
+        ; get cache key
         cache_key := KeyCache.CreateKey(
             key_event.key_target,
             Profile.Curr,
@@ -268,10 +273,7 @@ class KeyAction {
         executor.Execute(original_modifier)
     }
 
-    Resolve() {
-        ; compatibility mode checks
-        this._compatibilityMode()
-        
+    Resolve() {       
         ; start inheritance loop
         search_for_more_inheritance := true
         while (search_for_more_inheritance) {
@@ -331,61 +333,6 @@ class KeyAction {
     }
 
     ; --- DETERMINATIONS ---
-
-    ; this must be tracked here because it needs to happen on ⊰any⊱ keypress, not just modifier keypresses
-
-    ; checks for a virtual modifier state which doesn't match a physical state and corrects it
-    ;   key — unchanged
-    ;   profile — unchanged
-    ;   modifier — unchanged
-    _compatibilityMode() {
-        if this.curr_profile.compatibility { ; compatibility on
-            ; dont run for down actions test
-            if (!this.is_up) {
-                return
-            }
-
-            ; for pressed modifiers
-            for (modifier_name, mod in Modifier.List) {
-                ; try to get reg state
-                physical_state := -1
-                try {
-                    physical_state := GetKeyState(mod.symbol, "P")
-                } catch {
-                }
-
-                ; try to get alt state
-                physical_state_alt := -1
-                if mod.symbol_alts != false {
-                    for alt in mod.symbol_alts {
-                        try {
-                            physical_state_alt := GetKeyState(alt, "P")
-                            break
-                        } catch {
-                            continue
-                        }
-                    }
-                }
-
-                ; if neither could be found: skip
-                if (
-                    (physical_state == -1)
-                    && (physical_state_alt == -1)
-                ) {
-                    return
-                }
-                
-                ; check if states match
-                virtual_state := mod.isDown
-                if (
-                    (physical_state != virtual_state)
-                    && (physical_state_alt != virtual_state)
-                ) {
-                    mod.panic()
-                }
-            }
-        }
-    }
 
     ; - recurring processing starts -
 

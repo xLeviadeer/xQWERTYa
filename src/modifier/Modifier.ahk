@@ -313,11 +313,91 @@ class Modifier {
 
     ; --- PANIC ON ---
 
+    ; tries to sync the virtual state with phyical key state
+    ;   will do nothing for any modifier which includes a key mapping to a key which has no virtual key assignment 
+    Sync() {
+        ; try to get reg state
+        physical_state := unset
+        physical_failed := false
+        try {
+            physical_state := GetKeyState(this.symbol, "P")
+        } catch {
+            physical_failed := true
+        }
+
+        ; try to get alt state
+        at_least_one_alt_down := false
+        alt_failed := false
+        if this.symbol_alts != false {
+            for alt in this.symbol_alts {
+                try {
+                    alt_state := GetKeyState(alt, "P")
+                } catch {
+                    alt_failed := true
+                    break
+                }
+
+                ; at least one down
+                if (
+                    (at_least_one_alt_down == false) 
+                    && (alt_state == false)
+                ) {
+                    at_least_one_alt_down := true 
+                    continue
+                }
+            }
+        }
+
+        ; if either state failed to be found, skip
+        ;   you cannot verify the state of something which you cannot see the state of
+        if (
+            (physical_failed == true)
+            || (alt_failed == true)
+        ) { 
+            return
+        }
+        any_down := physical_state || at_least_one_alt_down
+
+        ; if any phyiscal options are down by the virtual state is not down
+        if (
+            any_down
+            && (this.isDown == false)
+        ) {
+            this.isDown := true
+            return
+        }
+
+        ; if no physical options are down but the virtual state is down
+        if (
+            !any_down
+            && (this.isDown == true)
+        ) {
+            this.isDown := false
+            return
+        }
+    }
+
+    ; syncs all modifiers
+    static Sync() {
+        for _, mod in Modifier.List {
+            mod.Sync()
+        }
+    }
+
+    ; sends a down and up action for this modifier & mark it as down & mark it as complete
+    ;   aka shuts off any active modifiers
     Panic() {
-        this.isDown := false
-        this.completed := true
         SendInput("{Blind}{" this.symbol Modifier.DOWN_KEYSYMBOL_LONG "}")
         SendInput("{Blind}{" this.symbol Modifier.UP_KEYSYMBOL_LONG "}")
+        this.isDown := true
+        this.completed := true        
+    }
+
+    ; panics all modifiers
+    static Panic() {
+        for _, mod in Modifier.List {
+            mod.Panic()
+        }
     }
 
     ; --- PASSTHROUGH ---
