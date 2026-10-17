@@ -20,16 +20,6 @@ class Profile {
 
     ; current profile tracker
     static DEFAULT_ID => "default"
-    static DEFAULT_MODIFIER_PASSTHROUGH => Map(
-        "shift", true,
-        "control", true,
-        "curl", false,
-        "alt", false,
-        "elevate", false,
-        "shelve", false,
-        "step", false,
-        "windows", false
-    )
     static Curr := Profile.DEFAULT_ID
     static _last_profile_was_quick_switcher := unset 
 
@@ -259,7 +249,7 @@ class Profile {
             Profile.DEFAULT_ID, Profile(
                 Profile.DEFAULT_ID, "Default",
                 false, ; inherits from
-                Profile.DEFAULT_MODIFIER_PASSTHROUGH,
+                false, ; modifier passthrough
                 , ; exceptions
                 , ; hidden
                 true, ; compatibility
@@ -384,9 +374,14 @@ class Profile {
     static GetPassthrough(profile_id) {
         ; get the pass list
         if (Profile.List[profile_id].modifierPassthrough == false) {
-            return Profile.DEFAULT_MODIFIER_PASSTHROUGH 
+            ; all false
+            pass_list := Map()
+            for mod_name, _ in Modifier.List {
+                pass_list[mod_name] := false
+            }
+            return pass_list
         } else {
-            return  Profile.List[profile_id].modifierPassthrough
+            return Profile.List[profile_id].modifierPassthrough
         }
     }
 
