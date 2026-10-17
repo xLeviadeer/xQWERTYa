@@ -7,11 +7,18 @@
 #Include ..\lock\Lock.ahk
 #Include ..\tools\Badge.ahk
 #Include ..\key\KeyCache.ahk
+#Include ..\key\ActionSignifier.ahk
 
 class Launcher {
     ; --- VARIABLES ---
 
     static LAUNCH_SETTINGS_PATH => "config/launch.json"
+
+    static BADGE_BUILD_BG => "3d3c49"
+    static BADGE_BUILD_FG => "625f8a"
+    static BADGE_START_BG => "5b5a6e"
+    static BADGE_START_FG => "9d99db"
+    static BADGE_LOC => "Middle"
 
     ; --- CONSTRUCTOR ---
 
@@ -47,6 +54,88 @@ class Launcher {
     }
 
     ; --- METHODS ---
+
+    static _set_settings(
+        process_priority,
+        max_hotkeys_per_interval
+    ) {
+        ; toplevel settings
+        ProcessSetPriority(process_priority)
+        A_MaxHotkeysPerInterval := max_hotkeys_per_interval
+
+        ; disable caps lock as it'll be being enumlated anyway
+        SetCapsLockState("AlwaysOff")
+        A_StoreCapsLockMode := false
+        SetNumLockState("AlwaysOn")
+    }
+
+    static _launch_prereqs(cache_size) {
+        ; init badge
+        Badge.init()
+
+        ; init locks
+        Badge.ShowBadge(
+            "building locks",
+            Launcher.BADGE_LOC,
+            Launcher.BADGE_BUILD_BG,
+            Launcher.BADGE_BUILD_FG
+        )
+        Lock.init()
+
+        ; init modifiers
+        Badge.ShowBadge(
+            "building modifiers",
+            Launcher.BADGE_LOC,
+            Launcher.BADGE_BUILD_BG,
+            Launcher.BADGE_BUILD_FG
+        )
+        Modifier.init()
+
+        ; init profiles
+        Badge.ShowBadge(
+            "building profiles",
+            Launcher.BADGE_LOC,
+            Launcher.BADGE_BUILD_BG,
+            Launcher.BADGE_BUILD_FG
+        )
+        Profile.init()
+
+        ; init keys
+        Badge.ShowBadge(
+            "building keys",
+            Launcher.BADGE_LOC,
+            Launcher.BADGE_BUILD_BG,
+            Launcher.BADGE_BUILD_FG
+        )
+        Key.init()
+
+        ; init custom keys
+        Badge.ShowBadge(
+            "building custom keys",
+            Launcher.BADGE_LOC,
+            Launcher.BADGE_BUILD_BG,
+            Launcher.BADGE_BUILD_FG
+        )
+        CustomKeys.init()
+
+        ; create profile cache
+        Badge.ShowBadge(
+            "pooling cache",
+            Launcher.BADGE_LOC,
+            Launcher.BADGE_BUILD_BG,
+            Launcher.BADGE_BUILD_FG
+        )
+        KeyCache.init(cache_size)
+
+        ; init signifiers
+        Badge.ShowBadge(
+            "formatting signifiers",
+            Launcher.BADGE_LOC,
+            Launcher.BADGE_BUILD_BG,
+            Launcher.BADGE_BUILD_FG
+        )
+        ActionSignifier.init()
+    }
 
     static launch(
         cache_size := unset, ; unset as read
@@ -99,111 +188,36 @@ class Launcher {
             }
         }
 
-        ; toplevel settings
-        ProcessSetPriority(process_priority)
-        A_MaxHotkeysPerInterval := max_hotkeys_per_interval
+        ; settings
+        Launcher._set_settings(process_priority, max_hotkeys_per_interval)
 
-        ; disable caps lock as it'll be being enumlated anyway
-        SetCapsLockState("AlwaysOff")
-        A_StoreCapsLockMode := false
-        SetNumLockState("AlwaysOn")
-
-        BADGE_BUILD_BG := "3d3c49"
-        BADGE_BUILD_FG := "625f8a"
-        BADGE_START_BG := "5b5a6e"
-        BADGE_START_FG := "9d99db"
-        BADGE_LOC := "Middle"
-
-        ; init badge
-        Badge.init()
-
-        ; init locks
-        Badge.ShowBadge(
-            "building locks",
-            BADGE_LOC,
-            BADGE_BUILD_BG,
-            BADGE_BUILD_FG
-        )
-        Lock.init()
-
-        ; init modifiers
-        Badge.ShowBadge(
-            "building modifiers",
-            BADGE_LOC,
-            BADGE_BUILD_BG,
-            BADGE_BUILD_FG
-        )
-        Modifier.init()
-
-        ; init profiles
-        Badge.ShowBadge(
-            "building profiles",
-            BADGE_LOC,
-            BADGE_BUILD_BG,
-            BADGE_BUILD_FG
-        )
-        Profile.init()
-
-        ; init keys
-        Badge.ShowBadge(
-            "building keys",
-            BADGE_LOC,
-            BADGE_BUILD_BG,
-            BADGE_BUILD_FG
-        )
-        Key.init()
-
-        ; init custom keys
-        Badge.ShowBadge(
-            "building custom keys",
-            BADGE_LOC,
-            BADGE_BUILD_BG,
-            BADGE_BUILD_FG
-        )
-        CustomKeys.init()
-
-        ; create profile cache
-        Badge.ShowBadge(
-            "pooling cache",
-            BADGE_LOC,
-            BADGE_BUILD_BG,
-            BADGE_BUILD_FG
-        )
-        KeyCache.init(cache_size)
-
-        ; init signifiers
-        Badge.ShowBadge(
-            "formatting signifiers",
-            BADGE_LOC,
-            BADGE_BUILD_BG,
-            BADGE_BUILD_FG
-        )
-        ActionSignifier.init()
+        ; launch pre requisites
+        Launcher._launch_prereqs(cache_size)
 
         ; bind modifiers
         Badge.ShowBadge(
             "binding modifiers",
-            BADGE_LOC,
-            BADGE_BUILD_BG,
-            BADGE_BUILD_FG
+            Launcher.BADGE_LOC,
+            Launcher.BADGE_BUILD_BG,
+            Launcher.BADGE_BUILD_FG
         )
         Modifier.BindAll()
 
         ; bind keys
         Badge.ShowBadge(
             "binding keys",
-            BADGE_LOC,
-            BADGE_BUILD_BG,
-            BADGE_BUILD_FG
+            Launcher.BADGE_LOC,
+            Launcher.BADGE_BUILD_BG,
+            Launcher.BADGE_BUILD_FG
         )
         Key.BindAll()
 
         ; startup badge
         Badge.ShowBadge(
             "Started",
-            BADGE_LOC,
-            BADGE_START_BG,
-            BADGE_START_FG
+            Launcher.BADGE_LOC,
+            Launcher.BADGE_START_BG,
+            Launcher.BADGE_START_FG
         )
     }
 

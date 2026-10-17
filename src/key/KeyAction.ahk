@@ -247,7 +247,10 @@ class KeyAction {
         )
 
         ; check recent cache
-        if KeyCache.RecentCache.Has(cache_key) {
+        if (
+            (KeyCache.RecentCache != false)
+            && KeyCache.RecentCache.Has(cache_key)
+        ) {
             KeyCache.RecentCache[cache_key].Execute(mod)
             return
         }
@@ -262,7 +265,9 @@ class KeyAction {
         )
         original_modifier := mod.Copy()
         executor := key_action.Resolve()
-        KeyCache.RecentCache[cache_key] := executor
+        if KeyCache.RecentCache != false {
+            KeyCache.RecentCache[cache_key] := executor
+        }
         executor.Execute(original_modifier)
     }
 

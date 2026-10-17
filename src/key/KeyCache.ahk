@@ -16,6 +16,10 @@ class KeyCache {
 
     static init(cache_size) {
         ; set up recent cache
+        if cache_size == 0 {
+            KeyCache.RecentCache := false
+            return
+        }
         KeyCache.RecentCache := RollingBuffer(cache_size)
     }
 
