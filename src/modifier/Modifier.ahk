@@ -387,8 +387,8 @@ class Modifier {
     ; sends a down and up action for this modifier & mark it as down & mark it as complete
     ;   aka shuts off any active modifiers
     Panic() {
-        SendInput("{Blind}{" this.symbol Modifier.DOWN_KEYSYMBOL_LONG "}")
-        SendInput("{Blind}{" this.symbol Modifier.UP_KEYSYMBOL_LONG "}")
+        ActionExecutor.SendInput("{Blind}{" this.symbol Modifier.DOWN_KEYSYMBOL_LONG "}")
+        ActionExecutor.SendInput("{Blind}{" this.symbol Modifier.UP_KEYSYMBOL_LONG "}")
         this.isDown := true
         this.completed := true        
     }

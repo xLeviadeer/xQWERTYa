@@ -58,15 +58,15 @@ class ModifierComposition extends Composition {
 
             ; set new state
             if (new_state == true) { ; if state is down, set completed to false
-                SendInput(this.GetSendSymbolString("Down"))
+                ActionExecutor.SendInput(this.GetSendSymbolString("Down"))
             } else {
-                SendInput(this.GetSendSymbolString("Up"))
+                ActionExecutor.SendInput(this.GetSendSymbolString("Up"))
             }
         }
     }
 
     ; simulates a change of this modifier
-    ; is_up expects -1, true or false where -1 means ⸉opposite of the current⸉
+    ; is_up expects -1, true or false where -1 means ⸉opposite of the current⸉ & true means down
     ; do_passthrough controls whether or not to simulate pressing the modifiers in this key to windows
     Simulate(isDown := -1, do_passthrough := false) {
         ; simulate passthrough

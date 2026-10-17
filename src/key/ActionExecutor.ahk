@@ -1,6 +1,8 @@
 #Requires AutoHotkey v2.0
 
 class ActionExecutor {
+    static DoSendInput := true
+
     __New(
         target,
         value,
@@ -100,11 +102,17 @@ class ActionExecutor {
             blinded_modifier_value := (this.do_blind) ? "{Blind}" this.value : this.value
             
             ; text
-            SendInput(blinded_modifier_value)
+            ActionExecutor.SendInput(blinded_modifier_value)
             return
         } 
         
         ; method
         this.value.Call(this.target)
+    }
+
+    static SendInput(str) {
+        if ActionExecutor.DoSendInput {
+            SendInput(str)
+        }
     }
 }

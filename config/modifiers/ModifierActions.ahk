@@ -13,7 +13,7 @@ class ModifierActions {
     ; --- WINDOWS ---
 
     static Windows() {
-        SendInput("{RWin}")
+        ActionExecutor.SendInput("{RWin}")
     }
 
 }

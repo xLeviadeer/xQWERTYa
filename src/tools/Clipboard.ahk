@@ -1,5 +1,7 @@
 #Requires AutoHotkey v2.0
 
+#IncludeAgain ../key/ActionExecutor.ahk
+
 ; contains methods for using the clipboard
 class Clipboard {
     
@@ -19,7 +21,7 @@ class Clipboard {
         A_Clipboard := ""
 
         ; get highlighted text
-        SendInput("^c")
+        ActionExecutor.SendInput("^c")
         ClipWait(, 1)
         clip_content := A_Clipboard
 
