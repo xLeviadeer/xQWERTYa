@@ -4,7 +4,7 @@ The xQWERTYa layout system for xQWERTILE on Windows. xQWERTYa is an advanced inh
 ## Why Use xQWERTYa
 Features ⌄
 1. ⸉Profiles⸉ which switch what behavior a key uses for it's modifiers and locks. Profiles are unified across different devices.
-2. ⸉Modifiers⸉ which are what are usually referred to as ⸉layers⸉, though my modifiers work a bit differently.
+2. ⸉Modifiers⸉ which are what are usually referred to as ⸉layers.
 3. ⸉Locks⸉ which are toggled global states like ⸉caps-lock⸉ or ⸉num-lock⸉ on a typical keyboard.
 4. Ability to break out into AHK code when xQWERTYa cannot meet your needs.
 5. Ability to run the program portably on different Windows devices.
