@@ -1,6 +1,6 @@
 #Requires AutoHotkey v2.0
 
-#IncludeAgain ../key/ActionExecutor.ahk
+#Include ../key/ActionExecutor.ahk
 
 ; contains methods for using the clipboard
 class Clipboard {
