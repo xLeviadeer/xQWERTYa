@@ -223,13 +223,8 @@ class Key {
         }
         key_names_list.Push(key_names_list_extension*)
         
-        ; generate map from list
-        key_names_set := Map()
-        for (key_name in key_names_list) {
-            key_names_set[key_name] := false
-        }
-        
         ; loop over all combinations
+        key_names_set := Utils.SetOf(key_names_list*)
         for (key_name, combination in Key.UsedCombinations) {
             ; if list is exceptions, check if curr is exception
             if (list_is_exceptions) {

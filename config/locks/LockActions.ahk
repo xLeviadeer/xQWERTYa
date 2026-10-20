@@ -4,10 +4,7 @@
 #Include ../../src/profile/Profile.ahk
 
 class LockActions {
-    static _RealDisincludes => [
-        "PrintScreen",
-        "RAlt"
-    ]
+    static _RealDisincludes => ["PrintScreen"]
     static OnRealChange(bool) {
         if bool {
             ; if setting to on
