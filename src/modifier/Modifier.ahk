@@ -311,7 +311,7 @@ class Modifier {
         }
     }
 
-    ; --- PANIC ON ---
+    ; --- PANIC ---
 
     ; tries to sync the virtual state with phyical key state
     ;   will do nothing for any modifier which includes a key mapping to a key which has no virtual key assignment 
@@ -389,7 +389,7 @@ class Modifier {
     Panic() {
         ActionExecutor.SendInput("{Blind}{" this.symbol Modifier.DOWN_KEYSYMBOL_LONG "}")
         ActionExecutor.SendInput("{Blind}{" this.symbol Modifier.UP_KEYSYMBOL_LONG "}")
-        this.isDown := true
+        this.isDown := false
         this.completed := true        
     }
 
